@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "contactbook_backend",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
@@ -7,10 +7,29 @@
   "type": "commonjs",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js",
+    "indexes:create": "node app/utils/create-indexes.js create",
+    "indexes:drop": "node app/utils/create-indexes.js drop",
+    "indexes:reset": "node app/utils/create-indexes.js reset"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "google-auth-library": "^10.4.1",
+    "http-status": "^2.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.17.0",
+    "mongoose": "^8.19.1",
+    "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.5.3"
   }
 }
