@@ -1,0 +1,155 @@
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// Tạo thư mục nếu chưa tồn tại
+const ensureDirectoryExists = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+};
+
+// Cấu hình storage cho ảnh bìa truyện
+const coverImageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const storyId = req.params.storyId || req.body.storyId;
+    const uploadPath = path.join(__dirname, "../../public/audio", storyId);
+    ensureDirectoryExists(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    // Luôn đặt tên file là cover với extension gốc
+    const extension = path.extname(file.originalname);
+    cb(null, `cover${extension}`);
+  },
+});
+
+// Cấu hình storage cho audio chương
+const chapterAudioStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const storyId = req.params.storyId || req.body.storyId;
+    const uploadPath = path.join(
+      __dirname,
+      "../../public/audio",
+      storyId,
+      "chapters"
+    );
+    ensureDirectoryExists(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const chapterNumber = req.params.chapterNumber || req.body.chapterNumber;
+    const extension = path.extname(file.originalname);
+    cb(null, `${chapterNumber}${extension}`);
+  },
+});
+
+// File filter cho ảnh
+const imageFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const extension = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mimeType = allowedTypes.test(file.mimetype);
+
+  if (extension && mimeType) {
+    cb(null, true);
+  } else {
+    cb(new Error("Chỉ chấp nhận file ảnh (jpg, jpeg, png, gif, webp)"), false);
+  }
+};
+
+// File filter cho audio
+const audioFilter = (req, file, cb) => {
+  const allowedTypes = /mp3|wav|m4a|aac|ogg/;
+  const extension = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mimeType = /audio/.test(file.mimetype);
+
+  if (extension && mimeType) {
+    cb(null, true);
+  } else {
+    cb(new Error("Chỉ chấp nhận file audio (mp3, wav, m4a, aac, ogg)"), false);
+  }
+};
+
+// Middleware upload ảnh bìa
+const uploadCoverImage = multer({
+  storage: coverImageStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB
+  },
+}).single("coverImage");
+
+// Middleware upload audio chương
+const uploadChapterAudio = multer({
+  storage: chapterAudioStorage,
+  fileFilter: audioFilter,
+  limits: {
+    fileSize: 100 * 1024 * 1024, // 100MB
+  },
+}).single("chapterAudio");
+
+// Hàm tạo URL cho file
+const getFileUrl = (req, storyId, fileName) => {
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+  return `${baseUrl}/public/audio/${storyId}/${fileName}`;
+};
+
+const getChapterAudioUrl = (req, storyId, chapterNumber) => {
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+  return `${baseUrl}/public/audio/${storyId}/chapters/${chapterNumber}.mp3`;
+};
+
+// Hàm xóa thư mục story và tất cả files
+const deleteStoryFiles = (storyId) => {
+  try {
+    const storyPath = path.join(__dirname, "../../public/audio", storyId);
+    if (fs.existsSync(storyPath)) {
+      fs.rmSync(storyPath, { recursive: true, force: true });
+      console.log(`Deleted story files for: ${storyId}`);
+    } else {
+      console.log(`No files found for story: ${storyId}`);
+    }
+  } catch (error) {
+    console.error(`Error deleting story files for ${storyId}:`, error);
+    throw error;
+  }
+};
+
+// Hàm xóa file audio chương
+const deleteChapterAudio = (storyId, chapterNumber) => {
+  try {
+    const audioPath = path.join(
+      __dirname,
+      "../../public/audio",
+      storyId,
+      "chapters",
+      `${chapterNumber}.mp3`
+    );
+    if (fs.existsSync(audioPath)) {
+      fs.unlinkSync(audioPath);
+      console.log(
+        `Deleted chapter audio: ${storyId}/chapters/${chapterNumber}.mp3`
+      );
+    }
+  } catch (error) {
+    console.error(
+      `Error deleting chapter audio ${storyId}/${chapterNumber}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+module.exports = {
+  uploadCoverImage,
+  uploadChapterAudio,
+  getFileUrl,
+  getChapterAudioUrl,
+  deleteStoryFiles,
+  deleteChapterAudio,
+  ensureDirectoryExists,
+};
