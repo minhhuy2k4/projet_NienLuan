@@ -12,6 +12,7 @@ const favoriteRoute = require("./app/routes/favorite.route");
 const historyRoute = require("./app/routes/history.route");
 const ratingRoute = require("./app/routes/rating.route");
 const commentRoute = require("./app/routes/comment.route");
+const bannerRoute = require("./app/routes/banner.route");
 
 const chatbotRouter = require("./app/routes/chatbot.route");
 
@@ -22,6 +23,9 @@ app.use(express.json());
 
 // Serve static files
 app.use("/public", express.static("public"));
+app.use("/banners", express.static("public/banners"));
+app.use("/images", express.static("public/images"));
+app.use("/audio", express.static("public/audio"));
 
 app.use("/api/auth", authRoute);
 app.use("/api/stories", storyRoute);
@@ -34,6 +38,7 @@ app.use("/api/favorites", favoriteRoute);
 app.use("/api/history", historyRoute);
 app.use("/api/ratings", ratingRoute);
 app.use("/api/comments", commentRoute);
+app.use("/api/banners", bannerRoute);
 
 app.use("/api/chatbot", chatbotRouter);
 

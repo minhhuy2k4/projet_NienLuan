@@ -1,0 +1,99 @@
+const { ObjectId } = require("mongodb");
+
+class BannerService {
+  constructor(client) {
+    this.Banner = client.db().collection("banners");
+  }
+
+  // Lấy tất cả banners
+  async getAll() {
+    const banners = await this.Banner.find({}).sort({ order: 1 }).toArray();
+    return banners;
+  }
+
+  // Lấy chỉ banners đang active
+  async getActive() {
+    const banners = await this.Banner.find({ isActive: true })
+      .sort({ order: 1 })
+      .toArray();
+    return banners;
+  }
+
+  // Lấy banner theo ID
+  async getById(bannerId) {
+    const banner = await this.Banner.findOne({
+      _id: new ObjectId(bannerId),
+    });
+    return banner;
+  }
+
+  // Tạo banner mới
+  async create(bannerData) {
+    const banner = {
+      title: bannerData.title,
+      subtitle: bannerData.subtitle,
+      image: bannerData.image,
+      order: bannerData.order || 0,
+      isActive: bannerData.isActive !== undefined ? bannerData.isActive : true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    const result = await this.Banner.insertOne(banner);
+    return { _id: result.insertedId, ...banner };
+  }
+
+  // Cập nhật banner
+  async update(bannerId, bannerData) {
+    const updateData = {
+      updatedAt: new Date(),
+    };
+
+    if (bannerData.title !== undefined) updateData.title = bannerData.title;
+    if (bannerData.subtitle !== undefined)
+      updateData.subtitle = bannerData.subtitle;
+    if (bannerData.image !== undefined) updateData.image = bannerData.image;
+    if (bannerData.order !== undefined) updateData.order = bannerData.order;
+    if (bannerData.isActive !== undefined)
+      updateData.isActive = bannerData.isActive;
+
+    const result = await this.Banner.findOneAndUpdate(
+      { _id: new ObjectId(bannerId) },
+      { $set: updateData },
+      { returnDocument: "after" }
+    );
+
+    return result;
+  }
+
+  // Xóa banner
+  async delete(bannerId) {
+    const result = await this.Banner.deleteOne({
+      _id: new ObjectId(bannerId),
+    });
+    return result.deletedCount > 0;
+  }
+
+  // Toggle active status
+  async toggleActive(bannerId) {
+    const banner = await this.getById(bannerId);
+    if (!banner) {
+      throw new Error("Banner không tồn tại");
+    }
+
+    const result = await this.Banner.findOneAndUpdate(
+      { _id: new ObjectId(bannerId) },
+      {
+        $set: {
+          isActive: !banner.isActive,
+          updatedAt: new Date(),
+        },
+      },
+      { returnDocument: "after" }
+    );
+
+    return result;
+  }
+}
+
+module.exports = BannerService;

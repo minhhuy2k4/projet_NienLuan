@@ -14,6 +14,12 @@ if (!fs.existsSync(imagesDir)) {
   fs.mkdirSync(imagesDir, { recursive: true });
 }
 
+// Đảm bảo thư mục banners tồn tại
+const bannersDir = "./public/banners";
+if (!fs.existsSync(bannersDir)) {
+  fs.mkdirSync(bannersDir, { recursive: true });
+}
+
 // Cấu hình lưu file audio
 const audioStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -33,6 +39,19 @@ const imageStorage = multer.diskStorage({
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     const uniqueName = Date.now() + "-cover" + ext;
+    cb(null, uniqueName);
+  },
+});
+
+// Cấu hình lưu file banner
+const bannerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/banners");
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const uniqueName = "banner-" + uniqueSuffix + ext;
     cb(null, uniqueName);
   },
 });
@@ -67,4 +86,10 @@ const uploadImage = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
-module.exports = { uploadAudio, uploadImage };
+const uploadBanner = multer({
+  storage: bannerStorage,
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
+
+module.exports = { uploadAudio, uploadImage, uploadBanner };

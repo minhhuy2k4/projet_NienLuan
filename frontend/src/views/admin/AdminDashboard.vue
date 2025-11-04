@@ -18,6 +18,8 @@
                         Đánh giá</router-link>
                     <router-link :to="{ name: 'admin.comments' }" class="nav-item"><span class="icon">💬</span> Quản lý
                         Bình luận</router-link>
+                    <router-link :to="{ name: 'admin.banners' }" class="nav-item"><span class="icon">🎨</span> Quản lý
+                        Banner</router-link>
                     <router-link to="/" class="nav-item nav-back"><span class="icon">🏠</span> Quay về Trang
                         chủ</router-link>
                 </nav>

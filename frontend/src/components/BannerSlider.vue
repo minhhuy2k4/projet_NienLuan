@@ -33,11 +33,16 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import BannerService from '@/services/banner.service';
 
 const currentSlide = ref(0);
 const autoplayInterval = ref(null);
+const slides = ref([]);
 
-const slides = [
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+// Default slides nếu API lỗi hoặc chưa có data
+const defaultSlides = [
     {
         image: 'https://i.pinimg.com/originals/c0/4d/44/c04d44c4057662ef7ba805ff42e0f7ab.jpg',
         title: 'TRUYỆN HÀN QUỐC',
@@ -55,12 +60,40 @@ const slides = [
     }
 ];
 
+// Get full image URL
+const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) return imagePath;
+    return `${API_BASE_URL}${imagePath}`;
+};
+
+// Load banners from API
+const loadBanners = async () => {
+    try {
+        const response = await BannerService.getActive();
+        const banners = response.data || [];
+
+        if (banners.length > 0) {
+            slides.value = banners.map(b => ({
+                image: getImageUrl(b.image),
+                title: b.title,
+                subtitle: b.subtitle
+            }));
+        } else {
+            slides.value = defaultSlides;
+        }
+    } catch (error) {
+        console.error('Load banners error:', error);
+        slides.value = defaultSlides;
+    }
+};
+
 const nextSlide = () => {
-    currentSlide.value = (currentSlide.value + 1) % slides.length;
+    currentSlide.value = (currentSlide.value + 1) % slides.value.length;
 };
 
 const prevSlide = () => {
-    currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length;
+    currentSlide.value = (currentSlide.value - 1 + slides.value.length) % slides.value.length;
 };
 
 const goToSlide = (index) => {
@@ -80,6 +113,7 @@ const stopAutoplay = () => {
 };
 
 onMounted(() => {
+    loadBanners();
     startAutoplay();
 });
 

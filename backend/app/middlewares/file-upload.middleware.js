@@ -144,6 +144,22 @@ const deleteChapterAudio = (storyId, chapterNumber) => {
   }
 };
 
+// Hàm xóa file banner
+const deleteBannerImage = (filename) => {
+  try {
+    const bannerPath = path.join(__dirname, "../../public/banners", filename);
+    if (fs.existsSync(bannerPath)) {
+      fs.unlinkSync(bannerPath);
+      console.log(`Deleted banner image: ${filename}`);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error(`Error deleting banner image ${filename}:`, error);
+    throw error;
+  }
+};
+
 module.exports = {
   uploadCoverImage,
   uploadChapterAudio,
@@ -151,5 +167,6 @@ module.exports = {
   getChapterAudioUrl,
   deleteStoryFiles,
   deleteChapterAudio,
+  deleteBannerImage,
   ensureDirectoryExists,
 };
