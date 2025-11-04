@@ -47,129 +47,10 @@
         </div>
 
         <div v-else class="space-y-4">
-            <div v-for="comment in comments" :key="comment._id"
-                class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
-                <!-- Comment Header -->
-                <div class="flex items-start gap-3 mb-3">
-                    <div
-                        class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white font-bold flex-shrink-0">
-                        {{ comment.user?.name?.charAt(0).toUpperCase() || '?' }}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h4 class="font-semibold text-gray-800">{{ comment.user?.name || 'Anonymous' }}</h4>
-                                <p class="text-xs text-gray-500">{{ formatDate(comment.createdAt) }}</p>
-                            </div>
-                            <div class="flex gap-2">
-                                <!-- Edit button (own comment) -->
-                                <button v-if="authStore.user?._id === comment.user?._id && !comment.isEditing"
-                                    @click="startEdit(comment)"
-                                    class="text-blue-600 hover:text-blue-700 text-sm transition">
-                                    ✏️ Sửa
-                                </button>
-                                <!-- Delete button (own comment or admin) -->
-                                <button v-if="authStore.user?._id === comment.user?._id || authStore.isAdmin"
-                                    @click="deleteComment(comment._id)"
-                                    class="text-red-600 hover:text-red-700 text-sm transition">
-                                    🗑️ Xóa
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Comment Content -->
-                <div v-if="!comment.isEditing" class="ml-13 mb-3">
-                    <p class="text-gray-700 whitespace-pre-line">{{ comment.content }}</p>
-                </div>
-
-                <!-- Edit Form -->
-                <div v-else class="ml-13 mb-3">
-                    <textarea v-model="comment.editContent"
-                        class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                        rows="3" maxlength="1000"></textarea>
-                    <div class="flex gap-2 mt-2">
-                        <button @click="saveEdit(comment)"
-                            class="px-4 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition">
-                            Lưu
-                        </button>
-                        <button @click="cancelEdit(comment)"
-                            class="px-4 py-1 bg-gray-300 hover:bg-gray-400 text-gray-700 text-sm rounded transition">
-                            Hủy
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Comment Actions -->
-                <div class="ml-13 flex items-center gap-4 text-sm">
-                    <button @click="toggleLike(comment)" :disabled="!authStore.isLoggedIn"
-                        class="flex items-center gap-1 transition"
-                        :class="comment.isLiked ? 'text-red-600' : 'text-gray-600 hover:text-red-600'">
-                        <span>{{ comment.isLiked ? '❤️' : '🤍' }}</span>
-                        <span>{{ comment.likeCount || 0 }}</span>
-                    </button>
-                    <button @click="toggleReply(comment)" v-if="authStore.isLoggedIn"
-                        class="text-gray-600 hover:text-blue-600 transition">
-                        💬 Trả lời
-                    </button>
-                    <button @click="reportComment(comment._id)"
-                        v-if="authStore.isLoggedIn && authStore.user?._id !== comment.user?._id"
-                        class="text-gray-600 hover:text-orange-600 transition">
-                        🚩 Báo cáo
-                    </button>
-                </div>
-
-                <!-- Reply Form -->
-                <div v-if="comment.showReplyForm" class="ml-13 mt-3 flex gap-2">
-                    <input v-model="comment.replyContent" @keydown.enter="submitReply(comment)"
-                        placeholder="Viết câu trả lời..." maxlength="1000"
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-                    <button @click="submitReply(comment)"
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition">
-                        Gửi
-                    </button>
-                    <button @click="cancelReply(comment)"
-                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition">
-                        Hủy
-                    </button>
-                </div>
-
-                <!-- Replies -->
-                <div v-if="comment.replies && comment.replies.length > 0" class="ml-13 mt-4 space-y-3">
-                    <div v-for="reply in comment.replies" :key="reply._id" class="border-l-2 border-blue-300 pl-4 py-2">
-                        <div class="flex items-start gap-2 mb-2">
-                            <div
-                                class="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                                {{ reply.user?.name?.charAt(0).toUpperCase() || '?' }}
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h5 class="font-semibold text-sm text-gray-800">{{ reply.user?.name ||
-                                            'Anonymous' }}</h5>
-                                        <p class="text-xs text-gray-500">{{ formatDate(reply.createdAt) }}</p>
-                                    </div>
-                                    <button v-if="authStore.user?._id === reply.user?._id || authStore.isAdmin"
-                                        @click="deleteComment(reply._id)"
-                                        class="text-red-600 hover:text-red-700 text-sm transition">
-                                        🗑️
-                                    </button>
-                                </div>
-                                <p class="text-gray-700 text-sm mt-1 whitespace-pre-line">{{ reply.content }}</p>
-                                <div class="flex items-center gap-3 mt-2 text-xs">
-                                    <button @click="toggleLike(reply)" :disabled="!authStore.isLoggedIn"
-                                        class="flex items-center gap-1 transition"
-                                        :class="reply.isLiked ? 'text-red-600' : 'text-gray-600 hover:text-red-600'">
-                                        <span>{{ reply.isLiked ? '❤️' : '🤍' }}</span>
-                                        <span>{{ reply.likeCount || 0 }}</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <CommentItem v-for="comment in comments" :key="comment._id" :comment="comment" :depth="0"
+                @toggle-like="toggleLike" @toggle-reply="toggleReply" @submit-reply="handleSubmitReply"
+                @cancel-reply="cancelReply" @edit="startEdit" @save-edit="saveEdit" @cancel-edit="cancelEdit"
+                @delete="deleteComment" @report="reportComment" />
         </div>
 
         <!-- Pagination -->
@@ -193,6 +74,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 import CommentService from '@/services/comment.service';
+import CommentItem from './CommentItem.vue';
 
 const props = defineProps({
     chapterId: { type: String, required: true }
@@ -210,29 +92,6 @@ const itemsPerPage = 5;
 
 const totalPages = computed(() => Math.ceil(totalCount.value / itemsPerPage));
 
-// Format date
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return 'Vừa xong';
-    if (diffMins < 60) return `${diffMins} phút trước`;
-    if (diffHours < 24) return `${diffHours} giờ trước`;
-    if (diffDays < 7) return `${diffDays} ngày trước`;
-
-    return date.toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-};
-
 // Load comments
 const loadComments = async () => {
     try {
@@ -240,7 +99,18 @@ const loadComments = async () => {
         const skip = (currentPage.value - 1) * itemsPerPage;
         const response = await CommentService.getByChapter(props.chapterId, itemsPerPage, skip);
         const result = response.data; // API trả về { data: { comments, pagination } }
-        comments.value = result.comments.map(c => ({ ...c, showReplyForm: false, replyContent: '', isEditing: false, editContent: '' }));
+
+        // Map recursive để thêm showReplyForm, replyContent, etc
+        const mapComment = (c) => ({
+            ...c,
+            showReplyForm: false,
+            replyContent: '',
+            isEditing: false,
+            editContent: '',
+            replies: c.replies ? c.replies.map(mapComment) : []
+        });
+
+        comments.value = result.comments.map(mapComment);
         totalCount.value = result.pagination.total;
     } catch (error) {
         console.error('Load comments error:', error);
@@ -306,7 +176,13 @@ const toggleLike = async (comment) => {
 // Toggle reply form
 const toggleReply = (comment) => {
     comment.showReplyForm = !comment.showReplyForm;
-    comment.replyContent = '';
+    // Nếu là reply (có parentId), thêm @mention
+    // Nếu là comment chính (không có parentId), để trống
+    if (comment.parentId && comment.user?.name) {
+        comment.replyContent = `@${comment.user.name} `;
+    } else {
+        comment.replyContent = '';
+    }
 };
 
 const cancelReply = (comment) => {
@@ -314,18 +190,49 @@ const cancelReply = (comment) => {
     comment.replyContent = '';
 };
 
-// Submit reply
-const submitReply = async (comment) => {
-    if (!comment.replyContent.trim()) return;
+// Handle submit reply from CommentItem component
+const handleSubmitReply = async (comment) => {
+    if (!comment.replyContent?.trim()) return;
 
     try {
-        await CommentService.create(props.chapterId, comment.replyContent.trim(), comment._id);
+        // QUAN TRỌNG: Reply luôn trỏ đến comment đang reply (không phải comment gốc)
+        // Nếu reply một comment chính => parentId = comment._id
+        // Nếu reply một reply => parentId = reply._id (không phải reply.parentId!)
+        const parentId = comment._id;
+
+        await CommentService.create(
+            props.chapterId,
+            comment.replyContent.trim(),
+            parentId
+        );
         comment.showReplyForm = false;
         comment.replyContent = '';
         await loadComments();
     } catch (error) {
         console.error('Submit reply error:', error);
-        alert('❌ Có lỗi xảy ra!');
+        alert('❌ Có lỗi xảy ra khi gửi câu trả lời!');
+    }
+};
+
+// Submit reply (old function - keep for backward compatibility)
+const submitReply = async (parentId, commentOrReply) => {
+    if (!commentOrReply.replyContent?.trim()) return;
+
+    try {
+        // parentId là comment chính (cấp 1)
+        // commentOrReply có thể là comment hoặc reply
+        // Tất cả reply đều thuộc về comment chính (parentId)
+        await CommentService.create(
+            props.chapterId,
+            commentOrReply.replyContent.trim(),
+            parentId
+        );
+        commentOrReply.showReplyForm = false;
+        commentOrReply.replyContent = '';
+        await loadComments();
+    } catch (error) {
+        console.error('Submit reply error:', error);
+        alert('❌ Có lỗi xảy ra khi gửi câu trả lời!');
     }
 };
 

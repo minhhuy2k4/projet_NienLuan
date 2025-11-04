@@ -140,6 +140,91 @@ class CommentService {
     return created[0];
   }
 
+  // Helper: Build nested comment tree
+  async buildCommentTree(comments) {
+    if (!comments || comments.length === 0) return [];
+
+    const commentIds = comments.map((c) => c._id);
+
+    // Lấy tất cả replies của các comments này
+    const allReplies = await this.Comment.aggregate([
+      {
+        $match: {
+          parentId: { $in: commentIds },
+        },
+      },
+      { $sort: { createdAt: 1 } },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: {
+          path: "$user",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          user: {
+            $ifNull: [
+              "$user",
+              {
+                _id: "$userId",
+                name: "Anonymous User",
+                email: "unknown@example.com",
+              },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          content: 1,
+          parentId: 1,
+          userId: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "user._id": 1,
+          "user.name": 1,
+          "user.email": 1,
+        },
+      },
+    ]).toArray();
+
+    // Nếu có replies, đệ quy lấy replies của replies
+    if (allReplies.length > 0) {
+      const nestedReplies = await this.buildCommentTree(allReplies);
+
+      // Merge nested replies vào parent
+      const repliesMap = new Map();
+      nestedReplies.forEach((reply) => {
+        const parentId = reply.parentId.toString();
+        if (!repliesMap.has(parentId)) {
+          repliesMap.set(parentId, []);
+        }
+        repliesMap.get(parentId).push(reply);
+      });
+
+      // Gắn replies vào comments
+      comments.forEach((comment) => {
+        const replies = repliesMap.get(comment._id.toString()) || [];
+        comment.replies = replies;
+      });
+    } else {
+      comments.forEach((comment) => {
+        comment.replies = [];
+      });
+    }
+
+    return comments;
+  }
+
   // Lấy comments theo chương (có phân trang)
   async getByChapter(chapterId, page = 1, limit = 5, userId = null) {
     const skip = (page - 1) * limit;
@@ -184,63 +269,14 @@ class CommentService {
         },
       },
       {
-        $lookup: {
-          from: "comments",
-          let: { commentId: "$_id" },
-          pipeline: [
-            { $match: { $expr: { $eq: ["$parentId", "$$commentId"] } } },
-            { $sort: { createdAt: 1 } },
-            {
-              $lookup: {
-                from: "users",
-                localField: "userId",
-                foreignField: "_id",
-                as: "user",
-              },
-            },
-            {
-              $unwind: {
-                path: "$user",
-                preserveNullAndEmptyArrays: true,
-              },
-            },
-            {
-              $addFields: {
-                user: {
-                  $ifNull: [
-                    "$user",
-                    {
-                      _id: "$userId",
-                      name: "Anonymous User",
-                      email: "unknown@example.com",
-                    },
-                  ],
-                },
-              },
-            },
-            {
-              $project: {
-                _id: 1,
-                content: 1,
-                createdAt: 1,
-                updatedAt: 1,
-                "user._id": 1,
-                "user.name": 1,
-                "user.email": 1,
-              },
-            },
-          ],
-          as: "replies",
-        },
-      },
-      {
         $project: {
           _id: 1,
           chapterId: 1,
           content: 1,
+          userId: 1,
+          parentId: 1,
           createdAt: 1,
           updatedAt: 1,
-          replies: 1,
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
@@ -248,14 +284,20 @@ class CommentService {
       },
     ]).toArray();
 
-    // Lấy like counts và report counts cho tất cả comments
+    // Build nested tree
+    const commentsWithReplies = await this.buildCommentTree(comments);
+
+    // Collect all comment IDs (flatten tree)
     const allCommentIds = [];
-    comments.forEach((comment) => {
-      allCommentIds.push(comment._id.toString());
-      comment.replies.forEach((reply) => {
-        allCommentIds.push(reply._id.toString());
+    const collectIds = (comments) => {
+      comments.forEach((comment) => {
+        allCommentIds.push(comment._id.toString());
+        if (comment.replies && comment.replies.length > 0) {
+          collectIds(comment.replies);
+        }
       });
-    });
+    };
+    collectIds(commentsWithReplies);
 
     const likeCounts = await this.likeService.getLikeCounts(allCommentIds);
     const reportCounts =
@@ -270,20 +312,20 @@ class CommentService {
       );
     }
 
-    // Thêm thông tin likes và reports vào comments
-    comments.forEach((comment) => {
-      const commentIdStr = comment._id.toString();
-      comment.likeCount = likeCounts[commentIdStr] || 0;
-      comment.reportCount = reportCounts[commentIdStr] || 0;
-      comment.isLiked = userLikedComments.includes(commentIdStr);
+    // Thêm thông tin likes và reports vào comments (recursive)
+    const addLikeInfo = (comments) => {
+      comments.forEach((comment) => {
+        const commentIdStr = comment._id.toString();
+        comment.likeCount = likeCounts[commentIdStr] || 0;
+        comment.reportCount = reportCounts[commentIdStr] || 0;
+        comment.isLiked = userLikedComments.includes(commentIdStr);
 
-      comment.replies.forEach((reply) => {
-        const replyIdStr = reply._id.toString();
-        reply.likeCount = likeCounts[replyIdStr] || 0;
-        reply.reportCount = reportCounts[replyIdStr] || 0;
-        reply.isLiked = userLikedComments.includes(replyIdStr);
+        if (comment.replies && comment.replies.length > 0) {
+          addLikeInfo(comment.replies);
+        }
       });
-    });
+    };
+    addLikeInfo(commentsWithReplies);
 
     const total = await this.Comment.countDocuments({
       chapterId: new ObjectId(chapterId),
@@ -291,7 +333,7 @@ class CommentService {
     });
 
     return {
-      comments,
+      comments: commentsWithReplies,
       pagination: {
         page,
         limit,
