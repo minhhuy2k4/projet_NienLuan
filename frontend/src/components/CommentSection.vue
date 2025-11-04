@@ -252,7 +252,7 @@ const loadComments = async () => {
 // Submit comment
 const submitComment = async () => {
     if (!newComment.value.trim()) return;
-    
+
     // Kiểm tra login
     if (!authStore.isLoggedIn || !authStore.user || !authStore.token) {
         alert('⚠️ Vui lòng đăng nhập để bình luận!');
