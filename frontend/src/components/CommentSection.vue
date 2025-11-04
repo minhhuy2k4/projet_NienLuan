@@ -105,9 +105,9 @@
                 <div class="ml-13 flex items-center gap-4 text-sm">
                     <button @click="toggleLike(comment)" :disabled="!authStore.isLoggedIn"
                         class="flex items-center gap-1 transition"
-                        :class="isLiked(comment) ? 'text-red-600' : 'text-gray-600 hover:text-red-600'">
-                        <span>{{ isLiked(comment) ? '❤️' : '🤍' }}</span>
-                        <span>{{ comment.likes?.length || 0 }}</span>
+                        :class="comment.isLiked ? 'text-red-600' : 'text-gray-600 hover:text-red-600'">
+                        <span>{{ comment.isLiked ? '❤️' : '🤍' }}</span>
+                        <span>{{ comment.likeCount || 0 }}</span>
                     </button>
                     <button @click="toggleReply(comment)" v-if="authStore.isLoggedIn"
                         class="text-gray-600 hover:text-blue-600 transition">
@@ -160,9 +160,9 @@
                                 <div class="flex items-center gap-3 mt-2 text-xs">
                                     <button @click="toggleLike(reply)" :disabled="!authStore.isLoggedIn"
                                         class="flex items-center gap-1 transition"
-                                        :class="isLiked(reply) ? 'text-red-600' : 'text-gray-600 hover:text-red-600'">
-                                        <span>{{ isLiked(reply) ? '❤️' : '🤍' }}</span>
-                                        <span>{{ reply.likes?.length || 0 }}</span>
+                                        :class="reply.isLiked ? 'text-red-600' : 'text-gray-600 hover:text-red-600'">
+                                        <span>{{ reply.isLiked ? '❤️' : '🤍' }}</span>
+                                        <span>{{ reply.likeCount || 0 }}</span>
                                     </button>
                                 </div>
                             </div>
@@ -233,11 +233,6 @@ const formatDate = (dateString) => {
     });
 };
 
-// Check if user liked comment
-const isLiked = (comment) => {
-    return comment.likes?.some(id => id === authStore.user?._id);
-};
-
 // Load comments
 const loadComments = async () => {
     try {
@@ -257,6 +252,12 @@ const loadComments = async () => {
 // Submit comment
 const submitComment = async () => {
     if (!newComment.value.trim()) return;
+    
+    // Kiểm tra login
+    if (!authStore.isLoggedIn || !authStore.user || !authStore.token) {
+        alert('⚠️ Vui lòng đăng nhập để bình luận!');
+        return;
+    }
 
     try {
         submitting.value = true;
@@ -266,7 +267,11 @@ const submitComment = async () => {
         await loadComments();
     } catch (error) {
         console.error('Submit comment error:', error);
-        alert('❌ Có lỗi xảy ra khi gửi bình luận!');
+        if (error.response?.status === 401) {
+            alert('⚠️ Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
+        } else {
+            alert('❌ Có lỗi xảy ra khi gửi bình luận!');
+        }
     } finally {
         submitting.value = false;
     }
@@ -281,21 +286,17 @@ const toggleLike = async (comment) => {
 
     try {
         const response = await CommentService.toggleLike(comment._id);
-        const result = response.data; // { liked: true/false }
+        const result = response.data; // { liked: true/false, action: "liked"/"unliked" }
 
-        // Update likes array locally
-        const currentUserId = authStore.user._id;
+        // Update local state
         if (result.liked) {
-            // Add like
-            if (!comment.likes.includes(currentUserId)) {
-                comment.likes.push(currentUserId);
-            }
+            // Liked
+            comment.isLiked = true;
+            comment.likeCount = (comment.likeCount || 0) + 1;
         } else {
-            // Remove like
-            const index = comment.likes.indexOf(currentUserId);
-            if (index > -1) {
-                comment.likes.splice(index, 1);
-            }
+            // Unliked
+            comment.isLiked = false;
+            comment.likeCount = Math.max((comment.likeCount || 0) - 1, 0);
         }
     } catch (error) {
         console.error('Toggle like error:', error);

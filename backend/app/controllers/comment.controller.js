@@ -46,8 +46,16 @@ exports.getByChapter = async (req, res, next) => {
     const skip = parseInt(req.query.skip) || 0;
     const page = Math.floor(skip / limit) + 1;
 
+    // Lấy userId nếu user đã đăng nhập (optional)
+    const userId = req.user?.id || null;
+
     const commentService = new CommentService(await MongoDB.client);
-    const result = await commentService.getByChapter(chapterId, page, limit);
+    const result = await commentService.getByChapter(
+      chapterId,
+      page,
+      limit,
+      userId
+    );
 
     res.json(result);
   } catch (error) {

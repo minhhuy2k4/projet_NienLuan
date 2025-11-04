@@ -207,6 +207,60 @@ async function createIndexes() {
       .createIndex({ createdAt: -1 }, { name: "rating_created_index" });
     console.log("✅ Index: createdAt (descending)");
 
+    // ==================== COMMENT_LIKES COLLECTION ====================
+    console.log("\n👍 Tạo indexes cho collection 'comment_likes'...");
+
+    // Compound index unique: commentId + userId
+    await db
+      .collection("comment_likes")
+      .createIndex(
+        { commentId: 1, userId: 1 },
+        { unique: true, name: "comment_like_unique" }
+      );
+    console.log("✅ Index compound unique: commentId + userId");
+
+    // Index cho commentId (để đếm likes)
+    await db
+      .collection("comment_likes")
+      .createIndex({ commentId: 1 }, { name: "comment_like_commentId_index" });
+    console.log("✅ Index: commentId");
+
+    // Index cho userId (để lấy comments user đã like)
+    await db
+      .collection("comment_likes")
+      .createIndex({ userId: 1 }, { name: "comment_like_userId_index" });
+    console.log("✅ Index: userId");
+
+    // ==================== COMMENT_REPORTS COLLECTION ====================
+    console.log("\n🚩 Tạo indexes cho collection 'comment_reports'...");
+
+    // Compound index unique: commentId + userId
+    await db
+      .collection("comment_reports")
+      .createIndex(
+        { commentId: 1, userId: 1 },
+        { unique: true, name: "comment_report_unique" }
+      );
+    console.log("✅ Index compound unique: commentId + userId");
+
+    // Index cho commentId + status
+    await db
+      .collection("comment_reports")
+      .createIndex(
+        { commentId: 1, status: 1 },
+        { name: "comment_report_status_index" }
+      );
+    console.log("✅ Index compound: commentId + status");
+
+    // Index cho status + createdAt (admin query)
+    await db
+      .collection("comment_reports")
+      .createIndex(
+        { status: 1, createdAt: -1 },
+        { name: "comment_report_admin_index" }
+      );
+    console.log("✅ Index compound: status + createdAt");
+
     console.log("\n✨ Hoàn thành tạo tất cả indexes!");
     console.log("\n📊 Thống kê indexes:");
 
@@ -219,6 +273,8 @@ async function createIndexes() {
       "authors",
       "contacts",
       "ratings",
+      "comment_likes",
+      "comment_reports",
     ];
 
     for (const collectionName of collections) {

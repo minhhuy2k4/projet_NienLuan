@@ -299,12 +299,16 @@ const goToChapter = (chapterNumber) => {
 
 // Save history
 const saveHistory = async () => {
-    if (authStore.isLoggedIn && story.value && chapter.value) {
+    // Kiểm tra kỹ: phải có user và token
+    if (authStore.isLoggedIn && authStore.user && authStore.token && story.value && chapter.value) {
         try {
             await HistoryService.addHistory(story.value._id, chapter.value._id);
             console.log('History saved');
         } catch (err) {
-            console.error('Save history error:', err);
+            // Bỏ qua lỗi 401 (không login) - không cần log
+            if (err.response?.status !== 401) {
+                console.error('Save history error:', err);
+            }
         }
     }
 };
