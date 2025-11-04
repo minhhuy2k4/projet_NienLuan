@@ -160,6 +160,22 @@ const deleteBannerImage = (filename) => {
   }
 };
 
+// Hàm xóa file ad
+const deleteAdImage = (filename) => {
+  try {
+    const adPath = path.join(__dirname, "../../public/ads", filename);
+    if (fs.existsSync(adPath)) {
+      fs.unlinkSync(adPath);
+      console.log(`Deleted ad image: ${filename}`);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error(`Error deleting ad image ${filename}:`, error);
+    throw error;
+  }
+};
+
 module.exports = {
   uploadCoverImage,
   uploadChapterAudio,
@@ -168,5 +184,6 @@ module.exports = {
   deleteStoryFiles,
   deleteChapterAudio,
   deleteBannerImage,
+  deleteAdImage,
   ensureDirectoryExists,
 };

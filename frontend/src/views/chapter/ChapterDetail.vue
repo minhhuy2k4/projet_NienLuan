@@ -24,6 +24,11 @@
                 <span class="text-gray-800 font-semibold">Chương {{ chapter.chapterNumber }}</span>
             </nav>
 
+            <!-- Quảng cáo chi tiết chương -->
+            <div class="mb-6">
+                <AdDisplay position="chapter-detail" />
+            </div>
+
             <!-- Chapter Header -->
             <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-6 animate-slide-up border border-blue-100">
                 <div class="flex items-start gap-4 mb-6">
@@ -203,6 +208,7 @@ import ChapterService from '@/services/chapter.service';
 import StoryService from '@/services/story.service';
 import HistoryService from '@/services/history.service';
 import CommentSection from '@/components/CommentSection.vue';
+import AdDisplay from '@/components/AdDisplay.vue';
 import { useAuthStore } from '@/stores/auth.store';
 // Không cần slug utils - dùng story.slug từ API
 

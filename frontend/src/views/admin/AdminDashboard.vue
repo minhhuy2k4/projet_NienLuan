@@ -20,6 +20,8 @@
                         Bình luận</router-link>
                     <router-link :to="{ name: 'admin.banners' }" class="nav-item"><span class="icon">🎨</span> Quản lý
                         Banner</router-link>
+                    <router-link :to="{ name: 'admin.ads' }" class="nav-item"><span class="icon">📢</span> Quản lý
+                        Quảng cáo</router-link>
                     <router-link to="/" class="nav-item nav-back"><span class="icon">🏠</span> Quay về Trang
                         chủ</router-link>
                 </nav>

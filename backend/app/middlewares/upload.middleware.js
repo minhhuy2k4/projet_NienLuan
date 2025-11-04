@@ -20,6 +20,12 @@ if (!fs.existsSync(bannersDir)) {
   fs.mkdirSync(bannersDir, { recursive: true });
 }
 
+// Đảm bảo thư mục ads tồn tại
+const adsDir = "./public/ads";
+if (!fs.existsSync(adsDir)) {
+  fs.mkdirSync(adsDir, { recursive: true });
+}
+
 // Cấu hình lưu file audio
 const audioStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -52,6 +58,19 @@ const bannerStorage = multer.diskStorage({
     const ext = path.extname(file.originalname);
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const uniqueName = "banner-" + uniqueSuffix + ext;
+    cb(null, uniqueName);
+  },
+});
+
+// Cấu hình lưu file ad
+const adStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/ads");
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const uniqueName = "ad-" + uniqueSuffix + ext;
     cb(null, uniqueName);
   },
 });
@@ -92,4 +111,10 @@ const uploadBanner = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
-module.exports = { uploadAudio, uploadImage, uploadBanner };
+const uploadAd = multer({
+  storage: adStorage,
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
+
+module.exports = { uploadAudio, uploadImage, uploadBanner, uploadAd };

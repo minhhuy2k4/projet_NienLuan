@@ -121,6 +121,11 @@ const routes = [
         name: "admin.banners",
         component: () => import("@/views/admin/BannerManagement.vue"),
       },
+      {
+        path: "ads",
+        name: "admin.ads",
+        component: () => import("@/views/admin/AdManagement.vue"),
+      },
     ],
   },
   {

@@ -42,7 +42,7 @@
                                     {{ i <= Math.round(story.averageRating || 0) ? '⭐' : '☆' }} </span>
                             </div>
                             <span class="text-gray-800 text-xl font-bold">{{ (story.averageRating || 0).toFixed(1)
-                            }}</span>
+                                }}</span>
                             <span class="text-gray-600 text-sm">({{ story.totalRatings || 0 }} đánh giá)</span>
                         </div>
 
@@ -144,7 +144,7 @@
                                             <div class="flex items-center gap-3">
                                                 <span class="text-blue-600 font-bold">Chương {{ chapter.chapterNumber ||
                                                     (index + 1)
-                                                }}</span>
+                                                    }}</span>
                                                 <span class="text-gray-800 group-hover:text-blue-700 transition">{{
                                                     chapter.title }}</span>
                                             </div>
@@ -177,6 +177,11 @@
                         <div v-else class="text-center text-gray-500 py-8">
                             Chưa có chương nào
                         </div>
+                    </div>
+
+                    <!-- Quảng cáo chi tiết truyện - Dưới danh sách chương -->
+                    <div class="mt-6">
+                        <AdDisplay position="story-detail" />
                     </div>
                 </div>
             </div>
@@ -227,6 +232,7 @@ import ChapterService from '@/services/chapter.service';
 import FavoriteService from '@/services/favorite.service';
 import HistoryService from '@/services/history.service';
 import RatingSection from '@/components/RatingSection.vue';
+import AdDisplay from '@/components/AdDisplay.vue';
 import { useAuthStore } from '@/stores/auth.store';
 // Không cần slug utils - dùng story.slug từ API
 

@@ -3,6 +3,11 @@
         <!-- Banner Slider -->
         <BannerSlider />
 
+        <!-- Quảng cáo trang chủ -->
+        <div class="my-6">
+            <AdDisplay position="home" />
+        </div>
+
         <section class="story-section">
             <h2 class="section-title animate-fade-in">TRUYỆN MỚI CẬP NHẬT</h2>
 
@@ -25,6 +30,7 @@
 import { ref, onMounted } from 'vue';
 import BannerSlider from '@/components/BannerSlider.vue';
 import StoryCard from '@/components/StoryCard.vue';
+import AdDisplay from '@/components/AdDisplay.vue';
 import StoryService from '@/services/story.service';
 
 const stories = ref([]);

@@ -13,6 +13,7 @@ const historyRoute = require("./app/routes/history.route");
 const ratingRoute = require("./app/routes/rating.route");
 const commentRoute = require("./app/routes/comment.route");
 const bannerRoute = require("./app/routes/banner.route");
+const adRoute = require("./app/routes/ad.route");
 
 const chatbotRouter = require("./app/routes/chatbot.route");
 
@@ -26,6 +27,7 @@ app.use("/public", express.static("public"));
 app.use("/banners", express.static("public/banners"));
 app.use("/images", express.static("public/images"));
 app.use("/audio", express.static("public/audio"));
+app.use("/ads", express.static("public/ads"));
 
 app.use("/api/auth", authRoute);
 app.use("/api/stories", storyRoute);
@@ -39,6 +41,7 @@ app.use("/api/history", historyRoute);
 app.use("/api/ratings", ratingRoute);
 app.use("/api/comments", commentRoute);
 app.use("/api/banners", bannerRoute);
+app.use("/api/ads", adRoute);
 
 app.use("/api/chatbot", chatbotRouter);
 
