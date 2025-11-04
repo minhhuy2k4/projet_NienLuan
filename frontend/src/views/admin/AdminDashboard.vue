@@ -16,6 +16,8 @@
                         lý Tác giả</router-link>
                     <router-link :to="{ name: 'admin.ratings' }" class="nav-item"><span class="icon">⭐</span> Quản lý
                         Đánh giá</router-link>
+                    <router-link :to="{ name: 'admin.comments' }" class="nav-item"><span class="icon">💬</span> Quản lý
+                        Bình luận</router-link>
                     <router-link to="/" class="nav-item nav-back"><span class="icon">🏠</span> Quay về Trang
                         chủ</router-link>
                 </nav>

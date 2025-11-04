@@ -16,5 +16,9 @@ router.post("/:id/report", auth, commentController.report);
 
 // Admin routes
 router.get("/reported", auth, commentController.getReported);
+router.get("/reports", auth, commentController.getReportedCommentsWithFilters);
+router.get("/reports/stats", auth, commentController.getReportStats);
+router.post("/reports/:reportId/review", auth, commentController.reviewReport);
+router.get("/all", auth, commentController.getAllComments);
 
 module.exports = router;

@@ -486,8 +486,8 @@ class CommentService {
   }
 
   // Lấy danh sách comment bị báo cáo (cho admin)
-  async getReportedComments(page = 1, limit = 10, status = "pending") {
-    return await this.reportService.getReportedComments(page, limit, status);
+  async getReportedComments(page = 1, limit = 10) {
+    return await this.reportService.getAllReports(page, limit);
   }
 
   // Xử lý báo cáo (Admin)
@@ -498,6 +498,92 @@ class CommentService {
   // Lấy thống kê báo cáo
   async getReportStats() {
     return await this.reportService.getReportStats();
+  }
+
+  // Admin: Lấy tất cả comments với tìm kiếm
+  async getAllComments(page = 1, limit = 10, search = "") {
+    const skip = (page - 1) * limit;
+
+    // Build query
+    const query = {};
+    if (search) {
+      query.content = { $regex: search, $options: "i" };
+    }
+
+    // Get comments with user info and counts
+    const comments = await this.Comment.aggregate([
+      { $match: query },
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: {
+          path: "$user",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          content: 1,
+          chapterId: 1,
+          parentId: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          "user._id": 1,
+          "user.name": 1,
+          "user.email": 1,
+        },
+      },
+    ]).toArray();
+
+    // Get all comment IDs
+    const commentIds = comments.map((c) => c._id.toString());
+
+    // Get like counts and report counts
+    const likeCounts = await this.likeService.getLikeCounts(commentIds);
+    const reportCounts = await this.reportService.getReportCounts(commentIds);
+
+    // Count replies for each comment
+    const replyCountsPromises = comments.map(async (comment) => {
+      const count = await this.Comment.countDocuments({
+        parentId: comment._id,
+      });
+      return { id: comment._id.toString(), count };
+    });
+    const replyCounts = await Promise.all(replyCountsPromises);
+    const replyCountMap = Object.fromEntries(
+      replyCounts.map((r) => [r.id, r.count])
+    );
+
+    // Add counts to comments
+    comments.forEach((comment) => {
+      const commentIdStr = comment._id.toString();
+      comment.likeCount = likeCounts[commentIdStr] || 0;
+      comment.reportCount = reportCounts[commentIdStr] || 0;
+      comment.replyCount = replyCountMap[commentIdStr] || 0;
+    });
+
+    // Get total count
+    const total = await this.Comment.countDocuments(query);
+
+    return {
+      comments,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }
 

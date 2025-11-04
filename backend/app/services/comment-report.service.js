@@ -27,10 +27,7 @@ class CommentReportService {
       commentId: commentObjId,
       userId: userObjId,
       reason: reason || "Nội dung không phù hợp",
-      status: "pending", // pending, reviewed, dismissed
       createdAt: new Date(),
-      reviewedAt: null,
-      reviewedBy: null,
     };
 
     const result = await this.CommentReport.insertOne(report);
@@ -43,7 +40,6 @@ class CommentReportService {
   async getReportCount(commentId) {
     return await this.CommentReport.countDocuments({
       commentId: new ObjectId(commentId),
-      status: "pending",
     });
   }
 
@@ -57,7 +53,6 @@ class CommentReportService {
       {
         $match: {
           commentId: { $in: objectIds },
-          status: "pending",
         },
       },
       {
@@ -79,17 +74,11 @@ class CommentReportService {
   /**
    * Lấy danh sách comments bị báo cáo (Admin)
    */
-  async getReportedComments(page = 1, limit = 10, status = "pending") {
+  async getReportedComments(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
-
-    const matchStage = {};
-    if (status) {
-      matchStage.status = status;
-    }
 
     // Aggregate để lấy comment + số lượng báo cáo
     const comments = await this.CommentReport.aggregate([
-      { $match: matchStage },
       {
         $group: {
           _id: "$commentId",
@@ -99,7 +88,6 @@ class CommentReportService {
               userId: "$userId",
               reason: "$reason",
               createdAt: "$createdAt",
-              status: "$status",
             },
           },
           firstReportDate: { $min: "$createdAt" },
@@ -155,7 +143,6 @@ class CommentReportService {
     ]).toArray();
 
     const total = await this.CommentReport.aggregate([
-      { $match: matchStage },
       {
         $group: {
           _id: "$commentId",
@@ -201,9 +188,7 @@ class CommentReportService {
         $project: {
           _id: 1,
           reason: 1,
-          status: 1,
           createdAt: 1,
-          reviewedAt: 1,
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
@@ -215,27 +200,31 @@ class CommentReportService {
   }
 
   /**
-   * Xử lý báo cáo (Admin) - Chấp nhận hoặc từ chối
+   * Xử lý báo cáo (Admin) - Xóa báo cáo hoặc xóa comment
    */
-  async reviewReports(commentId, adminId, action) {
-    // action: "dismiss" hoặc "accept"
-    const status = action === "dismiss" ? "dismissed" : "reviewed";
+  async reviewReports(reportId, adminId, action) {
+    // Tìm report để lấy commentId
+    const report = await this.CommentReport.findOne({
+      _id: new ObjectId(reportId),
+    });
 
-    const result = await this.CommentReport.updateMany(
-      {
-        commentId: new ObjectId(commentId),
-        status: "pending",
-      },
-      {
-        $set: {
-          status: status,
-          reviewedAt: new Date(),
-          reviewedBy: new ObjectId(adminId),
-        },
-      }
-    );
+    if (!report) {
+      throw new Error("Báo cáo không tồn tại");
+    }
 
-    return result;
+    if (action === "dismiss") {
+      // Chỉ xóa báo cáo này
+      const result = await this.CommentReport.deleteOne({
+        _id: new ObjectId(reportId),
+      });
+      return { action: "dismissed", deletedReport: result.deletedCount };
+    }
+
+    // Nếu action là "accept", trả về commentId để controller xóa comment
+    return {
+      action: "accepted",
+      commentId: report.commentId,
+    };
   }
 
   /**
@@ -260,31 +249,101 @@ class CommentReportService {
   }
 
   /**
-   * Thống kê báo cáo
+   * Lấy danh sách tất cả reports (không nhóm theo comment) - cho admin
    */
-  async getReportStats() {
-    const stats = await this.CommentReport.aggregate([
+  async getAllReports(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    // Lấy danh sách reports với thông tin comment và user
+    const reports = await this.CommentReport.aggregate([
+      { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
       {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 },
+        $lookup: {
+          from: "comments",
+          localField: "commentId",
+          foreignField: "_id",
+          as: "comment",
+        },
+      },
+      {
+        $unwind: {
+          path: "$comment",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "comment.userId",
+          foreignField: "_id",
+          as: "commentUser",
+        },
+      },
+      {
+        $unwind: {
+          path: "$commentUser",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "reportedBy",
+        },
+      },
+      {
+        $unwind: {
+          path: "$reportedBy",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          reason: 1,
+          createdAt: 1,
+          "comment._id": 1,
+          "comment.content": 1,
+          "comment.createdAt": 1,
+          "comment.user": {
+            _id: "$commentUser._id",
+            name: "$commentUser.name",
+            email: "$commentUser.email",
+          },
+          "reportedBy._id": 1,
+          "reportedBy.name": 1,
+          "reportedBy.email": 1,
         },
       },
     ]).toArray();
 
-    const result = {
-      pending: 0,
-      reviewed: 0,
-      dismissed: 0,
-      total: 0,
+    // Đếm tổng số
+    const total = await this.CommentReport.countDocuments({});
+
+    return {
+      reports,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     };
+  }
 
-    stats.forEach((stat) => {
-      result[stat._id] = stat.count;
-      result.total += stat.count;
-    });
+  /**
+   * Thống kê báo cáo
+   */
+  async getReportStats() {
+    const total = await this.CommentReport.countDocuments({});
 
-    return result;
+    return {
+      total,
+    };
   }
 }
 

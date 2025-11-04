@@ -165,3 +165,86 @@ exports.getReported = async (req, res, next) => {
     next(error);
   }
 };
+
+// Admin: Get reported comments with filters
+exports.getReportedCommentsWithFilters = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    console.log("Get reported comments - page:", page, "limit:", limit);
+
+    const commentService = new CommentService(await MongoDB.client);
+    const result = await commentService.getReportedComments(page, limit);
+
+    console.log("Result:", JSON.stringify(result, null, 2));
+
+    res.json(result);
+  } catch (error) {
+    console.error("Get reported comments with filters error:", error);
+    next(error);
+  }
+};
+
+// Admin: Get report statistics
+exports.getReportStats = async (req, res, next) => {
+  try {
+    const commentService = new CommentService(await MongoDB.client);
+    const stats = await commentService.getReportStats();
+
+    res.json(stats);
+  } catch (error) {
+    console.error("Get report stats error:", error);
+    next(error);
+  }
+};
+
+// Admin: Review report
+exports.reviewReport = async (req, res, next) => {
+  try {
+    const { reportId } = req.params;
+    const { action } = req.body; // 'accept' or 'dismiss'
+    const adminId = req.user._id;
+
+    const commentService = new CommentService(await MongoDB.client);
+    const result = await commentService.reviewReports(
+      reportId,
+      adminId,
+      action
+    );
+
+    // Nếu action là "accept", xóa comment
+    if (result.action === "accepted" && result.commentId) {
+      await commentService.delete(result.commentId);
+      res.json({
+        message: "Đã xóa bình luận và tất cả báo cáo liên quan",
+        deletedComment: true,
+      });
+    } else {
+      res.json({
+        message: "Đã bỏ qua báo cáo",
+        deletedReport: true,
+      });
+    }
+  } catch (error) {
+    console.error("Review report error:", error);
+    next(error);
+  }
+};
+
+// Admin: Get all comments with search
+exports.getAllComments = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+
+    const commentService = new CommentService(await MongoDB.client);
+    const result = await commentService.getAllComments(page, limit, search);
+
+    res.json(result);
+  } catch (error) {
+    console.error("Get all comments error:", error);
+    next(error);
+  }
+};

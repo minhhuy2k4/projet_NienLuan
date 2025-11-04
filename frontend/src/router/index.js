@@ -111,6 +111,11 @@ const routes = [
         name: "admin.ratings",
         component: () => import("@/views/admin/AdminRating.vue"),
       },
+      {
+        path: "comments",
+        name: "admin.comments",
+        component: () => import("@/views/admin/CommentManagement.vue"),
+      },
     ],
   },
   {

@@ -36,6 +36,28 @@ class CommentService {
   }
 
   // Admin: Get reported comments
+  getReportedComments(page = 1, limit = 10) {
+    return api.get(`/api/comments/reports?page=${page}&limit=${limit}`);
+  }
+
+  // Admin: Get report statistics
+  getReportStats() {
+    return api.get("/api/comments/reports/stats");
+  }
+
+  // Admin: Review report (accept or dismiss)
+  reviewReport(reportId, action) {
+    return api.post(`/api/comments/reports/${reportId}/review`, { action });
+  }
+
+  // Admin: Get all comments with search
+  getAllComments(page = 1, limit = 10, search = "") {
+    return api.get(
+      `/api/comments/all?page=${page}&limit=${limit}&search=${search}`
+    );
+  }
+
+  // Admin: Get reported comments (old method - keep for compatibility)
   getReported(limit = 20, skip = 0) {
     return api.get(`/api/comments/reported?limit=${limit}&skip=${skip}`);
   }
