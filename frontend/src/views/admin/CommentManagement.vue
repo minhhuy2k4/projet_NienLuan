@@ -25,8 +25,9 @@
 
             <!-- Reports List -->
             <div v-else-if="reports && reports.length > 0" class="space-y-4">
-                <div v-for="report in reports" :key="report._id"
-                    class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition">
+                <div v-for="(report, index) in reports" :key="report._id"
+                    class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition animate-slide-up"
+                    :style="{ animationDelay: `${index * 0.1}s` }">
                     <!-- Report Header -->
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex-1">
@@ -89,7 +90,7 @@
         <!-- Comments Tab -->
         <div v-if="activeTab === 'comments'">
             <!-- Search & Filter -->
-            <div class="flex gap-4 mb-6">
+            <div class="flex gap-4 mb-6 animate-slide-up" style="animation-delay: 0.2s">
                 <input v-model="searchQuery" @input="debounceSearch" placeholder="Tìm kiếm bình luận..."
                     class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                 <button @click="loadComments"
@@ -105,8 +106,9 @@
 
             <!-- Comments List -->
             <div v-else-if="allComments && allComments.length > 0" class="space-y-4">
-                <div v-for="comment in allComments" :key="comment._id"
-                    class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition">
+                <div v-for="(comment, index) in allComments" :key="comment._id"
+                    class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition animate-slide-up"
+                    :style="{ animationDelay: `${index * 0.1}s` }">
                     <!-- Comment Header -->
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-3">
