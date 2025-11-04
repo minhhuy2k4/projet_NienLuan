@@ -1,9 +1,9 @@
 <template>
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Quản lý Bình luận & Báo cáo</h1>
+    <div class="container mx-auto px-4 py-8 animate-fade-in">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 animate-slide-up">Quản lý Bình luận & Báo cáo</h1>
 
         <!-- Tabs -->
-        <div class="flex gap-4 mb-6 border-b">
+        <div class="flex gap-4 mb-6 border-b animate-slide-up" style="animation-delay: 0.1s">
             <button @click="activeTab = 'comments'" :class="tabClass('comments')"
                 class="px-6 py-3 font-semibold transition flex items-center gap-2">
                 <span class="text-xl">💬</span>

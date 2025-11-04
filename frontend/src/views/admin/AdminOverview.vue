@@ -1,36 +1,36 @@
 <template>
-    <main class="main-content">
-        <header class="content-header">
+    <main class="main-content animate-fade-in">
+        <header class="content-header animate-slide-up">
             <h2>Tổng quan Dashboard</h2>
             <span>Chào mừng Admin!</span>
         </header>
         <section class="stats-grid">
-            <div class="stat-card blue">
+            <div class="stat-card blue animate-slide-up" style="animation-delay: 0.1s">
                 <div class="stat-info">
                     <h3>{{ stats.totalStories }}</h3><span>Tổng số Truyện</span>
                 </div>
                 <div class="stat-icon">📚</div>
             </div>
-            <div class="stat-card green">
+            <div class="stat-card green animate-slide-up" style="animation-delay: 0.2s">
                 <div class="stat-info">
                     <h3>{{ stats.totalListens }}</h3><span>Tổng lượt nghe</span>
                 </div>
                 <div class="stat-icon">🎧</div>
             </div>
-            <div class="stat-card yellow">
+            <div class="stat-card yellow animate-slide-up" style="animation-delay: 0.3s">
                 <div class="stat-info">
                     <h3>{{ stats.totalUsers }}</h3><span>Tác giả</span>
                 </div>
                 <div class="stat-icon">👤</div>
             </div>
-            <div class="stat-card red">
+            <div class="stat-card red animate-slide-up" style="animation-delay: 0.4s">
                 <div class="stat-info">
                     <h3>{{ stats.totalCategories }}</h3><span>Thể loại</span>
                 </div>
-                <div class="stat-icon">�</div>
+                <div class="stat-icon">📂</div>
             </div>
         </section>
-        <section class="main-data-grid" style="margin-top: 2rem;">
+        <section class="main-data-grid animate-slide-up" style="margin-top: 2rem; animation-delay: 0.5s">
             <div class="data-card chart-card">
                 <h3>Thống kê Lượt nghe</h3>
                 <div class="chart-placeholder">
