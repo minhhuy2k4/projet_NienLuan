@@ -84,19 +84,36 @@
         </div>
 
         <!-- Nested Replies (Recursive) -->
-        <div v-if="comment.replies && comment.replies.length > 0" :class="nestedClass">
-            <CommentItem v-for="reply in comment.replies" :key="reply._id" :comment="reply" :depth="depth + 1"
-                @toggle-like="$emit('toggle-like', $event)" @toggle-reply="$emit('toggle-reply', $event)"
-                @submit-reply="$emit('submit-reply', $event)" @cancel-reply="$emit('cancel-reply', $event)"
-                @edit="$emit('edit', $event)" @save-edit="$emit('save-edit', $event)"
-                @cancel-edit="$emit('cancel-edit', $event)" @delete="$emit('delete', $event)"
-                @report="$emit('report', $event)" />
+        <div v-if="comment.replies && comment.replies.length > 0">
+            <!-- Nút xem/ẩn replies -->
+            <button @click="toggleShowReplies"
+                class="text-blue-600 hover:text-blue-700 font-semibold text-sm mt-2 ml-2 transition flex items-center gap-1">
+                <span v-if="showReplies">▲ Ẩn {{ comment.replies.length }} trả lời</span>
+                <span v-else>▼ Xem {{ comment.replies.length }} trả lời</span>
+            </button>
+
+            <!-- Danh sách replies (chỉ hiện khi showReplies = true) -->
+            <div v-if="showReplies" :class="nestedClass">
+                <CommentItem v-for="(reply, index) in visibleReplies" :key="reply._id" :comment="reply"
+                    :depth="depth + 1" @toggle-like="$emit('toggle-like', $event)"
+                    @toggle-reply="$emit('toggle-reply', $event)" @submit-reply="$emit('submit-reply', $event)"
+                    @cancel-reply="$emit('cancel-reply', $event)" @edit="$emit('edit', $event)"
+                    @save-edit="$emit('save-edit', $event)" @cancel-edit="$emit('cancel-edit', $event)"
+                    @delete="$emit('delete', $event)" @report="$emit('report', $event)" />
+
+                <!-- Nút xem thêm (nếu có nhiều hơn REPLY_LIMIT) -->
+                <button v-if="showReplies && comment.replies.length > REPLY_LIMIT && !showAllReplies"
+                    @click="showAllReplies = true"
+                    class="text-blue-600 hover:text-blue-700 font-semibold text-sm mt-2 ml-2 transition">
+                    ▼ Xem thêm {{ comment.replies.length - REPLY_LIMIT }} trả lời
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 
 // Component tự gọi chính nó (recursive)
@@ -108,6 +125,29 @@ const props = defineProps({
 });
 
 const authStore = useAuthStore();
+
+// Số lượng replies hiển thị mặc định khi mở
+const REPLY_LIMIT = 3;
+const showReplies = ref(false); // Mặc định ẩn tất cả replies
+const showAllReplies = ref(false);
+
+// Toggle hiển thị/ẩn replies
+const toggleShowReplies = () => {
+    showReplies.value = !showReplies.value;
+    if (!showReplies.value) {
+        showAllReplies.value = false; // Reset khi ẩn
+    }
+};
+
+// Danh sách replies hiển thị (giới hạn hoặc tất cả)
+const visibleReplies = computed(() => {
+    const total = props.comment.replies?.length || 0;
+
+    if (showAllReplies.value || total <= REPLY_LIMIT) {
+        return props.comment.replies;
+    }
+    return props.comment.replies.slice(0, REPLY_LIMIT);
+});
 
 // Màu avatar theo cấp độ
 const avatarClass = computed(() => {
