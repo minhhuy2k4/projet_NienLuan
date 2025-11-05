@@ -25,7 +25,7 @@
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Cover Image -->
                     <div class="animate-slide-up">
-                        <img v-if="story.image" :src="story.image" :alt="story.name"
+                        <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name"
                             class="w-full rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300 border-2 border-blue-100" />
                         <div v-else
                             class="w-full aspect-[3/4] bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center text-white text-6xl shadow-xl">
@@ -42,7 +42,7 @@
                                     {{ i <= Math.round(story.averageRating || 0) ? '⭐' : '☆' }} </span>
                             </div>
                             <span class="text-gray-800 text-xl font-bold">{{ (story.averageRating || 0).toFixed(1)
-                                }}</span>
+                            }}</span>
                             <span class="text-gray-600 text-sm">({{ story.totalRatings || 0 }} đánh giá)</span>
                         </div>
 
@@ -144,7 +144,7 @@
                                             <div class="flex items-center gap-3">
                                                 <span class="text-blue-600 font-bold">Chương {{ chapter.chapterNumber ||
                                                     (index + 1)
-                                                    }}</span>
+                                                }}</span>
                                                 <span class="text-gray-800 group-hover:text-blue-700 transition">{{
                                                     chapter.title }}</span>
                                             </div>
@@ -201,7 +201,7 @@
                     <div class="flex flex-col md:flex-row items-center gap-4">
                         <div class="flex items-center gap-4 flex-1">
                             <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border-2 border-blue-200">
-                                <img v-if="story.image" :src="story.image" :alt="story.name"
+                                <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name"
                                     class="w-full h-full object-cover" />
                                 <div v-else
                                     class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-2xl">
@@ -214,9 +214,9 @@
                             </div>
                         </div>
 
-                        <audio ref="audioPlayer" :src="currentChapter.audioUrl" controls @play="isPlaying = true"
-                            @pause="isPlaying = false" @ended="onAudioEnded" @timeupdate="updateProgress"
-                            class="w-full md:w-auto md:flex-1 max-w-2xl h-12"></audio>
+                        <audio ref="audioPlayer" :src="getAudioUrl(currentChapter.audioUrl)" controls
+                            @play="isPlaying = true" @pause="isPlaying = false" @ended="onAudioEnded"
+                            @timeupdate="updateProgress" class="w-full md:w-auto md:flex-1 max-w-2xl h-12"></audio>
                     </div>
                 </div>
             </div>
@@ -234,7 +234,7 @@ import HistoryService from '@/services/history.service';
 import RatingSection from '@/components/RatingSection.vue';
 import AdDisplay from '@/components/AdDisplay.vue';
 import { useAuthStore } from '@/stores/auth.store';
-// Không cần slug utils - dùng story.slug từ API
+import { getStoryImageUrl, getAudioUrl } from '@/utils/media';
 
 const router = useRouter();
 const authStore = useAuthStore();

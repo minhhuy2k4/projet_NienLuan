@@ -4,7 +4,7 @@
             <a :href="ad.link" target="_blank" rel="noopener noreferrer" @click="handleClick(ad._id)"
                 class="ad-link block hover:opacity-90 transition-opacity">
                 <div class="ad-container rounded-lg overflow-hidden shadow-md">
-                    <img :src="getImageUrl(ad.image)" :alt="ad.title" class="ad-image w-full h-auto object-cover" />
+                    <img :src="getAdUrl(ad.image)" :alt="ad.title" class="ad-image w-full h-auto object-cover" />
                     <div v-if="ad.title || ad.description" class="ad-content p-3 bg-gray-50">
                         <h3 v-if="ad.title" class="font-semibold text-sm mb-1">{{ ad.title }}</h3>
                         <p v-if="ad.description" class="text-xs text-gray-600">{{ ad.description }}</p>
@@ -18,6 +18,7 @@
 <script setup>
 import { ref, onMounted, defineProps } from 'vue';
 import AdService from '@/services/ad.service';
+import { getAdUrl } from '@/utils/media';
 
 const props = defineProps({
     position: {
@@ -47,15 +48,6 @@ const loadAds = async () => {
 // Handle click
 const handleClick = (adId) => {
     AdService.trackClick(adId);
-};
-
-// Get image URL với base URL từ config
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
-const getImageUrl = (image) => {
-    if (!image) return '';
-    if (image.startsWith('http')) return image;
-    return `${API_BASE_URL}${image}`;
 };
 
 onMounted(() => {

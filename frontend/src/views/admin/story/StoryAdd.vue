@@ -97,6 +97,7 @@ import storyService from '@/services/story.service';
 import authorService from '@/services/author.service';
 import categoryService from '@/services/category.service';
 import uploadService from '@/services/upload.service';
+import { getStoryImageUrl } from '@/utils/media';
 
 const router = useRouter();
 const story = ref({

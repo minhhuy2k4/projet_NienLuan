@@ -42,7 +42,7 @@
                     <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
                         class="block relative group">
                         <div class="aspect-[3/4] overflow-hidden">
-                            <img v-if="story.image" :src="story.image" :alt="story.name"
+                            <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                             <div v-else
                                 class="w-full h-full bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-6xl">
@@ -124,7 +124,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import FavoriteService from '@/services/favorite.service';
 import { useAuthStore } from '@/stores/auth.store';
-// Không cần import slug - dùng story.slug từ API
+import { getStoryImageUrl } from '@/utils/media';
 
 const router = useRouter();
 const authStore = useAuthStore();

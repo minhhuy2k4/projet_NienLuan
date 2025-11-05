@@ -8,7 +8,7 @@
 
         <div v-if="story" class="story-info-card animate-slide-up">
             <div class="story-cover">
-                <img v-if="story.image" :src="story.image" :alt="story.name" class="animate-fade-in">
+                <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name" class="animate-fade-in">
                 <div v-else class="no-cover"></div>
             </div>
             <div class="story-details">
@@ -88,7 +88,7 @@
                     <h4 class="chapter-title">{{ chapter.title }}</h4>
                     <p v-if="chapter.content" class="chapter-content">{{ chapter.content.substring(0, 150) }}...</p>
                     <div v-if="chapter.audioUrl" class="audio-preview">
-                        <audio controls :src="chapter.audioUrl" class="audio-player"></audio>
+                        <audio controls :src="getAudioUrl(chapter.audioUrl)" class="audio-player"></audio>
                     </div>
                     <div class="chapter-actions">
                         <button @click="editChapter(chapter)"
@@ -122,6 +122,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import storyService from '@/services/story.service';
 import chapterService from '@/services/chapter.service';
+import { getStoryImageUrl, getAudioUrl } from '@/utils/media';
 
 const route = useRoute();
 const storyId = route.params.storyId;

@@ -34,12 +34,11 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import BannerService from '@/services/banner.service';
+import { getBannerUrl } from '@/utils/media';
 
 const currentSlide = ref(0);
 const autoplayInterval = ref(null);
 const slides = ref([]);
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 // Default slides nếu API lỗi hoặc chưa có data
 const defaultSlides = [
@@ -60,13 +59,6 @@ const defaultSlides = [
     }
 ];
 
-// Get full image URL
-const getImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    if (imagePath.startsWith('http')) return imagePath;
-    return `${API_BASE_URL}${imagePath}`;
-};
-
 // Load banners from API
 const loadBanners = async () => {
     try {
@@ -75,7 +67,7 @@ const loadBanners = async () => {
 
         if (banners.length > 0) {
             slides.value = banners.map(b => ({
-                image: getImageUrl(b.image),
+                image: getBannerUrl(b.image),
                 title: b.title,
                 subtitle: b.subtitle
             }));
@@ -318,7 +310,7 @@ onUnmounted(() => {
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform:translateY(0);
     }
 }
 </style>

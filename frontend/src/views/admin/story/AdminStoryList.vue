@@ -38,7 +38,7 @@
                         class="story-item animate-chapter-in hover:shadow-lg transition-all duration-300"
                         :style="{ animationDelay: `${index * 50}ms` }">
                         <div class="story-cover">
-                            <img v-if="story.image" :src="story.image" :alt="story.name" />
+                            <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name" />
                             <div v-else class="no-cover">📖</div>
                         </div>
                         <div class="story-info">
@@ -64,7 +64,7 @@
                                 <span class="stat-item">📚 {{ story.chapterCount || 0 }} chương</span>
                                 <span class="stat-item">👁️ {{ story.totalViews || 0 }} lượt xem</span>
                                 <span v-if="story.latestChapter" class="stat-item">📖 Chương {{ story.latestChapter
-                                    }}</span>
+                                }}</span>
                             </div>
                             <div class="story-dates">
                                 <small v-if="story.createdAt" class="date-info">
@@ -125,6 +125,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import storyService from "@/services/story.service";
+import { getStoryImageUrl } from '@/utils/media';
 
 const stories = ref([]);
 const loading = ref(true);

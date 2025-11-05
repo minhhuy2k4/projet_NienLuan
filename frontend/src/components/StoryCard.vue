@@ -1,7 +1,7 @@
 <template>
     <div class="story-card">
         <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }" class="card-image-link">
-            <img :src="story.image" :alt="story.name" class="story-image">
+            <img :src="getStoryImageUrl(story.image)" :alt="story.name" class="story-image">
             <div class="story-stats">
                 <span class="chapters">📚 {{ story.chapterCount || 0 }}</span>
                 <span class="views">👁️ {{ story.totalViews || 0 }}</span>
@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-// Không cần import slug nữa - dùng story.slug từ API
+import { getStoryImageUrl } from '@/utils/media';
 
 defineProps({
     story: {

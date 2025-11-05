@@ -69,7 +69,7 @@
 
                         <!-- Preview -->
                         <div v-if="formData.image" class="mt-3">
-                            <img :src="getImageUrl(formData.image)" alt="Preview"
+                            <img :src="getBannerUrl(formData.image)" alt="Preview"
                                 class="w-full h-48 object-cover rounded-lg" @error="handleImageError">
                         </div>
 
@@ -121,7 +121,7 @@
                 <div class="flex gap-6">
                     <!-- Banner Image -->
                     <div class="w-64 h-40 flex-shrink-0">
-                        <img :src="getImageUrl(banner.image)" :alt="banner.title"
+                        <img :src="getBannerUrl(banner.image)" :alt="banner.title"
                             class="w-full h-full object-cover rounded-lg" @error="handleImageError">
                     </div>
 
@@ -182,6 +182,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import BannerService from '@/services/banner.service';
+import { getBannerUrl } from '@/utils/media';
 
 const banners = ref([]);
 const showAddForm = ref(false);
@@ -196,15 +197,6 @@ const formData = ref({
     order: 0,
     isActive: true
 });
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
-// Get full image URL
-const getImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    if (imagePath.startsWith('http')) return imagePath;
-    return `${API_BASE_URL}${imagePath}`;
-};
 
 // Handle image error
 const handleImageError = (e) => {

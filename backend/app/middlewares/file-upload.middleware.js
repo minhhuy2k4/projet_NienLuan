@@ -92,15 +92,13 @@ const uploadChapterAudio = multer({
   },
 }).single("chapterAudio");
 
-// Hàm tạo URL cho file
+// Hàm tạo URL cho file - Trả về relative path
 const getFileUrl = (req, storyId, fileName) => {
-  const baseUrl = `${req.protocol}://${req.get("host")}`;
-  return `${baseUrl}/public/audio/${storyId}/${fileName}`;
+  return `/audio/${storyId}/${fileName}`;
 };
 
 const getChapterAudioUrl = (req, storyId, chapterNumber) => {
-  const baseUrl = `${req.protocol}://${req.get("host")}`;
-  return `${baseUrl}/public/audio/${storyId}/chapters/${chapterNumber}.mp3`;
+  return `/audio/${storyId}/chapters/${chapterNumber}.mp3`;
 };
 
 // Hàm xóa thư mục story và tất cả files

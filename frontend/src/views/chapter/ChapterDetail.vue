@@ -35,7 +35,7 @@
                     <!-- Story Cover -->
                     <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
                         class="flex-shrink-0 group">
-                        <img v-if="story.image" :src="story.image" :alt="story.name"
+                        <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name"
                             class="w-24 h-32 object-cover rounded-lg shadow-md group-hover:scale-105 transition-transform border-2 border-blue-100" />
                         <div v-else
                             class="w-24 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white text-4xl shadow-md">
@@ -77,7 +77,7 @@
                         <span class="text-2xl">🎵</span>
                         <h3 class="text-lg font-semibold text-gray-800">Audio truyện</h3>
                     </div>
-                    <audio ref="audioPlayer" :src="chapter.audioUrl" controls @play="isPlaying = true"
+                    <audio ref="audioPlayer" :src="getAudioUrl(chapter.audioUrl)" controls @play="isPlaying = true"
                         @pause="isPlaying = false" @ended="onAudioEnded" @timeupdate="updateProgress"
                         class="w-full h-12 rounded-lg"></audio>
 
@@ -210,7 +210,7 @@ import HistoryService from '@/services/history.service';
 import CommentSection from '@/components/CommentSection.vue';
 import AdDisplay from '@/components/AdDisplay.vue';
 import { useAuthStore } from '@/stores/auth.store';
-// Không cần slug utils - dùng story.slug từ API
+import { getStoryImageUrl, getAudioUrl } from '@/utils/media';
 
 const router = useRouter();
 const route = useRoute();

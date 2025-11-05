@@ -74,8 +74,8 @@
                         <div class="flex items-start gap-4">
                             <!-- Story Image -->
                             <div class="flex-shrink-0">
-                                <img v-if="rating.story.image" :src="rating.story.image" :alt="rating.story.name"
-                                    class="w-20 h-28 object-cover rounded-lg" />
+                                <img v-if="rating.story.image" :src="getStoryImageUrl(rating.story.image)"
+                                    :alt="rating.story.name" class="w-20 h-28 object-cover rounded-lg" />
                                 <div v-else
                                     class="w-20 h-28 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white text-3xl">
                                     📖
@@ -165,7 +165,7 @@
 import { ref, computed, onMounted } from 'vue';
 import RatingService from '@/services/rating.service';
 import StoryService from '@/services/story.service';
-// Không cần slug - dùng rating.story.slug từ API
+import { getStoryImageUrl } from '@/utils/media';
 
 const ratings = ref([]);
 const stories = ref([]);

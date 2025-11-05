@@ -21,8 +21,8 @@
             <div class="story-info-card">
                 <div class="cover-section">
                     <div class="cover-image-wrapper">
-                        <img v-if="coverPreview || story.image" :src="coverPreview || story.image" alt="Cover"
-                            class="cover-image" />
+                        <img v-if="coverPreview || story.image" :src="coverPreview || getStoryImageUrl(story.image)"
+                            alt="Cover" class="cover-image" />
                         <div v-else class="no-cover">
                             <span>📖</span>
                             <p>Chưa có ảnh bìa</p>
@@ -119,6 +119,7 @@ import storyService from '@/services/story.service';
 import authorService from '@/services/author.service';
 import categoryService from '@/services/category.service';
 import uploadService from '@/services/upload.service';
+import { getStoryImageUrl } from '@/utils/media';
 
 const props = defineProps({
     id: {

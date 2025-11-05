@@ -50,7 +50,7 @@
                         <!-- Cover Image -->
                         <router-link :to="{ name: 'story.detail', params: { slug: item.slug } }" class="flex-shrink-0">
                             <div class="w-full md:w-32 h-48 md:h-40 rounded-lg overflow-hidden group">
-                                <img v-if="item.image" :src="item.image" :alt="item.name"
+                                <img v-if="item.image" :src="getStoryImageUrl(item.image)" :alt="item.name"
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                                 <div v-else
                                     class="w-full h-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-4xl">
@@ -155,7 +155,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import HistoryService from '@/services/history.service';
 import { useAuthStore } from '@/stores/auth.store';
-// Không cần slug - dùng item.slug từ API
+import { getStoryImageUrl } from '@/utils/media';
 
 const router = useRouter();
 const authStore = useAuthStore();

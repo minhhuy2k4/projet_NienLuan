@@ -80,7 +80,7 @@
 
                         <!-- Preview -->
                         <div v-if="formData.image" class="mt-3">
-                            <img :src="getImageUrl(formData.image)" alt="Preview"
+                            <img :src="getAdUrl(formData.image)" alt="Preview"
                                 class="w-full h-48 object-cover rounded-lg">
                         </div>
 
@@ -133,7 +133,7 @@
                 <div class="flex gap-6">
                     <!-- Ad Image -->
                     <div class="w-64 h-40 flex-shrink-0">
-                        <img :src="getImageUrl(ad.image)" :alt="ad.title" class="w-full h-full object-cover rounded-lg">
+                        <img :src="getAdUrl(ad.image)" :alt="ad.title" class="w-full h-full object-cover rounded-lg">
                     </div>
 
                     <!-- Ad Info -->
@@ -200,6 +200,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import AdService from '@/services/ad.service';
+import { getAdUrl } from '@/utils/media';
 
 const ads = ref([]);
 const showAddForm = ref(false);
@@ -215,15 +216,6 @@ const formData = ref({
     position: 'home',
     order: 0
 });
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-
-// Get full image URL
-const getImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    if (imagePath.startsWith('http')) return imagePath;
-    return `${API_BASE_URL}${imagePath}`;
-};
 
 // Get position label
 const getPositionLabel = (position) => {
