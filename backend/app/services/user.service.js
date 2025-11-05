@@ -63,6 +63,41 @@ class UserService {
     );
   }
 
+  async updateProfile(userId, updates) {
+    const allowedUpdates = {};
+    if (updates.name !== undefined) allowedUpdates.name = updates.name;
+    if (updates.avatar !== undefined) allowedUpdates.avatar = updates.avatar;
+
+    await this.User.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: allowedUpdates }
+    );
+
+    return await this.findById(userId);
+  }
+
+  async changePassword(userId, currentPassword, newPassword) {
+    const user = await this.User.findOne({ _id: new ObjectId(userId) });
+
+    if (!user.password) {
+      // User đăng nhập bằng Google, không có password
+      return false;
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return false;
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.User.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { password: hashedPassword } }
+    );
+
+    return true;
+  }
+
   // --- Google OAuth Methods ---
   async findByGoogleId(googleId) {
     return await this.User.findOne(

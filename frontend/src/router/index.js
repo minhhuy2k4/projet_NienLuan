@@ -51,6 +51,11 @@ const routes = [
     component: () => import("@/views/pages/History.vue"),
   },
   {
+    path: "/profile",
+    name: "profile",
+    component: () => import("@/views/pages/Profile.vue"),
+  },
+  {
     path: "/search",
     name: "search",
     component: () => import("@/views/pages/Search.vue"),

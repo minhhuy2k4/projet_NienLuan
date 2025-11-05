@@ -72,3 +72,8 @@ export const getAdUrl = (adPath) => getImageUrl(adPath);
  * Lấy đường dẫn hình ảnh truyện
  */
 export const getStoryImageUrl = (imagePath) => getImageUrl(imagePath);
+
+/**
+ * Lấy đường dẫn avatar người dùng
+ */
+export const getAvatarUrl = (avatarPath) => getImageUrl(avatarPath);

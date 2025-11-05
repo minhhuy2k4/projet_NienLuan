@@ -28,6 +28,7 @@ app.use("/banners", express.static("public/banners"));
 app.use("/images", express.static("public/images"));
 app.use("/audio", express.static("public/audio"));
 app.use("/ads", express.static("public/ads"));
+app.use("/avatars", express.static("public/avatars"));
 
 app.use("/api/auth", authRoute);
 app.use("/api/stories", storyRoute);

@@ -34,9 +34,9 @@
                             <hr v-if="authStore.isAdmin" class="dropdown-divider">
 
                             <!-- Tất cả user đều thấy -->
-                            <a href="#" class="dropdown-item" @click.prevent="closeDropdown">
+                            <router-link to="/profile" class="dropdown-item" @click="closeDropdown">
                                 👤 Trang cá nhân
-                            </a>
+                            </router-link>
                             <router-link to="/favorites" class="dropdown-item" @click="closeDropdown">
                                 ❤️ Truyện yêu thích
                             </router-link>

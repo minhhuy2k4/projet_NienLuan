@@ -44,6 +44,21 @@ const chapterAudioStorage = multer.diskStorage({
   },
 });
 
+// Cấu hình storage cho avatar
+const avatarStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../../public/avatars");
+    ensureDirectoryExists(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const userId = req.user.id; // Lấy từ auth middleware
+    const extension = path.extname(file.originalname);
+    const timestamp = Date.now();
+    cb(null, `${userId}_${timestamp}${extension}`);
+  },
+});
+
 // File filter cho ảnh
 const imageFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif|webp/;
@@ -91,6 +106,15 @@ const uploadChapterAudio = multer({
     fileSize: 100 * 1024 * 1024, // 100MB
   },
 }).single("chapterAudio");
+
+// Middleware upload avatar
+const uploadAvatar = multer({
+  storage: avatarStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+}).single("avatar");
 
 // Hàm tạo URL cho file - Trả về relative path
 const getFileUrl = (req, storyId, fileName) => {
@@ -184,13 +208,20 @@ const deleteAdImage = (filename) => {
   }
 };
 
+// Hàm tạo URL cho avatar
+const getAvatarUrl = (req, filename) => {
+  return `/avatars/${filename}`;
+};
+
 module.exports = {
   uploadCoverImage,
   uploadChapterAudio,
+  uploadAvatar,
   getFileUrl,
   getChapterAudioUrl,
   getBannerImageUrl,
   getAdImageUrl,
+  getAvatarUrl,
   deleteStoryFiles,
   deleteChapterAudio,
   deleteBannerImage,
