@@ -6,7 +6,7 @@
                     <span>🎧 AudioTruyen</span>
                 </router-link>
                 <div class="search-bar">
-                    <input type="text" placeholder="Tìm truyện..." v-model="searchQuery">
+                    <input type="text" placeholder="Tìm truyện..." v-model="searchQuery" @keyup.enter="handleSearch">
                     <button @click="handleSearch">🔍</button>
                 </div>
             </div>
@@ -80,8 +80,8 @@ const userMenuRef = ref(null);
 
 const handleSearch = () => {
     if (searchQuery.value.trim()) {
-        console.log('Tìm kiếm:', searchQuery.value);
-        // TODO: Implement search functionality
+        router.push({ path: '/search', query: { q: searchQuery.value } });
+        searchQuery.value = '';
     }
 };
 

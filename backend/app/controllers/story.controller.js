@@ -80,6 +80,26 @@ exports.findAll = async (req, res, next) => {
   }
 };
 
+exports.search = async (req, res, next) => {
+  try {
+    const { q, category, author } = req.query;
+
+    const storyService = new StoryService(MongoDB.client);
+    const stories = await storyService.search(q, category, author);
+
+    res.send({
+      total: stories.length,
+      query: { q, category, author },
+      results: stories,
+    });
+  } catch (error) {
+    console.error("Search error:", error);
+    return res
+      .status(500)
+      .send({ message: "Lỗi khi tìm kiếm truyện", error: error.message });
+  }
+};
+
 exports.findOne = async (req, res, next) => {
   try {
     const storyService = new StoryService(MongoDB.client);

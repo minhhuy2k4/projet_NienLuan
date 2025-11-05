@@ -38,6 +38,15 @@ class StoryService {
       })
     ).data;
   }
+
+  async search(query, categoryId = null, authorId = null) {
+    const params = {};
+    if (query) params.q = query;
+    if (categoryId) params.category = categoryId;
+    if (authorId) params.author = authorId;
+
+    return (await this.api.get("/search", { params })).data;
+  }
 }
 
 export default new StoryService();

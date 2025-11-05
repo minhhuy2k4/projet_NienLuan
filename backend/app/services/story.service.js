@@ -315,6 +315,30 @@ class StoryService {
       { $inc: { views: 1 } }
     );
   }
+
+  /**
+   * Tìm kiếm truyện theo tên, tác giả, thể loại
+   */
+  async search(query, categoryId, authorId) {
+    const filter = {};
+
+    // Tìm kiếm theo tên (case-insensitive)
+    if (query) {
+      filter.name = { $regex: query, $options: "i" };
+    }
+
+    // Lọc theo category
+    if (categoryId) {
+      filter.categories = new ObjectId(categoryId);
+    }
+
+    // Lọc theo author
+    if (authorId) {
+      filter.authors = new ObjectId(authorId);
+    }
+
+    return await this.findWithChapterCount(filter);
+  }
 }
 
 module.exports = StoryService;

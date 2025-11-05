@@ -1,5 +1,5 @@
 <template>
-    <div class="story-card">
+    <div class="story-card" :class="{ 'horizontal': layout === 'horizontal' }">
         <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }" class="card-image-link">
             <img :src="getStoryImageUrl(story.image)" :alt="story.name" class="story-image">
             <div class="story-stats">
@@ -24,6 +24,11 @@ defineProps({
     story: {
         type: Object,
         required: true
+    },
+    layout: {
+        type: String,
+        default: 'vertical', // 'vertical' hoặc 'horizontal'
+        validator: (value) => ['vertical', 'horizontal'].includes(value)
     }
 });
 </script>
@@ -43,6 +48,32 @@ defineProps({
 .story-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Horizontal Layout */
+.story-card.horizontal {
+    flex-direction: row;
+    height: auto;
+}
+
+.story-card.horizontal .card-image-link {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.story-card.horizontal .story-image {
+    height: 100%;
+    min-height: 150px;
+}
+
+.story-card.horizontal .card-content {
+    padding: 1rem 1.25rem;
+}
+
+.story-card.horizontal .story-title {
+    font-size: 1rem;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
 }
 
 .card-image-link {
@@ -68,6 +99,8 @@ defineProps({
     color: white;
     font-size: 0.85rem;
     font-weight: 500;
+    display: flex;
+    gap: 1rem;
 }
 
 .card-content {

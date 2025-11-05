@@ -50,6 +50,11 @@ const routes = [
     name: "history",
     component: () => import("@/views/pages/History.vue"),
   },
+  {
+    path: "/search",
+    name: "search",
+    component: () => import("@/views/pages/Search.vue"),
+  },
   // Google OAuth callback route
   {
     path: "/auth/google/callback",
