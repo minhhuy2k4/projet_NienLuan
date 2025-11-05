@@ -6,20 +6,6 @@ const api = createApiClient(
 
 class UploadService {
   /**
-   * Upload file audio
-   * @param {FormData} formData - Đối tượng FormData chứa file
-   */
-  async uploadAudio(formData) {
-    return (
-      await api.post("/api/upload/audio", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-    ).data;
-  }
-
-  /**
    * Upload ảnh bìa cho truyện
    * @param {string} storyId - ID của truyện
    * @param {FormData} formData - Đối tượng FormData chứa file ảnh

@@ -28,6 +28,16 @@ class StoryService {
   async delete(id) {
     return (await this.api.delete(`/${id}`)).data;
   }
+
+  async uploadCover(storyId, formData) {
+    return (
+      await this.api.post(`/upload-cover/${storyId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+    ).data;
+  }
 }
 
 export default new StoryService();

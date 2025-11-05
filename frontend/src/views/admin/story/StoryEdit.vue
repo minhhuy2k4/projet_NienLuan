@@ -118,7 +118,6 @@ import { ref, onMounted } from 'vue';
 import storyService from '@/services/story.service';
 import authorService from '@/services/author.service';
 import categoryService from '@/services/category.service';
-import uploadService from '@/services/upload.service';
 import { getStoryImageUrl } from '@/utils/media';
 
 const props = defineProps({
@@ -196,7 +195,7 @@ const uploadCover = async () => {
         const formData = new FormData();
         formData.append('coverImage', coverFile.value);
 
-        const result = await uploadService.uploadCover(props.id, formData);
+        const result = await storyService.uploadCover(props.id, formData);
         story.value.image = result.imageUrl;
         coverFile.value = null;
         coverPreview.value = null;

@@ -96,7 +96,6 @@ import { useRouter } from 'vue-router';
 import storyService from '@/services/story.service';
 import authorService from '@/services/author.service';
 import categoryService from '@/services/category.service';
-import uploadService from '@/services/upload.service';
 import { getStoryImageUrl } from '@/utils/media';
 
 const router = useRouter();
@@ -179,7 +178,7 @@ const handleSubmit = async () => {
                 const formData = new FormData();
                 formData.append('coverImage', coverFile.value);
 
-                const uploadResult = await uploadService.uploadCover(newStory._id, formData);
+                const uploadResult = await storyService.uploadCover(newStory._id, formData);
                 newStory.image = uploadResult.imageUrl;
             } catch (uploadError) {
                 console.error('Upload cover error:', uploadError);

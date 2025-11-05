@@ -3,6 +3,7 @@ const router = express.Router();
 const bannerController = require("../controllers/banner.controller");
 const auth = require("../middlewares/auth.middleware");
 const { uploadBanner } = require("../middlewares/upload.middleware");
+const { getBannerImageUrl } = require("../middlewares/file-upload.middleware");
 
 // Upload banner image
 router.post("/upload", auth, uploadBanner.single("banner"), (req, res) => {
@@ -11,7 +12,7 @@ router.post("/upload", auth, uploadBanner.single("banner"), (req, res) => {
       return res.status(400).json({ message: "Không có file được upload" });
     }
 
-    const imageUrl = `/banners/${req.file.filename}`;
+    const imageUrl = getBannerImageUrl(req, req.file.filename);
     res.json({
       message: "Upload thành công",
       imageUrl: imageUrl,

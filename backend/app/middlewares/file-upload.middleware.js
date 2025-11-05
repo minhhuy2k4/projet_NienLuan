@@ -101,6 +101,16 @@ const getChapterAudioUrl = (req, storyId, chapterNumber) => {
   return `/audio/${storyId}/chapters/${chapterNumber}.mp3`;
 };
 
+// Hàm tạo URL cho banner - Trả về relative path
+const getBannerImageUrl = (req, filename) => {
+  return `/banners/${filename}`;
+};
+
+// Hàm tạo URL cho ad - Trả về relative path
+const getAdImageUrl = (req, filename) => {
+  return `/ads/${filename}`;
+};
+
 // Hàm xóa thư mục story và tất cả files
 const deleteStoryFiles = (storyId) => {
   try {
@@ -179,6 +189,8 @@ module.exports = {
   uploadChapterAudio,
   getFileUrl,
   getChapterAudioUrl,
+  getBannerImageUrl,
+  getAdImageUrl,
   deleteStoryFiles,
   deleteChapterAudio,
   deleteBannerImage,
