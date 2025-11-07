@@ -75,5 +75,10 @@ export const getStoryImageUrl = (imagePath) => getImageUrl(imagePath);
 
 /**
  * Lấy đường dẫn avatar người dùng
+ * @param {string} avatarPath - Đường dẫn avatar từ database
+ * @returns {string|null} - URL đầy đủ hoặc null nếu không có
  */
-export const getAvatarUrl = (avatarPath) => getImageUrl(avatarPath);
+export const getAvatarUrl = (avatarPath) => {
+  if (!avatarPath) return null;
+  return getImageUrl(avatarPath);
+};

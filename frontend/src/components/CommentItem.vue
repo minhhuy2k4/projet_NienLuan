@@ -1,10 +1,9 @@
 <template>
     <div class="comment-item">
         <div class="flex items-start gap-2 mb-2">
-            <div :class="avatarClass"
-                class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                {{ comment.user?.name?.charAt(0).toUpperCase() || '?' }}
-            </div>
+            <img :src="avatarUrl" :alt="comment.user?.name"
+                class="w-8 h-8 rounded-full object-cover flex-shrink-0 border-2" :class="avatarBorderClass"
+                @error="$event.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user?.name || 'User')}&background=random&color=fff`" />
             <div class="flex-1">
                 <div class="flex items-center justify-between">
                     <div>
@@ -115,6 +114,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
+import { getAvatarUrl } from '@/utils/media';
 
 // Component tự gọi chính nó (recursive)
 import CommentItem from './CommentItem.vue';
@@ -159,6 +159,33 @@ const avatarClass = computed(() => {
         'bg-gradient-to-br from-pink-500 to-pink-700',
     ];
     return colors[props.depth % colors.length];
+});
+
+// Border color cho avatar theo cấp độ
+const avatarBorderClass = computed(() => {
+    const colors = [
+        'border-purple-400',
+        'border-green-400',
+        'border-blue-400',
+        'border-orange-400',
+        'border-pink-400',
+    ];
+    return colors[props.depth % colors.length];
+});
+
+// Avatar URL với fallback
+const avatarUrl = computed(() => {
+    const avatar = props.comment.user?.avatar;
+    const name = props.comment.user?.name || 'User';
+
+    // Nếu có avatar, dùng getAvatarUrl
+    if (avatar) {
+        const url = getAvatarUrl(avatar);
+        if (url) return url;
+    }
+
+    // Fallback: UI Avatars API
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`;
 });
 
 // Margin left cho nested replies

@@ -7,10 +7,9 @@
         <!-- Comment Form -->
         <div v-if="authStore.isLoggedIn" class="mb-6">
             <div class="flex gap-3">
-                <div
-                    class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold flex-shrink-0">
-                    {{ authStore.user?.name?.charAt(0).toUpperCase() || '?' }}
-                </div>
+                <img :src="userAvatarUrl" :alt="authStore.user?.name"
+                    class="w-10 h-10 rounded-full object-cover flex-shrink-0 border-2 border-blue-400"
+                    @error="$event.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(authStore.user?.name || 'User')}&background=random&color=fff`" />
                 <div class="flex-1">
                     <textarea v-model="newComment" @keydown.ctrl.enter="submitComment" :disabled="submitting"
                         placeholder="Viết bình luận của bạn... (Ctrl+Enter để gửi)"
@@ -75,6 +74,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 import CommentService from '@/services/comment.service';
 import CommentItem from './CommentItem.vue';
+import { getAvatarUrl } from '@/utils/media';
 
 const props = defineProps({
     chapterId: { type: String, required: true }
@@ -91,6 +91,19 @@ const currentPage = ref(1);
 const itemsPerPage = 5;
 
 const totalPages = computed(() => Math.ceil(totalCount.value / itemsPerPage));
+
+// User avatar URL với fallback
+const userAvatarUrl = computed(() => {
+    const avatar = authStore.user?.avatar;
+    const name = authStore.user?.name || 'User';
+
+    if (avatar) {
+        const url = getAvatarUrl(avatar);
+        if (url) return url;
+    }
+
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`;
+});
 
 // Load comments
 const loadComments = async () => {

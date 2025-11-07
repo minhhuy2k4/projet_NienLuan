@@ -133,6 +133,7 @@ class CommentService {
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
+          "user.avatar": 1,
         },
       },
     ]).toArray();
@@ -193,6 +194,7 @@ class CommentService {
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
+          "user.avatar": 1,
         },
       },
     ]).toArray();
@@ -280,6 +282,7 @@ class CommentService {
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
+          "user.avatar": 1,
         },
       },
     ]).toArray();
@@ -442,6 +445,7 @@ class CommentService {
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
+          "user.avatar": 1,
         },
       },
     ]).toArray();
@@ -541,6 +545,7 @@ class CommentService {
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
+          "user.avatar": 1,
         },
       },
     ]).toArray();

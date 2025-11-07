@@ -45,10 +45,10 @@
                     <!-- Comment Content -->
                     <div class="bg-gray-50 border-l-4 border-orange-500 p-4 rounded mb-4">
                         <div class="flex items-center gap-2 mb-2">
-                            <div
-                                class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-sm font-bold">
-                                {{ report.comment?.user?.name?.charAt(0).toUpperCase() || '?' }}
-                            </div>
+                            <img :src="getAvatarUrl(report.comment?.user?.avatar) || `https://ui-avatars.com/api/?name=${encodeURIComponent(report.comment?.user?.name || 'User')}&background=random&color=fff`"
+                                :alt="report.comment?.user?.name"
+                                class="w-8 h-8 rounded-full object-cover border-2 border-purple-300"
+                                @error="$event.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(report.comment?.user?.name || 'User')}&background=random&color=fff`" />
                             <div>
                                 <p class="font-semibold text-sm">{{ report.comment?.user?.name || 'Anonymous' }}</p>
                                 <p class="text-xs text-gray-500">{{ formatDate(report.comment?.createdAt) }}</p>
@@ -112,10 +112,10 @@
                     <!-- Comment Header -->
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex items-center gap-3">
-                            <div
-                                class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold">
-                                {{ comment.user?.name?.charAt(0).toUpperCase() || '?' }}
-                            </div>
+                            <img :src="getAvatarUrl(comment.user?.avatar) || `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user?.name || 'User')}&background=random&color=fff`"
+                                :alt="comment.user?.name"
+                                class="w-10 h-10 rounded-full object-cover border-2 border-blue-400"
+                                @error="$event.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user?.name || 'User')}&background=random&color=fff`" />
                             <div>
                                 <p class="font-semibold">{{ comment.user?.name || 'Anonymous' }}</p>
                                 <p class="text-sm text-gray-500">{{ comment.user?.email }}</p>
@@ -168,6 +168,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 import CommentService from '@/services/comment.service';
+import { getAvatarUrl } from '@/utils/media';
 
 const authStore = useAuthStore();
 
