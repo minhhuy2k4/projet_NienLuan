@@ -83,11 +83,6 @@
                             </span>
                         </div>
 
-                        <!-- Favorited Date -->
-                        <div class="text-xs text-gray-500 mb-3">
-                            Đã thích: {{ formatDate(story.favoritedAt) }}
-                        </div>
-
                         <!-- Remove Button -->
                         <button @click="removeFavorite(story._id)"
                             class="w-full py-2 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg transition flex items-center justify-center gap-2">

@@ -2,30 +2,33 @@ const { ObjectId } = require("mongodb");
 
 class FavoriteService {
   constructor(client) {
-    this.Favorite = client.db().collection("favorites");
+    this.User = client.db().collection("users");
+    this.Story = client.db().collection("stories");
   }
 
   /**
-   * Thêm truyện vào danh sách yêu thích
+   * Thêm truyện vào danh sách yêu thích (dùng user.favorites)
    */
   async addFavorite(userId, storyId) {
     // Kiểm tra xem đã yêu thích chưa
-    const existing = await this.Favorite.findOne({
-      userId: new ObjectId(userId),
-      storyId: new ObjectId(storyId),
+    const user = await this.User.findOne({
+      _id: new ObjectId(userId),
+      favorites: new ObjectId(storyId),
     });
 
-    if (existing) {
+    if (user) {
       throw new Error("Truyện đã có trong danh sách yêu thích");
     }
 
-    const favoriteData = {
-      userId: new ObjectId(userId),
-      storyId: new ObjectId(storyId),
-      createdAt: new Date(),
-    };
+    // Thêm vào mảng favorites của user
+    const result = await this.User.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $addToSet: { favorites: new ObjectId(storyId) },
+        $set: { updatedAt: new Date() },
+      }
+    );
 
-    const result = await this.Favorite.insertOne(favoriteData);
     return result;
   }
 
@@ -33,12 +36,15 @@ class FavoriteService {
    * Xóa truyện khỏi danh sách yêu thích
    */
   async removeFavorite(userId, storyId) {
-    const result = await this.Favorite.deleteOne({
-      userId: new ObjectId(userId),
-      storyId: new ObjectId(storyId),
-    });
+    const result = await this.User.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $pull: { favorites: new ObjectId(storyId) },
+        $set: { updatedAt: new Date() },
+      }
+    );
 
-    if (result.deletedCount === 0) {
+    if (result.modifiedCount === 0) {
       throw new Error("Không tìm thấy trong danh sách yêu thích");
     }
 
@@ -49,26 +55,35 @@ class FavoriteService {
    * Kiểm tra truyện có trong danh sách yêu thích không
    */
   async isFavorite(userId, storyId) {
-    const favorite = await this.Favorite.findOne({
-      userId: new ObjectId(userId),
-      storyId: new ObjectId(storyId),
+    const user = await this.User.findOne({
+      _id: new ObjectId(userId),
+      favorites: new ObjectId(storyId),
     });
 
-    return !!favorite;
+    return !!user;
   }
 
   /**
    * Lấy danh sách truyện yêu thích của user (với thông tin đầy đủ)
+   * Tối ưu: Query trực tiếp từ user.favorites
    */
   async getFavoritesByUser(userId) {
-    const favorites = await this.Favorite.aggregate([
+    const result = await this.User.aggregate([
       {
-        $match: { userId: new ObjectId(userId) },
+        $match: { _id: new ObjectId(userId) },
       },
+      // Unwind favorites array
+      {
+        $unwind: {
+          path: "$favorites",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      // Lookup stories
       {
         $lookup: {
           from: "stories",
-          localField: "storyId",
+          localField: "favorites",
           foreignField: "_id",
           as: "story",
         },
@@ -113,28 +128,25 @@ class FavoriteService {
       // Remove chapters array
       {
         $project: {
-          "story.chapters": 0,
+          story: 1,
         },
       },
-      // Sort by createdAt descending
+      // Replicate root with story
       {
-        $sort: { createdAt: -1 },
+        $replaceRoot: { newRoot: "$story" },
       },
     ]).toArray();
 
-    return favorites.map((fav) => ({
-      ...fav.story,
-      favoriteId: fav._id,
-      favoritedAt: fav.createdAt,
-    }));
+    return result;
   }
 
   /**
    * Đếm số lượt yêu thích của một truyện
+   * Tối ưu: Đếm số user có storyId trong favorites
    */
   async countFavorites(storyId) {
-    return await this.Favorite.countDocuments({
-      storyId: new ObjectId(storyId),
+    return await this.User.countDocuments({
+      favorites: new ObjectId(storyId),
     });
   }
 }
