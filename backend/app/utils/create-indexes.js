@@ -117,6 +117,12 @@ async function createIndexes() {
       .createIndex({ role: 1 }, { name: "user_role_index" });
     console.log("✅ Index: role");
 
+    // Index cho favorites array (query stories yêu thích)
+    await db
+      .collection("users")
+      .createIndex({ favorites: 1 }, { name: "user_favorites_index" });
+    console.log("✅ Index: favorites");
+
     // ==================== CATEGORIES COLLECTION ====================
     console.log("\n🏷️ Tạo indexes cho collection 'categories'...");
 
@@ -261,6 +267,51 @@ async function createIndexes() {
       );
     console.log("✅ Index compound: status + createdAt");
 
+    // ==================== HISTORIES COLLECTION ====================
+    console.log("\n📖 Tạo indexes cho collection 'histories'...");
+
+    // Compound index unique: userId + storyId (một user chỉ có một history cho mỗi truyện)
+    await db
+      .collection("histories")
+      .createIndex(
+        { userId: 1, storyId: 1 },
+        { unique: true, name: "history_user_story_unique" }
+      );
+    console.log("✅ Index compound unique: userId + storyId");
+
+    // Index cho userId + lastReadAt (query lịch sử của user, sort theo thời gian)
+    await db
+      .collection("histories")
+      .createIndex(
+        { userId: 1, lastReadAt: -1 },
+        { name: "history_user_lastread_index" }
+      );
+    console.log("✅ Index compound: userId + lastReadAt (descending)");
+
+    // Index cho storyId (đếm số người đọc truyện)
+    await db
+      .collection("histories")
+      .createIndex({ storyId: 1 }, { name: "history_story_index" });
+    console.log("✅ Index: storyId");
+
+    // TTL Index - Tự động xóa history cũ hơn 90 ngày
+    await db
+      .collection("histories")
+      .createIndex(
+        { lastReadAt: 1 },
+        { expireAfterSeconds: 90 * 24 * 60 * 60, name: "history_ttl_index" }
+      );
+    console.log("✅ TTL Index: lastReadAt (expire after 90 days)");
+
+    // ==================== USERS FAVORITES ====================
+    console.log("\n❤️ Tạo indexes cho users.favorites...");
+
+    // Index cho favorites array trong users collection
+    await db
+      .collection("users")
+      .createIndex({ favorites: 1 }, { name: "user_favorites_index" });
+    console.log("✅ Index: favorites (array)");
+
     console.log("\n✨ Hoàn thành tạo tất cả indexes!");
     console.log("\n📊 Thống kê indexes:");
 
@@ -275,6 +326,7 @@ async function createIndexes() {
       "ratings",
       "comment_likes",
       "comment_reports",
+      "histories",
     ];
 
     for (const collectionName of collections) {
@@ -296,7 +348,6 @@ async function createIndexes() {
 async function dropAllIndexes() {
   try {
     console.log("🗑️ Xóa tất cả indexes (trừ _id)...");
-
     const db = MongoDB.client.db();
     const collections = [
       "stories",
@@ -306,6 +357,7 @@ async function dropAllIndexes() {
       "authors",
       "contacts",
       "ratings",
+      "histories",
     ];
 
     for (const collectionName of collections) {
