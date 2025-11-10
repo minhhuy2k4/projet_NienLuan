@@ -9,7 +9,18 @@ router.use(authMiddleware);
 
 router.get("/me", userController.getProfile);
 router.put("/profile", userController.updateProfile);
-router.put("/avatar", uploadAvatar, userController.updateAvatar);
+router.put(
+  "/avatar",
+  (req, res, next) => {
+    uploadAvatar(req, res, (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
+      next();
+    });
+  },
+  userController.updateAvatar
+);
 router.put("/password", userController.changePassword);
 router.post("/favorites", userController.addFavorite);
 router.delete("/favorites", userController.removeFavorite); // Sử dụng DELETE và gửi storyId trong body

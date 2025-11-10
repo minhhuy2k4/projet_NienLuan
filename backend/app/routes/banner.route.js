@@ -2,27 +2,22 @@ const express = require("express");
 const router = express.Router();
 const bannerController = require("../controllers/banner.controller");
 const auth = require("../middlewares/auth.middleware");
-const { uploadBanner } = require("../middlewares/upload.middleware");
-const { getBannerImageUrl } = require("../middlewares/file-upload.middleware");
+const { uploadBanner } = require("../middlewares/file-upload.middleware");
 
 // Upload banner image
-router.post("/upload", auth, uploadBanner.single("banner"), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "Không có file được upload" });
-    }
-
-    const imageUrl = getBannerImageUrl(req, req.file.filename);
-    res.json({
-      message: "Upload thành công",
-      imageUrl: imageUrl,
-      filename: req.file.filename,
+router.post(
+  "/upload",
+  auth,
+  (req, res, next) => {
+    uploadBanner(req, res, (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
+      next();
     });
-  } catch (error) {
-    console.error("Upload banner error:", error);
-    res.status(500).json({ message: "Lỗi khi upload ảnh" });
-  }
-});
+  },
+  bannerController.uploadImage
+);
 
 // Public routes
 router.get("/active", bannerController.getActive);

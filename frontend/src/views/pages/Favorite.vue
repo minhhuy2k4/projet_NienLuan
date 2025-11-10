@@ -34,59 +34,16 @@
             </div>
 
             <!-- Favorites Grid -->
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <div v-for="(story, index) in favorites" :key="story._id"
-                    class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 animate-slide-up border border-pink-100"
-                    :style="{ animationDelay: `${index * 50}ms` }">
-                    <!-- Cover Image -->
-                    <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
-                        class="block relative group">
-                        <div class="aspect-[3/4] overflow-hidden">
-                            <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name"
-                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                            <div v-else
-                                class="w-full h-full bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center text-white text-6xl">
-                                📖
-                            </div>
-                        </div>
-                        <!-- Overlay -->
-                        <div
-                            class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                            <span class="text-white font-semibold">Xem chi tiết →</span>
-                        </div>
-                    </router-link>
-
-                    <!-- Info -->
-                    <div class="p-4">
-                        <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }">
-                            <h3
-                                class="text-lg font-bold text-gray-800 mb-2 line-clamp-2 hover:text-pink-600 transition">
-                                {{ story.name }}
-                            </h3>
-                        </router-link>
-
-                        <!-- Categories -->
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            <span v-for="cat in story.categoryDetails?.slice(0, 2)" :key="cat._id"
-                                class="text-xs px-2 py-1 bg-pink-100 text-pink-700 rounded-full">
-                                {{ cat.name }}
-                            </span>
-                        </div>
-
-                        <!-- Stats -->
-                        <div class="flex items-center justify-between text-sm text-gray-600 mb-3">
-                            <span class="flex items-center gap-1">
-                                📚 {{ story.chapterCount || 0 }}
-                            </span>
-                            <span class="flex items-center gap-1">
-                                👁️ {{ formatViews(story.totalViews) }}
-                            </span>
-                        </div>
-
-                        <!-- Remove Button -->
+            <div v-else>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mb-6">
+                    <div v-for="(story, index) in favorites" :key="story._id" class="relative animate-slide-up"
+                        :style="{ animationDelay: `${index * 50}ms` }">
+                        <StoryCard :story="story" />
+                        <!-- Remove Button Overlay -->
                         <button @click="removeFavorite(story._id)"
-                            class="w-full py-2 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg transition flex items-center justify-center gap-2">
-                            <span>💔</span> Bỏ yêu thích
+                            class="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition transform hover:scale-110 z-10"
+                            title="Bỏ yêu thích">
+                            <span class="text-sm">💔</span>
                         </button>
                     </div>
                 </div>
@@ -119,7 +76,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import FavoriteService from '@/services/favorite.service';
 import { useAuthStore } from '@/stores/auth.store';
-import { getStoryImageUrl } from '@/utils/media';
+import StoryCard from '@/components/StoryCard.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -127,25 +84,6 @@ const authStore = useAuthStore();
 const favorites = ref([]);
 const loading = ref(true);
 const error = ref(null);
-
-// Format views
-const formatViews = (views) => {
-    if (!views) return '0';
-    if (views >= 1000000) return (views / 1000000).toFixed(1) + 'M';
-    if (views >= 1000) return (views / 1000).toFixed(1) + 'K';
-    return views.toString();
-};
-
-// Format date
-const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-};
 
 // Computed stats
 const totalChapters = computed(() => {
@@ -224,12 +162,5 @@ onMounted(async () => {
 
 .animate-slide-up {
     animation: slide-up 0.8s ease-out;
-}
-
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 </style>

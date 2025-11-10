@@ -1,7 +1,31 @@
 const AdService = require("../services/ad.service");
 const MongoDB = require("../utils/mongodb.util");
 const ApiError = require("../api-error");
-const { deleteAdImage } = require("../middlewares/file-upload.middleware");
+const {
+  deleteAdImage,
+  getAdImageUrl,
+} = require("../middlewares/file-upload.middleware");
+
+// Upload ad image
+exports.uploadImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Không có file được upload" });
+    }
+
+    const imageUrl = getAdImageUrl(req, req.file.filename);
+    res.json({
+      message: "Upload thành công",
+      imageUrl: imageUrl,
+      filename: req.file.filename,
+    });
+  } catch (error) {
+    console.error("Upload ad error:", error);
+    return res
+      .status(500)
+      .json({ message: "Lỗi khi upload ảnh", error: error.message });
+  }
+};
 
 // Lấy tất cả quảng cáo
 exports.getAll = async (req, res, next) => {

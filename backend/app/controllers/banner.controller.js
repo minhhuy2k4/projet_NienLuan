@@ -1,7 +1,31 @@
 const BannerService = require("../services/banner.service");
 const MongoDB = require("../utils/mongodb.util");
 const ApiError = require("../api-error");
-const { deleteBannerImage } = require("../middlewares/file-upload.middleware");
+const {
+  deleteBannerImage,
+  getBannerImageUrl,
+} = require("../middlewares/file-upload.middleware");
+
+// Upload banner image
+exports.uploadImage = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Không có file được upload" });
+    }
+
+    const imageUrl = getBannerImageUrl(req, req.file.filename);
+    res.json({
+      message: "Upload thành công",
+      imageUrl: imageUrl,
+      filename: req.file.filename,
+    });
+  } catch (error) {
+    console.error("Upload banner error:", error);
+    return res
+      .status(500)
+      .json({ message: "Lỗi khi upload ảnh", error: error.message });
+  }
+};
 
 // Lấy tất cả banners
 exports.getAll = async (req, res, next) => {

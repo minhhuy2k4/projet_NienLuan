@@ -2,27 +2,22 @@ const express = require("express");
 const router = express.Router();
 const adController = require("../controllers/ad.controller");
 const auth = require("../middlewares/auth.middleware");
-const { uploadAd } = require("../middlewares/upload.middleware");
-const { getAdImageUrl } = require("../middlewares/file-upload.middleware");
+const { uploadAd } = require("../middlewares/file-upload.middleware");
 
 // Upload ad image
-router.post("/upload", auth, uploadAd.single("ad"), (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ message: "Không có file được upload" });
-    }
-
-    const imageUrl = getAdImageUrl(req, req.file.filename);
-    res.json({
-      message: "Upload thành công",
-      imageUrl: imageUrl,
-      filename: req.file.filename,
+router.post(
+  "/upload",
+  auth,
+  (req, res, next) => {
+    uploadAd(req, res, (err) => {
+      if (err) {
+        return res.status(400).json({ message: err.message });
+      }
+      next();
     });
-  } catch (error) {
-    console.error("Upload ad error:", error);
-    res.status(500).json({ message: "Lỗi khi upload ảnh" });
-  }
-});
+  },
+  adController.uploadImage
+);
 
 // Public routes
 router.get("/position/:position", adController.getByPosition);

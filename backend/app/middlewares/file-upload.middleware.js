@@ -59,6 +59,34 @@ const avatarStorage = multer.diskStorage({
   },
 });
 
+// Cấu hình storage cho banner
+const bannerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../../public/banners");
+    ensureDirectoryExists(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const extension = path.extname(file.originalname);
+    const timestamp = Date.now();
+    cb(null, `banner_${timestamp}${extension}`);
+  },
+});
+
+// Cấu hình storage cho ad
+const adStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, "../../public/ads");
+    ensureDirectoryExists(uploadPath);
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+    const extension = path.extname(file.originalname);
+    const timestamp = Date.now();
+    cb(null, `ad_${timestamp}${extension}`);
+  },
+});
+
 // File filter cho ảnh
 const imageFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif|webp/;
@@ -115,6 +143,24 @@ const uploadAvatar = multer({
     fileSize: 5 * 1024 * 1024, // 5MB
   },
 }).single("avatar");
+
+// Middleware upload banner
+const uploadBanner = multer({
+  storage: bannerStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB
+  },
+}).single("banner");
+
+// Middleware upload ad
+const uploadAd = multer({
+  storage: adStorage,
+  fileFilter: imageFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB
+  },
+}).single("ad");
 
 // Hàm tạo URL cho file - Trả về relative path
 const getFileUrl = (req, storyId, fileName) => {
@@ -217,6 +263,8 @@ module.exports = {
   uploadCoverImage,
   uploadChapterAudio,
   uploadAvatar,
+  uploadBanner,
+  uploadAd,
   getFileUrl,
   getChapterAudioUrl,
   getBannerImageUrl,
