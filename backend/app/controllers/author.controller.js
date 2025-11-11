@@ -50,6 +50,7 @@ exports.update = async (req, res, next) => {
   try {
     const authorService = new AuthorService(MongoDB.client);
     const author = await authorService.update(req.params.id, req.body);
+
     if (!author) {
       return next(new ApiError(404, "Không tìm thấy tác giả"));
     }

@@ -40,6 +40,7 @@ class AuthorService {
     const filter = {
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     };
+
     const update = this.extractAuthorData(payload);
     update.updatedAt = new Date();
 
@@ -48,14 +49,15 @@ class AuthorService {
       { $set: update },
       { returnDocument: "after" }
     );
-    return result.value;
+
+    return result; // MongoDB driver v4+ trả về document trực tiếp, không có .value
   }
 
   async delete(id) {
     const result = await this.Author.findOneAndDelete({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });
-    return result.value;
+    return result; // MongoDB driver v4+ trả về document trực tiếp
   }
 }
 

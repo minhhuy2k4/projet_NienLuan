@@ -137,7 +137,14 @@ async function fetchAuthors() {
     }
     catch (err) {
         console.error('Error fetching authors:', err);
-        error.value = 'Lỗi tải danh sách tác giả.';
+        // Hiển thị thông tin lỗi chi tiết
+        if (err.response) {
+            error.value = err.response.data?.message || `Lỗi ${err.response.status}: Không thể tải danh sách tác giả`;
+        } else if (err.request) {
+            error.value = 'Không thể kết nối đến server. Vui lòng kiểm tra backend đã chạy chưa.';
+        } else {
+            error.value = err.message || 'Lỗi tải danh sách tác giả.';
+        }
     }
 }
 
@@ -168,9 +175,18 @@ const handleSubmit = async () => {
         }
 
         formData.value = { fullName: '', email: '', bio: '' };
+        // Thành công - không set error
+        console.log('Author saved successfully!');
     } catch (err) {
         console.error('Error saving author:', err);
-        error.value = 'Lỗi khi lưu tác giả.';
+        // Hiển thị thông tin lỗi chi tiết
+        if (err.response) {
+            error.value = err.response.data?.message || `Lỗi ${err.response.status}: ${err.response.statusText}`;
+        } else if (err.request) {
+            error.value = 'Không thể kết nối đến server. Vui lòng kiểm tra backend đã chạy chưa.';
+        } else {
+            error.value = err.message || 'Lỗi khi lưu tác giả.';
+        }
     }
     finally {
         loading.value = false;

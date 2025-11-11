@@ -1,13 +1,14 @@
 <template>
-    <div v-if="ads.length > 0" class="ad-display" :class="`ad-position-${position}`">
-        <div v-for="ad in ads" :key="ad._id" class="ad-item">
-            <a :href="ad.link" target="_blank" rel="noopener noreferrer" @click="handleClick(ad._id)"
+    <div v-if="randomAd" class="ad-display" :class="`ad-position-${position}`">
+        <div class="ad-item">
+            <a :href="randomAd.link" target="_blank" rel="noopener noreferrer" @click="handleClick(randomAd._id)"
                 class="ad-link block hover:opacity-90 transition-opacity">
                 <div class="ad-container rounded-lg overflow-hidden shadow-md">
-                    <img :src="getAdUrl(ad.image)" :alt="ad.title" class="ad-image w-full h-auto object-cover" />
-                    <div v-if="ad.title || ad.description" class="ad-content p-3 bg-gray-50">
-                        <h3 v-if="ad.title" class="font-semibold text-sm mb-1">{{ ad.title }}</h3>
-                        <p v-if="ad.description" class="text-xs text-gray-600">{{ ad.description }}</p>
+                    <img :src="getAdUrl(randomAd.image)" :alt="randomAd.title"
+                        class="ad-image w-full h-auto object-cover" />
+                    <div v-if="randomAd.title || randomAd.description" class="ad-content p-3 bg-gray-50">
+                        <h3 v-if="randomAd.title" class="font-semibold text-sm mb-1">{{ randomAd.title }}</h3>
+                        <p v-if="randomAd.description" class="text-xs text-gray-600">{{ randomAd.description }}</p>
                     </div>
                 </div>
             </a>
@@ -16,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps } from 'vue';
+import { ref, computed, onMounted, defineProps } from 'vue';
 import AdService from '@/services/ad.service';
 import { getAdUrl } from '@/utils/media';
 
@@ -30,16 +31,23 @@ const props = defineProps({
 
 const ads = ref([]);
 
+// Random select one ad from the list
+const randomAd = computed(() => {
+    if (ads.value.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * ads.value.length);
+    return ads.value[randomIndex];
+});
+
 // Load ads by position
 const loadAds = async () => {
     try {
         const response = await AdService.getByPosition(props.position);
         ads.value = response.data;
 
-        // Track view for all loaded ads
-        ads.value.forEach(ad => {
-            AdService.trackView(ad._id);
-        });
+        // Track view for the randomly selected ad only
+        if (randomAd.value) {
+            AdService.trackView(randomAd.value._id);
+        }
     } catch (error) {
         console.error('Error loading ads:', error);
     }
