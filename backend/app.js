@@ -14,6 +14,7 @@ const commentRoute = require("./app/routes/comment.route");
 const bannerRoute = require("./app/routes/banner.route");
 const adRoute = require("./app/routes/ad.route");
 const statisticsRoute = require("./app/routes/statistics.route");
+const websiteInfoRoute = require("./app/routes/websiteinfo.route");
 
 const chatbotRouter = require("./app/routes/chatbot.route");
 
@@ -43,6 +44,7 @@ app.use("/api/comments", commentRoute);
 app.use("/api/banners", bannerRoute);
 app.use("/api/ads", adRoute);
 app.use("/api/statistics", statisticsRoute);
+app.use("/api/website-info", websiteInfoRoute);
 
 app.use("/api/chatbot", chatbotRouter);
 

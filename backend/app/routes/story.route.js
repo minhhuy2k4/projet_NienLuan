@@ -1,6 +1,6 @@
 const express = require("express");
 const stories = require("../controllers/story.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const { auth, isAdmin } = require("../middlewares/auth.middleware");
 const { uploadCoverImage } = require("../middlewares/file-upload.middleware");
 const router = express.Router();
 
@@ -12,14 +12,15 @@ router.get("/:id", stories.findOne);
 
 // === CÁC ROUTE CẦN QUYỀN ADMIN ===
 // Quản lý truyện
-router.post("/", authMiddleware, stories.create);
-router.put("/:id", authMiddleware, stories.update);
-router.delete("/:id", authMiddleware, stories.delete);
+router.post("/", auth, isAdmin, stories.create);
+router.put("/:id", auth, isAdmin, stories.update);
+router.delete("/:id", auth, isAdmin, stories.delete);
 
 // Upload ảnh bìa cho truyện
 router.post(
   "/upload-cover/:storyId",
-  authMiddleware,
+  auth,
+  isAdmin,
   (req, res, next) => {
     uploadCoverImage(req, res, (err) => {
       if (err) {

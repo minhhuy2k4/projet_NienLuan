@@ -1,29 +1,18 @@
 const express = require("express");
-const ratingController = require("../controllers/rating.controller");
-const auth = require("../middlewares/auth.middleware");
+const ratings = require("../controllers/rating.controller");
+const { auth, isAdmin } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
 // User routes (cần auth)
-router.use(auth);
-
-// Thêm/cập nhật đánh giá
-router.post("/", ratingController.addOrUpdateRating);
-
-// Lấy đánh giá của user cho một truyện
-router.get("/user/:storyId", ratingController.getUserRating);
-
-// Lấy tất cả đánh giá của một truyện
-router.get("/story/:storyId", ratingController.getRatingsByStory);
-
-// Lấy thống kê đánh giá
-router.get("/stats/:storyId", ratingController.getRatingStats);
-
-// Xóa đánh giá của user
-router.delete("/:storyId", ratingController.deleteRating);
+router.post("/", auth, ratings.addOrUpdateRating);
+router.get("/user/:storyId", auth, ratings.getUserRating);
+router.get("/story/:storyId", auth, ratings.getRatingsByStory);
+router.get("/stats/:storyId", auth, ratings.getRatingStats);
+router.delete("/:storyId", auth, ratings.deleteRating);
 
 // Admin routes
-router.get("/admin/all", ratingController.getAllRatings);
-router.delete("/admin/:ratingId", ratingController.deleteRatingById);
+router.get("/admin/all", auth, isAdmin, ratings.getAllRatings);
+router.delete("/admin/:ratingId", auth, isAdmin, ratings.deleteRatingById);
 
 module.exports = router;

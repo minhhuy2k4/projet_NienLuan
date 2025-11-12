@@ -1,11 +1,11 @@
 const express = require("express");
 const userController = require("../controllers/user.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const { auth } = require("../middlewares/auth.middleware");
 const { uploadAvatar } = require("../middlewares/file-upload.middleware");
 const router = express.Router();
 
 // Tất cả các route bên dưới đều cần xác thực
-router.use(authMiddleware);
+router.use(auth);
 
 router.get("/me", userController.getProfile);
 router.put("/profile", userController.updateProfile);

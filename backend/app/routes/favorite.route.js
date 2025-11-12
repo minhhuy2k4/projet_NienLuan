@@ -1,6 +1,6 @@
 const express = require("express");
 const favorites = require("../controllers/favorite.controller");
-const auth = require("../middlewares/auth.middleware");
+const { auth } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 

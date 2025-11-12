@@ -1,14 +1,16 @@
 const express = require("express");
 const authors = require("../controllers/author.controller");
+const { auth, isAdmin } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
-router.route("/").get(authors.findAll).post(authors.create);
+// Public route
+router.get("/", authors.findAll);
+router.get("/:id", authors.findOne);
 
-router
-  .route("/:id")
-  .get(authors.findOne)
-  .put(authors.update)
-  .delete(authors.delete);
+// Admin only routes
+router.post("/", auth, isAdmin, authors.create);
+router.put("/:id", auth, isAdmin, authors.update);
+router.delete("/:id", auth, isAdmin, authors.delete);
 
 module.exports = router;

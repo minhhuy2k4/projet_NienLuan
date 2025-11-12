@@ -1,6 +1,6 @@
 const express = require("express");
 const chapters = require("../controllers/chapter.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const { auth, isAdmin } = require("../middlewares/auth.middleware");
 const { uploadChapterAudio } = require("../middlewares/file-upload.middleware");
 
 const router = express.Router();
@@ -10,14 +10,15 @@ router.get("/story/:storyId", chapters.findByStory);
 router.get("/:id", chapters.findOne);
 
 // Admin only routes
-router.post("/", authMiddleware, chapters.create);
-router.put("/:id", authMiddleware, chapters.update);
-router.delete("/:id", authMiddleware, chapters.delete);
+router.post("/", auth, isAdmin, chapters.create);
+router.put("/:id", auth, isAdmin, chapters.update);
+router.delete("/:id", auth, isAdmin, chapters.delete);
 
 // Upload audio cho chương
 router.post(
   "/upload-audio/:storyId/:chapterNumber",
-  authMiddleware,
+  auth,
+  isAdmin,
   (req, res, next) => {
     uploadChapterAudio(req, res, (err) => {
       if (err) {

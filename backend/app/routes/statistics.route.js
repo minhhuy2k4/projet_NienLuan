@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const statisticsController = require("../controllers/statistics.controller");
-const auth = require("../middlewares/auth.middleware");
+const { auth, isAdmin } = require("../middlewares/auth.middleware");
 
 // Tất cả routes đều cần authentication (admin only)
 router.use(auth);

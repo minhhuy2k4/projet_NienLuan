@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const bannerController = require("../controllers/banner.controller");
-const auth = require("../middlewares/auth.middleware");
+const { auth, isAdmin } = require("../middlewares/auth.middleware");
 const { uploadBanner } = require("../middlewares/file-upload.middleware");
 
 // Upload banner image
 router.post(
   "/upload",
   auth,
+  isAdmin,
   (req, res, next) => {
     uploadBanner(req, res, (err) => {
       if (err) {
@@ -23,11 +24,11 @@ router.post(
 router.get("/active", bannerController.getActive);
 
 // Admin routes (require authentication)
-router.get("/", auth, bannerController.getAll);
-router.get("/:id", auth, bannerController.getById);
-router.post("/", auth, bannerController.create);
-router.put("/:id", auth, bannerController.update);
-router.delete("/:id", auth, bannerController.delete);
-router.patch("/:id/toggle", auth, bannerController.toggleActive);
+router.get("/", auth, isAdmin, bannerController.getAll);
+router.get("/:id", auth, isAdmin, bannerController.getById);
+router.post("/", auth, isAdmin, bannerController.create);
+router.put("/:id", auth, isAdmin, bannerController.update);
+router.delete("/:id", auth, isAdmin, bannerController.delete);
+router.patch("/:id/toggle", auth, isAdmin, bannerController.toggleActive);
 
 module.exports = router;

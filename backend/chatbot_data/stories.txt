@@ -4,7 +4,7 @@
    ID: 68fc7f90323da1434a1b92ad
    Mô tả: ewee
    Số chương: 0
-   Lượt xem: 147
+   Lượt xem: 148
    Trạng thái: Đang tiến hành
 
 📖 w
@@ -18,7 +18,7 @@
    ID: 6901b9bb06a06d27c5e5beee
    Mô tả: ewwe
    Số chương: 0
-   Lượt xem: 231
+   Lượt xem: 233
    Trạng thái: Đang tiến hành
 
 📖 reer
@@ -39,14 +39,14 @@
    ID: 690459b83ad319df90842759
    Mô tả: ff
    Số chương: 0
-   Lượt xem: 24
+   Lượt xem: 25
    Trạng thái: Đang tiến hành
 
 📖 huyminh
    ID: 6905a92c356a9ff2850e1ec8
    Mô tả: ss
    Số chương: 0
-   Lượt xem: 221
+   Lượt xem: 222
    Trạng thái: Đang tiến hành
 
 📖 Truyên hài
@@ -67,16 +67,23 @@
    ID: 690adf54574f7001e37e7e2b
    Mô tả: d
    Số chương: 0
-   Lượt xem: 2
+   Lượt xem: 3
    Trạng thái: Đang tiến hành
 
 📖 c
    ID: 6912a313d745e5100e298055
    Mô tả: cc
    Số chương: 0
+   Lượt xem: 3
+   Trạng thái: Đang tiến hành
+
+📖 fff
+   ID: 6913ea8c27bc5ba483df0343
+   Mô tả: fff
+   Số chương: 0
    Lượt xem: 0
    Trạng thái: Đang tiến hành
 
 
-Tổng số truyện: 11
-Cập nhật lần cuối: 09:44:35 11/11/2025
+Tổng số truyện: 12
+Cập nhật lần cuối: 09:01:48 12/11/2025

@@ -136,6 +136,11 @@ const routes = [
         name: "admin.ads",
         component: () => import("@/views/admin/AdManagement.vue"),
       },
+      {
+        path: "website-info",
+        name: "admin.websiteinfo",
+        component: () => import("@/views/admin/WebsiteInfo.vue"),
+      },
     ],
   },
   {
