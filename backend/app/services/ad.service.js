@@ -5,10 +5,26 @@ class AdService {
     this.Ad = client.db().collection("ads");
   }
 
-  // Lấy tất cả quảng cáo
-  async getAll() {
-    const ads = await this.Ad.find({}).sort({ order: 1 }).toArray();
-    return ads;
+  // Lấy tất cả quảng cáo (có phân trang)
+  async getAll(page = 1, limit = 5) {
+    const skip = (page - 1) * limit;
+    const ads = await this.Ad.find({})
+      .sort({ order: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    const total = await this.Ad.countDocuments({});
+
+    return {
+      ads,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   // Lấy quảng cáo theo vị trí và đang active

@@ -4,8 +4,8 @@ const api = createApiClient();
 
 class AdService {
   // Get all ads (admin only)
-  async getAll() {
-    return api.get("/api/ads");
+  async getAll(page = 1, limit = 5) {
+    return api.get(`/api/ads?page=${page}&limit=${limit}`);
   }
 
   // Get ads by position (public)

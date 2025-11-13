@@ -27,12 +27,15 @@ exports.uploadImage = async (req, res, next) => {
   }
 };
 
-// Lấy tất cả quảng cáo
+// Lấy tất cả quảng cáo (có phân trang)
 exports.getAll = async (req, res, next) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
     const adService = new AdService(await MongoDB.client);
-    const ads = await adService.getAll();
-    res.json(ads);
+    const result = await adService.getAll(page, limit);
+    res.json(result);
   } catch (error) {
     console.error("Get all ads error:", error);
     next(new ApiError(500, "Lỗi khi lấy danh sách quảng cáo"));
