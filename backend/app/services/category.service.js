@@ -78,7 +78,32 @@ class CategoryService {
   }
 
   async find(filter = {}) {
-    return await this.Category.find(filter).toArray();
+    // return await this.Category.find(filter).toArray();
+    const pipeline = [
+      { $match: filter },
+      {
+        $lookup: {
+          from: "stories",
+          localField: "_id",
+          foreignField: "categories",
+          as: "stories",
+        },
+      },
+      {
+        $addFields: {
+          storyCount: { $size: "$stories" },
+        },
+      },
+      {
+        $sort: { name: 1 }, // Sắp xếp theo tên thể loại
+      },
+      {
+        $project: {
+          stories: 0, // Không bao gồm mảng stories trong kết quả cuối cùng
+        },
+      },
+    ];
+    return await this.Category.aggregate(pipeline).toArray();
   }
 
   async findById(id) {

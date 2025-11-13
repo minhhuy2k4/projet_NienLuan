@@ -80,13 +80,6 @@ const fetchCategories = async () => {
     try {
         loading.value = true;
         categories.value = await categoryService.getAll();
-
-        // TODO: Thêm logic đếm số truyện cho mỗi category nếu backend hỗ trợ
-        // Hiện tại set mock data
-        categories.value = categories.value.map(cat => ({
-            ...cat,
-            storyCount: Math.floor(Math.random() * 50) + 1 // Mock data
-        }));
     } catch (err) {
         console.error('Error fetching categories:', err);
         error.value = 'Không thể tải danh sách thể loại';
