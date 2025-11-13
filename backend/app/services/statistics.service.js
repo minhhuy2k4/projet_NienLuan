@@ -59,7 +59,7 @@ class StatisticsService {
           $lookup: {
             from: "chapters",
             localField: "_id",
-            foreignField: "story",
+            foreignField: "storyId",
             as: "chapters",
           },
         },
