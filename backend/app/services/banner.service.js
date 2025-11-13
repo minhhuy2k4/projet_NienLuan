@@ -5,10 +5,26 @@ class BannerService {
     this.Banner = client.db().collection("banners");
   }
 
-  // Lấy tất cả banners
-  async getAll() {
-    const banners = await this.Banner.find({}).sort({ order: 1 }).toArray();
-    return banners;
+  // Lấy tất cả banners (có phân trang)
+  async getAll(page = 1, limit = 5) {
+    const skip = (page - 1) * limit;
+    const banners = await this.Banner.find({})
+      .sort({ order: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    const total = await this.Banner.countDocuments({});
+
+    return {
+      banners,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   // Lấy chỉ banners đang active

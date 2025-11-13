@@ -4,8 +4,8 @@ const api = createApiClient();
 
 class BannerService {
   // Lấy tất cả banners (Admin)
-  getAll() {
-    return api.get("/api/banners");
+  getAll(page = 1, limit = 5) {
+    return api.get(`/api/banners?page=${page}&limit=${limit}`);
   }
 
   // Lấy chỉ banners đang active (Public)

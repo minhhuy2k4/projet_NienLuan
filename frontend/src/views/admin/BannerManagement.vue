@@ -171,8 +171,21 @@
             </div>
         </div>
 
+        <!-- Pagination -->
+        <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center gap-4">
+            <button @click="prevPage" :disabled="currentPage === 1"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                ← Trước
+            </button>
+            <span class="text-gray-700 font-medium">Trang {{ currentPage }} / {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages"
+                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                Sau →
+            </button>
+        </div>
+
         <!-- Empty State -->
-        <div v-else class="text-center py-12 bg-gray-50 rounded-lg animate-slide-up">
+        <div v-else-if="banners.length === 0" class="text-center py-12 bg-gray-50 rounded-lg animate-slide-up">
             <span class="text-6xl mb-4 block">🎨</span>
             <p class="text-gray-600 text-lg">Chưa có banner nào</p>
         </div>
@@ -190,6 +203,12 @@ const editingBanner = ref(null);
 const uploading = ref(false);
 const uploadedFile = ref(null);
 const fileInput = ref(null);
+
+// Pagination state
+const currentPage = ref(1);
+const totalPages = ref(1);
+const itemsPerPage = 5;
+
 const formData = ref({
     title: '',
     subtitle: '',
@@ -247,8 +266,9 @@ const formatDate = (dateString) => {
 // Load banners from API
 const loadBanners = async () => {
     try {
-        const response = await BannerService.getAll();
-        banners.value = response.data || [];
+        const response = await BannerService.getAll(currentPage.value, itemsPerPage);
+        banners.value = response.data?.banners || [];
+        totalPages.value = response.data?.pagination?.totalPages || 1;
     } catch (error) {
         console.error('Load banners error:', error);
         alert('❌ Không thể tải danh sách banner!');
@@ -266,6 +286,7 @@ const saveBanner = async () => {
             // Add new
             await BannerService.create(formData.value);
             alert('✅ Đã thêm banner thành công!');
+            currentPage.value = 1; // Go to first page after adding
         }
 
         await loadBanners();
@@ -331,6 +352,21 @@ const deleteBanner = async (id) => {
     } catch (error) {
         console.error('Delete banner error:', error);
         alert('❌ Có lỗi xảy ra khi xóa banner!');
+    }
+};
+
+// Pagination
+const prevPage = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--;
+        loadBanners();
+    }
+};
+
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+        loadBanners();
     }
 };
 
