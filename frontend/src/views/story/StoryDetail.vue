@@ -42,7 +42,7 @@
                                     {{ i <= Math.round(story.averageRating || 0) ? '⭐' : '☆' }} </span>
                             </div>
                             <span class="text-gray-800 text-xl font-bold">{{ (story.averageRating || 0).toFixed(1)
-                            }}</span>
+                                }}</span>
                             <span class="text-gray-600 text-sm">({{ story.totalRatings || 0 }} đánh giá)</span>
                         </div>
 
@@ -65,7 +65,9 @@
                         <div class="space-y-3 text-sm">
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Tình trạng:</span>
-                                <span class="text-green-600 font-semibold">Đang tiến hành</span>
+                                <span class="font-semibold" :class="story.status">
+                                    {{ story.status }}
+                                </span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Cập nhật:</span>
@@ -144,7 +146,7 @@
                                             <div class="flex items-center gap-3">
                                                 <span class="text-blue-600 font-bold">Chương {{ chapter.chapterNumber ||
                                                     (index + 1)
-                                                }}</span>
+                                                    }}</span>
                                                 <span class="text-gray-800 group-hover:text-blue-700 transition">{{
                                                     chapter.title }}</span>
                                             </div>
@@ -225,7 +227,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import StoryService from '@/services/story.service';
 import ChapterService from '@/services/chapter.service';
@@ -278,6 +280,21 @@ const getAuthors = () => {
     }
     return story.value.authorDetails.map(author => author.fullName).join(', ');
 };
+
+const statusDisplay = computed(() => {
+    if (!story.value) return { text: '', class: '' };
+    switch (story.value.status) {
+        case 'ONGOING':
+            return { text: 'Đang tiến hành', class: 'text-green-600' };
+        case 'COMPLETED':
+            return { text: 'Đã hoàn thành', class: 'text-blue-600' };
+        case 'DROPPED':
+            return { text: 'Đã tạm dừng', class: 'text-red-600' };
+        default:
+            return { text: 'Không xác định', class: 'text-gray-500' };
+    }
+});
+
 
 // Phát chương audio
 const playChapter = async (chapter) => {
