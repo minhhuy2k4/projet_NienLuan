@@ -69,8 +69,6 @@
                             <div class="story-stats">
                                 <span class="stat-item">📚 {{ story.chapterCount || 0 }} chương</span>
                                 <span class="stat-item">👁️ {{ story.totalViews || 0 }} lượt xem</span>
-                                <span v-if="story.latestChapter" class="stat-item">📖 Chương {{ story.latestChapter
-                                }}</span>
                             </div>
                             <div class="story-dates">
                                 <small v-if="story.createdAt" class="date-info">
@@ -221,14 +219,17 @@ onMounted(() => {
 
 <style scoped>
 .status-ongoing {
-    color: #ffa500; /* Orange */
+    color: #ffa500;
+    /* Orange */
     font-weight: bold;
 }
 
 .status-completed {
-    color: #28a745; /* Green */
+    color: #28a745;
+    /* Green */
     font-weight: bold;
 }
+
 .loading {
     text-align: center;
     padding: 2rem;
