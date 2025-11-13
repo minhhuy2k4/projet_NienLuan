@@ -67,6 +67,7 @@ class StoryService {
       categories: Array.isArray(payload.categories)
         ? payload.categories.map((id) => new ObjectId(id))
         : [],
+      status: payload.status || "đang tiến hành",
       // Khởi tạo các giá trị mặc định (bỏ chapters vì đã có collection riêng)
       views: 0,
       favoritesCount: 0,
@@ -274,6 +275,9 @@ class StoryService {
     }
     if (payload.categories !== undefined && Array.isArray(payload.categories)) {
       updateData.categories = payload.categories.map((id) => new ObjectId(id));
+    }
+    if (payload.status !== undefined) {
+      updateData.status = payload.status;
     }
 
     return await this.Story.findOneAndUpdate(

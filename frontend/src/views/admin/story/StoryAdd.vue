@@ -70,6 +70,13 @@
                             <small>Giữ Ctrl/Cmd để chọn nhiều thể loại</small>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="status">Trạng thái</label>
+                        <select id="status" v-model="story.status">
+                            <option value="đang tiến hành">Đang tiến hành</option>
+                            <option value="hoàn thành">Hoàn thành</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Actions -->
@@ -104,7 +111,8 @@ const story = ref({
     description: '',
     image: '',
     authors: [],
-    categories: []
+    categories: [],
+    status: 'đang tiến hành'
 });
 const authorList = ref([]);
 const categoryList = ref([]);

@@ -101,6 +101,14 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="status">Trạng thái</label>
+                        <select id="status" v-model="story.status">
+                            <option value="đang tiến hành">Đang tiến hành</option>
+                            <option value="hoàn thành">Hoàn thành</option>
+                        </select>
+                    </div>
+
                     <div class="form-actions">
                         <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
                         <button type="submit" class="btn-submit" :disabled="loadingSubmit">
@@ -152,8 +160,8 @@ onMounted(async () => {
         categoryList.value = categories;
 
         // Đảm bảo arrays không null
-        story.value.authors = storyData.authors || [];
-        story.value.categories = storyData.categories || [];
+        story.value.authors = storyData.authors ? (Array.isArray(storyData.authors) ? storyData.authors : [storyData.authors]) : [];
+        story.value.categories = storyData.categories ? (Array.isArray(storyData.categories) ? storyData.categories : [storyData.categories]) : [];
     } catch (err) {
         console.error('Load data error:', err);
         error.value = 'Không thể tải dữ liệu truyện.';
@@ -222,7 +230,8 @@ const handleStoryUpdate = async () => {
             name: story.value.name,
             description: story.value.description,
             authors: story.value.authors,
-            categories: story.value.categories
+            categories: story.value.categories,
+            status: story.value.status
         });
 
         successMessage.value = 'Cập nhật truyện thành công!';

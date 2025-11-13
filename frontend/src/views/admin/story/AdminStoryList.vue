@@ -59,6 +59,12 @@
                                     "Không xác định"
                                 }}
                             </p>
+                            <p>
+                                Trạng thái:
+                                <span :class="getStatusClass(story.status)">
+                                    {{ story.status }}
+                                </span>
+                            </p>
 
                             <div class="story-stats">
                                 <span class="stat-item">📚 {{ story.chapterCount || 0 }} chương</span>
@@ -162,6 +168,13 @@ const handleSearch = () => {
     currentPage.value = 1;
 };
 
+const getStatusClass = (status) => {
+    if (status === 'hoàn thành') {
+        return 'status-completed';
+    }
+    return 'status-ongoing';
+};
+
 // Hàm format ngày tháng
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -207,6 +220,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.status-ongoing {
+    color: #ffa500; /* Orange */
+    font-weight: bold;
+}
+
+.status-completed {
+    color: #28a745; /* Green */
+    font-weight: bold;
+}
 .loading {
     text-align: center;
     padding: 2rem;
