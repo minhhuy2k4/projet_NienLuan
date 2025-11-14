@@ -46,6 +46,40 @@ class UserService {
     // Interceptor sẽ tự động gắn token
     return (await api.post("/api/users/favorites", data)).data;
   }
+
+  // --- Admin Methods ---
+  // Lấy danh sách người dùng (có phân trang và tìm kiếm)
+  async getAllUsers(page = 1, limit = 10, search = "") {
+    const params = { page, limit };
+    if (search) {
+      params.search = search;
+    }
+    return (await api.get("/api/users/admin/users", { params })).data;
+  }
+
+  // Tạo người dùng mới
+  async createUser(userData) {
+    return (await api.post("/api/users/admin/users", userData)).data;
+  }
+
+  // Cập nhật người dùng
+  async updateUser(userId, updates) {
+    return (await api.put(`/api/users/admin/users/${userId}`, updates)).data;
+  }
+
+  // Xóa người dùng
+  async deleteUser(userId) {
+    return (await api.delete(`/api/users/admin/users/${userId}`)).data;
+  }
+
+  // Reset mật khẩu người dùng
+  async resetPassword(userId, newPassword) {
+    return (
+      await api.post(`/api/users/admin/users/${userId}/reset-password`, {
+        newPassword,
+      })
+    ).data;
+  }
 }
 
 export default new UserService();

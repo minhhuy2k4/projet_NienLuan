@@ -14,6 +14,8 @@
                         Quản lý Thể loại</router-link>
                     <router-link :to="{ name: 'admin.author.list' }" class="nav-item"><span class="icon">✍️</span> Quản
                         lý Tác giả</router-link>
+                    <router-link :to="{ name: 'admin.users' }" class="nav-item"><span class="icon">👥</span> Quản
+                        lý Người dùng</router-link>
                     <router-link :to="{ name: 'admin.ratings' }" class="nav-item"><span class="icon">⭐</span> Quản lý
                         Đánh giá</router-link>
                     <router-link :to="{ name: 'admin.comments' }" class="nav-item"><span class="icon">💬</span> Quản lý

@@ -1,8 +1,20 @@
 const express = require("express");
 const userController = require("../controllers/user.controller");
-const { auth } = require("../middlewares/auth.middleware");
+const { auth, isAdmin } = require("../middlewares/auth.middleware");
 const { uploadAvatar } = require("../middlewares/file-upload.middleware");
 const router = express.Router();
+
+// Admin routes - require both auth and admin role
+router.get("/admin/users", auth, isAdmin, userController.getAllUsers);
+router.post("/admin/users", auth, isAdmin, userController.createUser);
+router.put("/admin/users/:id", auth, isAdmin, userController.updateUser);
+router.delete("/admin/users/:id", auth, isAdmin, userController.deleteUser);
+router.post(
+  "/admin/users/:id/reset-password",
+  auth,
+  isAdmin,
+  userController.resetPassword
+);
 
 // Tất cả các route bên dưới đều cần xác thực
 router.use(auth);

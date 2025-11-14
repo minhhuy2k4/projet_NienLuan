@@ -98,3 +98,103 @@ exports.changePassword = async (req, res, next) => {
     next(new ApiError(500, "Lỗi khi đổi mật khẩu"));
   }
 };
+
+// --- Admin Controllers ---
+exports.getAllUsers = async (req, res, next) => {
+  try {
+    const userService = new UserService(MongoDB.client);
+    const { page = 1, limit = 10, search = "" } = req.query;
+
+    const result = await userService.getAllUsers(
+      parseInt(page),
+      parseInt(limit),
+      search
+    );
+
+    res.send(result);
+  } catch (error) {
+    console.error("Error in getAllUsers:", error);
+    next(new ApiError(500, "Lỗi khi lấy danh sách người dùng"));
+  }
+};
+
+exports.createUser = async (req, res, next) => {
+  try {
+    const userService = new UserService(MongoDB.client);
+    const userData = req.body;
+
+    const newUser = await userService.createUser(userData);
+    res
+      .status(201)
+      .send({ message: "Tạo người dùng thành công", user: newUser });
+  } catch (error) {
+    console.error("Error in createUser:", error);
+    if (error.message === "Email đã tồn tại") {
+      return next(new ApiError(400, error.message));
+    }
+    next(new ApiError(500, "Lỗi khi tạo người dùng"));
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const userService = new UserService(MongoDB.client);
+    const { id } = req.params;
+    const updates = req.body;
+
+    const updatedUser = await userService.updateUser(id, updates);
+    res.send({ message: "Cập nhật người dùng thành công", user: updatedUser });
+  } catch (error) {
+    console.error("Error in updateUser:", error);
+    if (error.message === "Email đã tồn tại") {
+      return next(new ApiError(400, error.message));
+    }
+    next(new ApiError(500, "Lỗi khi cập nhật người dùng"));
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const userService = new UserService(MongoDB.client);
+    const { id } = req.params;
+
+    // Không cho phép xóa chính mình
+    if (id === req.user.id) {
+      return next(new ApiError(400, "Không thể xóa tài khoản của chính bạn"));
+    }
+
+    const success = await userService.deleteUser(id);
+    if (!success) {
+      return next(new ApiError(404, "Không tìm thấy người dùng"));
+    }
+
+    res.send({ message: "Xóa người dùng thành công" });
+  } catch (error) {
+    console.error("Error in deleteUser:", error);
+    next(new ApiError(500, "Lỗi khi xóa người dùng"));
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const userService = new UserService(MongoDB.client);
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 6) {
+      return next(new ApiError(400, "Mật khẩu phải có ít nhất 6 ký tự"));
+    }
+
+    await userService.resetPassword(id, newPassword);
+    res.send({ message: "Reset mật khẩu thành công" });
+  } catch (error) {
+    console.error("Error in resetPassword:", error);
+    if (error.message === "Không thể reset mật khẩu cho tài khoản Google") {
+      return next(new ApiError(400, error.message));
+    }
+    if (error.message === "Không tìm thấy người dùng") {
+      return next(new ApiError(404, error.message));
+    }
+    next(new ApiError(500, "Lỗi khi reset mật khẩu"));
+  }
+};

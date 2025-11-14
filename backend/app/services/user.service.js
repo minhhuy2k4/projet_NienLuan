@@ -146,6 +146,110 @@ class UserService {
       return await this.findById(result.insertedId);
     }
   }
+
+  // --- Admin Methods ---
+  async getAllUsers(page = 1, limit = 5, searchQuery = "") {
+    const skip = (page - 1) * limit;
+
+    let filter = {};
+    if (searchQuery) {
+      filter = {
+        $or: [
+          { name: { $regex: searchQuery, $options: "i" } },
+          { email: { $regex: searchQuery, $options: "i" } },
+        ],
+      };
+    }
+
+    const users = await this.User.find(filter, { projection: { password: 0 } })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    const total = await this.User.countDocuments(filter);
+
+    return {
+      users,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async updateUser(userId, updates) {
+    // Kiểm tra email đã tồn tại chưa (trừ chính user đó)
+    if (updates.email) {
+      const existingUser = await this.User.findOne({
+        email: updates.email,
+        _id: { $ne: new ObjectId(userId) },
+      });
+      if (existingUser) {
+        throw new Error("Email đã tồn tại");
+      }
+    }
+
+    // Sử dụng extractUserData để lọc và chuẩn hóa dữ liệu
+    const userData = this.extractUserData(updates);
+
+    // Loại bỏ các trường không cho phép update
+    delete userData.password; // Không update password ở đây (dùng changePassword hoặc resetPassword)
+    delete userData.googleId; // Không cho phép thay đổi googleId
+    delete userData.favorites; // Không update favorites ở đây
+
+    await this.User.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: userData }
+    );
+
+    return await this.findById(userId);
+  }
+
+  async deleteUser(userId) {
+    const result = await this.User.deleteOne({ _id: new ObjectId(userId) });
+    return result.deletedCount > 0;
+  }
+
+  async resetPassword(userId, newPassword) {
+    // Kiểm tra user có phải local account không
+    const user = await this.User.findOne({ _id: new ObjectId(userId) });
+
+    if (!user) {
+      throw new Error("Không tìm thấy người dùng");
+    }
+
+    if (user.provider === "google") {
+      throw new Error("Không thể reset mật khẩu cho tài khoản Google");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.User.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { password: hashedPassword } }
+    );
+
+    return true;
+  }
+
+  async createUser(userData) {
+    // Kiểm tra email đã tồn tại
+    if (await this.User.findOne({ email: userData.email })) {
+      throw new Error("Email đã tồn tại");
+    }
+
+    // Sử dụng extractUserData để nhất quán với register()
+    const newUser = this.extractUserData({
+      ...userData,
+      provider: "local", // Force provider là local cho admin tạo user
+    });
+
+    // Hash password
+    if (newUser.password) {
+      newUser.password = await bcrypt.hash(newUser.password, 10);
+    }
+
+    const result = await this.User.insertOne(newUser);
+    return await this.findById(result.insertedId);
+  }
 }
 
 module.exports = UserService;

@@ -111,6 +111,11 @@ const routes = [
         component: () => import("@/views/admin/AdminAuthor.vue"),
       },
       {
+        path: "users",
+        name: "admin.users",
+        component: () => import("@/views/admin/AdminUserManagement.vue"),
+      },
+      {
         path: "chapters/:storyId",
         name: "admin.chapter.manage",
         component: () => import("@/views/admin/ChapterManage.vue"),
