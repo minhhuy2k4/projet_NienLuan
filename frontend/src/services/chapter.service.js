@@ -1,40 +1,40 @@
 import createApiClient from "./api.service";
 
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const api = createApiClient(baseURL);
-
 class ChapterService {
+  constructor(baseUrl = "/api/chapters") {
+    this.api = createApiClient(baseUrl);
+  }
+
   async getAll() {
-    return (await api.get("/api/chapters")).data;
+    return (await this.api.get("/")).data;
   }
 
   async getByStory(storyId) {
-    return (await api.get(`/api/chapters/story/${storyId}`)).data;
+    return (await this.api.get(`/story/${storyId}`)).data;
   }
 
   async get(id) {
-    return (await api.get(`/api/chapters/${id}`)).data;
+    return (await this.api.get(`/${id}`)).data;
   }
 
   async create(data) {
-    return (await api.post("/api/chapters", data)).data;
+    return (await this.api.post("/", data)).data;
   }
 
   async update(id, data) {
-    return (await api.put(`/api/chapters/${id}`, data)).data;
+    return (await this.api.put(`/${id}`, data)).data;
   }
 
   async delete(id) {
-    return (await api.delete(`/api/chapters/${id}`)).data;
+    return (await this.api.delete(`/${id}`)).data;
   }
 
   async uploadAudio(storyId, chapterNumber, audioFile) {
     const formData = new FormData();
     formData.append("chapterAudio", audioFile);
-
     return (
-      await api.post(
-        `/api/chapters/upload-audio/${storyId}/${chapterNumber}`,
+      await this.api.post(
+        `/upload-audio/${storyId}/${chapterNumber}`,
         formData,
         {
           headers: {

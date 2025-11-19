@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
 class StatisticsService {
-  constructor(baseUrl = "/api") {
+  constructor(baseUrl = "/api/statistics") {
     this.api = createApiClient(baseUrl);
   }
 
@@ -10,7 +10,7 @@ class StatisticsService {
    */
   async getOverviewStats() {
     try {
-      const response = await this.api.get("/statistics/overview");
+      const response = await this.api.get("/overview");
       return response.data;
     } catch (error) {
       console.error("Get overview stats error:", error);
@@ -23,9 +23,7 @@ class StatisticsService {
    */
   async getTopStories(limit = 10) {
     try {
-      const response = await this.api.get(
-        `/statistics/top-stories?limit=${limit}`
-      );
+      const response = await this.api.get(`/top-stories?limit=${limit}`);
       return response.data;
     } catch (error) {
       console.error("Get top stories error:", error);

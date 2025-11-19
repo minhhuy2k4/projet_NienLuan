@@ -1,18 +1,13 @@
 import createApiClient from "./api.service";
 
-const api = createApiClient(
-  import.meta.env.VITE_API_URL || "http://localhost:3000"
-);
-
 class UploadService {
-  /**
-   * Upload ảnh bìa cho truyện
-   * @param {string} storyId - ID của truyện
-   * @param {FormData} formData - Đối tượng FormData chứa file ảnh
-   */
+  constructor(baseUrl = "/api/upload") {
+    this.api = createApiClient(baseUrl);
+  }
+
   async uploadCover(storyId, formData) {
     return (
-      await api.post(`/api/stories/upload-cover/${storyId}`, formData, {
+      await this.api.post(`/upload-cover/${storyId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

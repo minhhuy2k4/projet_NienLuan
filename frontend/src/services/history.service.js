@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
 class HistoryService {
-  constructor(baseUrl = "http://localhost:3000/api/history") {
+  constructor(baseUrl = "/api/history") {
     this.api = createApiClient(baseUrl);
   }
 

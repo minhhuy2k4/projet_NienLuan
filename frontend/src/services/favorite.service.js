@@ -1,7 +1,7 @@
 import createApiClient from "./api.service";
 
 class FavoriteService {
-  constructor(baseUrl = "http://localhost:3000/api/favorites") {
+  constructor(baseUrl = "/api/favorites") {
     this.api = createApiClient(baseUrl);
   }
 

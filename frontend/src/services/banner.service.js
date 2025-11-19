@@ -1,48 +1,42 @@
 import createApiClient from "./api.service";
 
-const api = createApiClient();
-
 class BannerService {
-  // Lấy tất cả banners (Admin)
+  constructor(baseUrl = "/api/banners") {
+    this.api = createApiClient(baseUrl);
+  }
+
   getAll(page = 1, limit = 5) {
-    return api.get(`/api/banners?page=${page}&limit=${limit}`);
+    return this.api.get(`/?page=${page}&limit=${limit}`);
   }
 
-  // Lấy chỉ banners đang active (Public)
   getActive() {
-    return api.get("/api/banners/active");
+    return this.api.get("/active");
   }
 
-  // Lấy banner theo ID
   getById(id) {
-    return api.get(`/api/banners/${id}`);
+    return this.api.get(`/${id}`);
   }
 
-  // Tạo banner mới
   create(bannerData) {
-    return api.post("/api/banners", bannerData);
+    return this.api.post("/", bannerData);
   }
 
-  // Cập nhật banner
   update(id, bannerData) {
-    return api.put(`/api/banners/${id}`, bannerData);
+    return this.api.put(`/${id}`, bannerData);
   }
 
-  // Xóa banner
   delete(id) {
-    return api.delete(`/api/banners/${id}`);
+    return this.api.delete(`/${id}`);
   }
 
-  // Toggle active status
   toggleActive(id) {
-    return api.patch(`/api/banners/${id}/toggle`);
+    return this.api.patch(`/${id}/toggle`);
   }
 
-  // Upload banner image
   uploadImage(file) {
     const formData = new FormData();
     formData.append("banner", file);
-    return api.post("/api/banners/upload", formData, {
+    return this.api.post("/upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
