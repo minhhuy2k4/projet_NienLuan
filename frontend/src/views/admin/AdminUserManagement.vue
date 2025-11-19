@@ -112,17 +112,24 @@
                 <p v-else>Chưa có người dùng nào.</p>
 
                 <!-- Pagination -->
-                <div v-if="totalPages > 1" class="pagination">
-                    <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="page-btn">
+                <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
+                    <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         ← Trước
                     </button>
-                    <span class="page-info">
+                    <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
                         Trang {{ currentPage }} / {{ totalPages }}
-                    </span>
+                    </div>
                     <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
-                        class="page-btn">
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         Sau →
                     </button>
+                </div>
+
+                <!-- Displaying info -->
+                <div v-if="userList.length > 0" class="mt-4 text-center text-sm text-gray-600">
+                    Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, total)
+                    }} / Tổng {{ total }} người dùng
                 </div>
             </div>
         </div>

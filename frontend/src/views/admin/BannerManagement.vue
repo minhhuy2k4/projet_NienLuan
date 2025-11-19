@@ -31,54 +31,43 @@
                         <label class="block text-sm font-semibold mb-2">Phụ đề *</label>
                         <input v-model="formData.subtitle" type="text" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="VD: Khám phá thế giới Manhwa đầy màu sắc">
+                            placeholder="VD: Phụ đề banner">
+                        <small class="text-gray-500">Upload ảnh từ máy tính hoặc nhập URL bên dưới</small>
                     </div>
 
-                    <!-- Image URL -->
-                    <div>
-                        <label class="block text-sm font-semibold mb-2">Hình ảnh Banner *</label>
+                    <!-- URL Input - Only show if no file uploaded -->
+                    <div v-if="!uploadedFile">
+                        <label class="block text-sm text-gray-600 mb-2">Hoặc nhập URL</label>
+                        <input v-model="formData.image" type="url" :required="!uploadedFile"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                            placeholder="https://... hoặc /banners/...">
+                    </div>
 
-                        <!-- Upload File -->
-                        <div class="mb-3">
-                            <input type="file" @change="handleFileUpload" accept="image/*" ref="fileInput"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <small class="text-gray-500">Upload ảnh từ máy tính hoặc nhập URL bên dưới</small>
-                        </div>
-
-                        <!-- URL Input - Only show if no file uploaded -->
-                        <div v-if="!uploadedFile">
-                            <label class="block text-sm text-gray-600 mb-2">Hoặc nhập URL</label>
-                            <input v-model="formData.image" type="url" :required="!uploadedFile"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                placeholder="https://... hoặc /banners/...">
-                        </div>
-
-                        <!-- Show uploaded file info -->
-                        <div v-if="uploadedFile" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-2">
-                                    <span class="text-green-600">✓</span>
-                                    <span class="text-sm text-green-800">{{ uploadedFile }}</span>
-                                </div>
-                                <button type="button" @click="clearUploadedFile"
-                                    class="text-red-600 hover:text-red-800 text-sm font-semibold">
-                                    Xóa
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Preview -->
-                        <div v-if="formData.image" class="mt-3">
-                            <img :src="getBannerUrl(formData.image)" alt="Preview"
-                                class="w-full h-48 object-cover rounded-lg" @error="handleImageError">
-                        </div>
-
-                        <!-- Upload Progress -->
-                        <div v-if="uploading" class="mt-3">
+                    <!-- Show uploaded file info -->
+                    <div v-if="uploadedFile" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
-                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
-                                <span class="text-sm text-gray-600">Đang upload...</span>
+                                <span class="text-green-600">✓</span>
+                                <span class="text-sm text-green-800">{{ uploadedFile }}</span>
                             </div>
+                            <button type="button" @click="clearUploadedFile"
+                                class="text-red-600 hover:text-red-800 text-sm font-semibold">
+                                Xóa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Preview -->
+                    <div v-if="formData.image" class="mt-3">
+                        <img :src="getBannerUrl(formData.image)" alt="Preview"
+                            class="w-full h-48 object-cover rounded-lg" @error="handleImageError">
+                    </div>
+
+                    <!-- Upload Progress -->
+                    <div v-if="uploading" class="mt-3">
+                        <div class="flex items-center gap-2">
+                            <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                            <span class="text-sm text-gray-600">Đang upload...</span>
                         </div>
                     </div>
 
@@ -172,16 +161,24 @@
         </div>
 
         <!-- Pagination -->
-        <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center gap-4">
+        <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
             <button @click="prevPage" :disabled="currentPage === 1"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                 ← Trước
             </button>
-            <span class="text-gray-700 font-medium">Trang {{ currentPage }} / {{ totalPages }}</span>
+            <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
+                Trang {{ currentPage }} / {{ totalPages }}
+            </div>
             <button @click="nextPage" :disabled="currentPage === totalPages"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                 Sau →
             </button>
+        </div>
+
+        <!-- Displaying info -->
+        <div v-if="banners.length > 0" class="mt-4 text-center text-sm text-gray-600">
+            Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
+                banners.length) }} / Tổng {{ banners.length }} banner
         </div>
 
         <!-- Empty State -->

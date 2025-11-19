@@ -71,16 +71,24 @@
                 <p v-else>Chưa có tác giả nào.</p>
 
                 <!-- Pagination -->
-                <div v-if="totalPages > 1" class="pagination">
-                    <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
+                    <button @click="currentPage--" :disabled="currentPage === 1"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         ← Trước
                     </button>
-                    <span class="page-info">
+                    <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
                         Trang {{ currentPage }} / {{ totalPages }}
-                    </span>
-                    <button @click="currentPage++" :disabled="currentPage === totalPages" class="page-btn">
+                    </div>
+                    <button @click="currentPage++" :disabled="currentPage === totalPages"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         Sau →
                     </button>
+                </div>
+
+                <!-- Displaying info -->
+                <div v-if="paginatedAuthors.length > 0" class="mt-4 text-center text-sm text-gray-600">
+                    Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
+                    filteredAuthors.length) }} / Tổng {{ filteredAuthors.length }} tác giả
                 </div>
             </div>
         </div>

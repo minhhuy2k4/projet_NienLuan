@@ -73,17 +73,26 @@
                 <p class="text-gray-600 text-lg">Không có báo cáo nào</p>
             </div>
 
-            <!-- Pagination -->
-            <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center gap-4">
+            <!-- Pagination (Reports Tab) -->
+            <div v-if="totalPages > 1 && activeTab === 'reports'" class="mt-8 flex justify-center items-center gap-4">
                 <button @click="prevPage" :disabled="currentPage === 1"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                     ← Trước
                 </button>
-                <span class="text-gray-700 font-medium">Trang {{ currentPage }} / {{ totalPages }}</span>
+                <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
+                    Trang {{ currentPage }} / {{ totalPages }}
+                </div>
                 <button @click="nextPage" :disabled="currentPage === totalPages"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                     Sau →
                 </button>
+            </div>
+
+            <!-- Displaying info (Reports Tab) -->
+            <div v-if="reports && reports.length > 0 && activeTab === 'reports'"
+                class="mt-4 text-center text-sm text-gray-600">
+                Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
+                reports.length) }} / Tổng {{ reports.length }} báo cáo
             </div>
         </div>
 
@@ -148,17 +157,26 @@
                 <p class="text-gray-600 text-lg">Không tìm thấy bình luận nào</p>
             </div>
 
-            <!-- Pagination -->
-            <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center gap-4">
+            <!-- Pagination (Comments Tab) -->
+            <div v-if="totalPages > 1 && activeTab === 'comments'" class="mt-8 flex justify-center items-center gap-4">
                 <button @click="prevPage" :disabled="currentPage === 1"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                     ← Trước
                 </button>
-                <span class="text-gray-700 font-medium">Trang {{ currentPage }} / {{ totalPages }}</span>
+                <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
+                    Trang {{ currentPage }} / {{ totalPages }}
+                </div>
                 <button @click="nextPage" :disabled="currentPage === totalPages"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                     Sau →
                 </button>
+            </div>
+
+            <!-- Displaying info (Comments Tab) -->
+            <div v-if="allComments && allComments.length > 0 && activeTab === 'comments'"
+                class="mt-4 text-center text-sm text-gray-600">
+                Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
+                allComments.length) }} / Tổng {{ allComments.length }} bình luận
             </div>
         </div>
     </div>

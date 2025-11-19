@@ -1,13 +1,17 @@
 === DANH SÁCH THỂ LOẠI TRUYỆN ===
 
-1. hai huoc v
+1. cff
 
-2. hanh dong
+2. ff
 
-3. hgg
+3. hai huoc v
 
-4. kinh dị
+4. hanh dong
+
+5. hgg
+
+6. kinh dị
 
 
-Tổng số thể loại: 4
-Cập nhật lần cuối: 09:01:35 12/11/2025
+Tổng số thể loại: 6
+Cập nhật lần cuối: 11:42:24 19/11/2025

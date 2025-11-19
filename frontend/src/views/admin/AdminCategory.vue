@@ -66,16 +66,24 @@
                 <p v-else>Chưa có thể loại nào.</p>
 
                 <!-- Pagination -->
-                <div v-if="totalPages > 1" class="pagination">
-                    <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
+                    <button @click="currentPage--" :disabled="currentPage === 1"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         ← Trước
                     </button>
-                    <span class="page-info">
+                    <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
                         Trang {{ currentPage }} / {{ totalPages }}
-                    </span>
-                    <button @click="currentPage++" :disabled="currentPage === totalPages" class="page-btn">
+                    </div>
+                    <button @click="currentPage++" :disabled="currentPage === totalPages"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         Sau →
                     </button>
+                </div>
+
+                <!-- Displaying info -->
+                <div v-if="paginatedCategories.length > 0" class="mt-4 text-center text-sm text-gray-600">
+                    Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
+                    filteredCategories.length) }} / Tổng {{ filteredCategories.length }} thể loại
                 </div>
             </div>
         </div>
@@ -338,42 +346,5 @@ textarea {
 }
 
 /* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    padding: 1rem 0;
-}
-
-.page-btn {
-    padding: 0.5rem 1rem;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s;
-}
-
-.page-btn:hover:not(:disabled) {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
-}
-
-.page-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-    opacity: 0.6;
-}
-
-.page-info {
-    font-weight: 600;
-    color: var(--text-primary);
-    min-width: 120px;
-    text-align: center;
-}
+/* Pagination styles now use utility classes for consistency with other admin pages */
 </style>

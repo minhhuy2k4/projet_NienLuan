@@ -26,18 +26,26 @@
                             placeholder="Nhập tiêu đề quảng cáo">
                     </div>
 
-                    <!-- Position -->
-                    <div>
-                        <label class="block text-sm font-semibold mb-2">Vị trí *</label>
-                        <select v-model="formData.position" required
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                            <option value="home">Trang chủ</option>
-                            <option value="story-detail">Chi tiết truyện</option>
-                            <option value="chapter-detail">Chi tiết chương</option>
-                        </select>
+                    <!-- Pagination -->
+                    <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
+                        <button @click="prevPage" :disabled="currentPage === 1"
+                            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                            ← Trước
+                        </button>
+                        <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
+                            Trang {{ currentPage }} / {{ totalPages }}
+                        </div>
+                        <button @click="nextPage" :disabled="currentPage === totalPages"
+                            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                            Sau →
+                        </button>
                     </div>
 
-                    <!-- Description -->
+                    <!-- Displaying info -->
+                    <div v-if="ads.length > 0" class="mt-4 text-center text-sm text-gray-600">
+                        Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
+                            ads.length * totalPages) }} / Tổng {{ ads.length * totalPages }} quảng cáo
+                    </div>
                     <div>
                         <label class="block text-sm font-semibold mb-2">Mô tả</label>
                         <textarea v-model="formData.description" rows="3"
@@ -190,16 +198,24 @@
         </div>
 
         <!-- Pagination -->
-        <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center gap-4">
+        <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
             <button @click="prevPage" :disabled="currentPage === 1"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                 ← Trước
             </button>
-            <span class="text-gray-700 font-medium">Trang {{ currentPage }} / {{ totalPages }}</span>
+            <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
+                Trang {{ currentPage }} / {{ totalPages }}
+            </div>
             <button @click="nextPage" :disabled="currentPage === totalPages"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                 Sau →
             </button>
+        </div>
+
+        <!-- Displaying info -->
+        <div v-if="ads.length > 0" class="mt-4 text-center text-sm text-gray-600">
+            Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, ads.length) }}
+            / Tổng {{ ads.length }} quảng cáo
         </div>
 
         <!-- Empty State -->
