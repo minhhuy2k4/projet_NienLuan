@@ -2,7 +2,7 @@
     <div class="main-content">
         <div class="content-header animate-fade-in">
             <h2>Quản lý Người dùng</h2>
-            <button @click="openUserModal()" class="submit-button transform hover:scale-105 transition">
+            <button @click="openAddUserModal()" class="submit-button transform hover:scale-105 transition">
                 + Thêm người dùng
             </button>
         </div>
@@ -25,6 +25,11 @@
                         <label for="password">Mật khẩu <span class="text-red-500">*</span></label>
                         <input type="password" id="password" v-model="formData.password" required minlength="6"
                             class="form-input">
+                        <small class="text-gray-500 mt-1">Mật khẩu phải có ít nhất 6 ký tự</small>
+                    </div>
+                    <div class="form-group" v-if="editingUser">
+                        <label for="password">Mật khẩu mới (để trống nếu không đổi)</label>
+                        <input type="password" id="password" v-model="formData.password" minlength="6" class="form-input">
                         <small class="text-gray-500 mt-1">Mật khẩu phải có ít nhất 6 ký tự</small>
                     </div>
                     <div class="form-group">
@@ -233,7 +238,7 @@ const handleImageError = (event) => {
 
 const showUserModal = ref(false);
 
-function openUserModal() {
+function openAddUserModal() {
     editingUser.value = null;
     formData.value = { name: '', email: '', password: '', role: 'user' };
     error.value = null;
@@ -289,6 +294,14 @@ const handleSubmit = async () => {
                 email: formData.value.email,
                 role: formData.value.role,
             };
+            if (formData.value.password) {
+                if (formData.value.password.length < 6) {
+                    error.value = 'Mật khẩu phải có ít nhất 6 ký tự.';
+                    loading.value = false;
+                    return;
+                }
+                updates.password = formData.value.password;
+            }
             await userService.updateUser(editingUser.value, updates);
             alert('✅ Cập nhật người dùng thành công!');
         } else {
@@ -313,7 +326,8 @@ const editUser = (user) => {
         role: user.role,
         password: ''
     };
-    openUserModal();
+    error.value = null;
+    showUserModal.value = true;
 };
 
 const deleteUser = async (id) => {
