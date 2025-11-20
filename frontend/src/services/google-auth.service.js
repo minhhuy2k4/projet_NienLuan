@@ -5,7 +5,7 @@ class GoogleAuthService {
     this.api = createApiClient(baseUrl);
     this.baseUrl = baseUrl;
     // Lấy domain từ biến môi trường hoặc mặc định
-    this.domain = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    this.domain = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
   }
 
   signInWithGoogle() {

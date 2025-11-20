@@ -58,7 +58,9 @@ exports.login = async (req, res, next) => {
 exports.googleLogin = async (req, res, next) => {
   try {
     // Google sẽ callback về FRONTEND port 3001
-    const redirectUri = "http://localhost:3001/auth/google/callback";
+    const redirectUri =
+      "https://audio.huyminh.site/auth/google/callback" ??
+      "http://localhost:3001/auth/google/callback";
     const googleAuthUrl =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${config.app.googleClientId}&` +
@@ -86,7 +88,9 @@ exports.googleCallback = async (req, res, next) => {
 
   try {
     // Frontend redirect URI
-    const redirectUri = "http://localhost:3001/auth/google/callback";
+    const redirectUri =
+      "https://audio.huyminh.site/auth/google/callback" ??
+      "http://localhost:3001/auth/google/callback";
 
     // Exchange authorization code for access token
     const tokenResponse = await axios.post(
