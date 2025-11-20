@@ -35,12 +35,23 @@
                         <small class="text-gray-500">Upload ảnh từ máy tính hoặc nhập URL bên dưới</small>
                     </div>
 
-                    <!-- URL Input - Only show if no file uploaded -->
-                    <div v-if="!uploadedFile">
-                        <label class="block text-sm text-gray-600 mb-2">Hoặc nhập URL</label>
-                        <input v-model="formData.image" type="url" :required="!uploadedFile"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            placeholder="https://... hoặc /banners/...">
+
+                    <!-- Image URL & Upload File -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Hình ảnh Banner *</label>
+                        <!-- Upload File -->
+                        <div class="mb-3">
+                            <input type="file" @change="handleFileUpload" accept="image/*" ref="fileInput"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <small class="text-gray-500">Upload ảnh từ máy tính hoặc nhập URL bên dưới</small>
+                        </div>
+                        <!-- URL Input - Only show if no file uploaded -->
+                        <div v-if="!uploadedFile">
+                            <label class="block text-sm text-gray-600 mb-2">Hoặc nhập URL</label>
+                            <input v-model="formData.image" type="url" :required="!uploadedFile"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                placeholder="https://... hoặc /banners/...">
+                        </div>
                     </div>
 
                     <!-- Show uploaded file info -->
