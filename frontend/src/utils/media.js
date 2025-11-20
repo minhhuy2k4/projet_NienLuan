@@ -2,7 +2,7 @@
  * Media Utilities - Xử lý đường dẫn hình ảnh và audio
  */
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:3000";
 
 /**
  * Lấy đường dẫn đầy đủ cho hình ảnh
