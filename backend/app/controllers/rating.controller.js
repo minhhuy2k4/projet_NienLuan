@@ -123,6 +123,10 @@ exports.getAllRatings = async (req, res) => {
       filter.rating = req.query.rating;
     }
 
+    if (req.query.search) {
+      filter.search = req.query.search;
+    }
+
     const ratingService = new RatingService(MongoDB.client);
     const result = await ratingService.getAllRatings(limit, skip, filter);
 

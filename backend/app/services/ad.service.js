@@ -6,15 +6,25 @@ class AdService {
   }
 
   // Lấy tất cả quảng cáo (có phân trang)
-  async getAll(page = 1, limit = 5) {
+  async getAll(page = 1, limit = 5, search = "") {
     const skip = (page - 1) * limit;
-    const ads = await this.Ad.find({})
+
+    // Build search query
+    const query = {};
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const ads = await this.Ad.find(query)
       .sort({ order: 1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .toArray();
 
-    const total = await this.Ad.countDocuments({});
+    const total = await this.Ad.countDocuments(query);
 
     return {
       ads,

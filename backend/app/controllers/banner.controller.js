@@ -32,9 +32,10 @@ exports.getAll = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
 
     const bannerService = new BannerService(await MongoDB.client);
-    const result = await bannerService.getAll(page, limit);
+    const result = await bannerService.getAll(page, limit, search);
     res.json(result);
   } catch (error) {
     console.error("Get all banners error:", error);

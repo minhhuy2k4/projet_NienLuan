@@ -154,7 +154,7 @@ class RatingService {
       matchStage.rating = parseInt(filter.rating);
     }
 
-    const ratings = await this.Rating.aggregate([
+    const pipeline = [
       ...(Object.keys(matchStage).length > 0 ? [{ $match: matchStage }] : []),
       {
         $lookup: {
@@ -178,6 +178,18 @@ class RatingService {
       {
         $unwind: "$story",
       },
+    ];
+
+    // Add search filter for story name
+    if (filter.search) {
+      pipeline.push({
+        $match: {
+          "story.name": { $regex: filter.search, $options: "i" },
+        },
+      });
+    }
+
+    pipeline.push(
       {
         $project: {
           rating: 1,
@@ -195,17 +207,29 @@ class RatingService {
       },
       {
         $sort: { createdAt: -1 },
-      },
+      }
+    );
+
+    // Get total count with search filter
+    const countPipeline = [...pipeline];
+    const totalCountResult = await this.Rating.aggregate([
+      ...countPipeline,
+      { $count: "total" },
+    ]).toArray();
+    const totalCount =
+      totalCountResult.length > 0 ? totalCountResult[0].total : 0;
+
+    // Add pagination
+    pipeline.push(
       {
         $skip: skip,
       },
       {
         $limit: limit,
-      },
-    ]).toArray();
+      }
+    );
 
-    // Get total count
-    const totalCount = await this.Rating.countDocuments(matchStage);
+    const ratings = await this.Rating.aggregate(pipeline).toArray();
 
     return { ratings, totalCount };
   }

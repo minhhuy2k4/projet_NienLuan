@@ -9,17 +9,13 @@
 
             <!-- Filters -->
             <div class="bg-white rounded-lg shadow-md p-6 mb-6 animate-slide-up">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Filter by Story -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <!-- Search by Story Name -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Lọc theo truyện</label>
-                        <select v-model="filters.storyId" @change="handleFilterChange"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <option value="">Tất cả truyện</option>
-                            <option v-for="story in stories" :key="story._id" :value="story._id">
-                                {{ story.name }}
-                            </option>
-                        </select>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Tìm kiếm theo tên truyện</label>
+                        <input v-model="filters.search" @input="handleFilterChange" type="text"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="🔍 Nhập tên truyện...">
                     </div>
 
                     <!-- Filter by Rating -->
@@ -164,11 +160,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import RatingService from '@/services/rating.service';
-import StoryService from '@/services/story.service';
 import { getStoryImageUrl } from '@/utils/media';
 
 const ratings = ref([]);
-const stories = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const totalCount = ref(0);
@@ -176,8 +170,8 @@ const limit = ref(5);
 const skip = ref(0);
 
 const filters = ref({
-    storyId: '',
-    rating: ''
+    rating: '',
+    search: ''
 });
 
 const currentPage = computed(() => Math.floor(skip.value / limit.value) + 1);
@@ -190,8 +184,8 @@ const loadRatings = async () => {
         error.value = null;
 
         const filterParams = {};
-        if (filters.value.storyId) filterParams.storyId = filters.value.storyId;
         if (filters.value.rating) filterParams.rating = filters.value.rating;
+        if (filters.value.search) filterParams.search = filters.value.search;
 
         const result = await RatingService.getAllRatings(limit.value, skip.value, filterParams);
         ratings.value = result.ratings;
@@ -208,15 +202,6 @@ const loadRatings = async () => {
 const handleFilterChange = () => {
     skip.value = 0;
     loadRatings();
-};
-
-// Load stories for filter
-const loadStories = async () => {
-    try {
-        stories.value = await StoryService.getAll();
-    } catch (err) {
-        console.error('Load stories error:', err);
-    }
 };
 
 // Delete rating
@@ -262,7 +247,7 @@ const formatDate = (date) => {
 };
 
 onMounted(async () => {
-    await Promise.all([loadRatings(), loadStories()]);
+    await loadRatings();
 });
 </script>
 

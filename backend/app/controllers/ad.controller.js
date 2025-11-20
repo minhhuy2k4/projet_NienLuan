@@ -32,9 +32,10 @@ exports.getAll = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
+    const search = req.query.search || "";
 
     const adService = new AdService(await MongoDB.client);
-    const result = await adService.getAll(page, limit);
+    const result = await adService.getAll(page, limit, search);
     res.json(result);
   } catch (error) {
     console.error("Get all ads error:", error);

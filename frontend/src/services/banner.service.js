@@ -5,8 +5,10 @@ class BannerService {
     this.api = createApiClient(baseUrl);
   }
 
-  getAll(page = 1, limit = 5) {
-    return this.api.get(`/?page=${page}&limit=${limit}`);
+  getAll(page = 1, limit = 5, search = "") {
+    const params = new URLSearchParams({ page, limit });
+    if (search) params.append("search", search);
+    return this.api.get(`/?${params}`);
   }
 
   getActive() {

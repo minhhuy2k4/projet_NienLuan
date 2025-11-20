@@ -2,8 +2,13 @@
     <div class="container mx-auto px-4 py-8 animate-fade-in">
         <h1 class="text-3xl font-bold text-gray-800 mb-6 animate-slide-up">Quản lý Quảng cáo</h1>
 
-        <!-- Add New Ad Button -->
-        <div class="mb-6 animate-slide-up" style="animation-delay: 0.1s">
+        <!-- Search and Add Button -->
+        <div class="mb-6 animate-slide-up flex gap-4 items-center" style="animation-delay: 0.1s">
+            <div class="flex-1">
+                <input v-model="searchQuery" @input="handleSearch" type="text"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="🔍 Tìm kiếm quảng cáo theo tiêu đề hoặc mô tả...">
+            </div>
             <button @click="showAddForm = true"
                 class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition flex items-center gap-2">
                 <span class="text-xl">➕</span>
@@ -227,6 +232,7 @@ const editingAd = ref(null);
 const uploading = ref(false);
 const uploadedFile = ref(null);
 const fileInput = ref(null);
+const searchQuery = ref('');
 
 // Pagination state
 const currentPage = ref(1);
@@ -283,13 +289,19 @@ const clearUploadedFile = () => {
 // Load ads from API
 const loadAds = async () => {
     try {
-        const response = await AdService.getAll(currentPage.value, itemsPerPage);
+        const response = await AdService.getAll(currentPage.value, itemsPerPage, searchQuery.value);
         ads.value = response.data?.ads || [];
         totalPages.value = response.data?.pagination?.totalPages || 1;
     } catch (error) {
         console.error('Load ads error:', error);
         alert('❌ Không thể tải danh sách quảng cáo!');
     }
+};
+
+// Handle search
+const handleSearch = () => {
+    currentPage.value = 1;
+    loadAds();
 };
 
 // Save ad

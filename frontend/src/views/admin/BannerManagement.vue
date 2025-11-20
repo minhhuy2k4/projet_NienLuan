@@ -2,8 +2,13 @@
     <div class="container mx-auto px-4 py-8 animate-fade-in">
         <h1 class="text-3xl font-bold text-gray-800 mb-6 animate-slide-up">Quản lý Banner</h1>
 
-        <!-- Add New Banner Button -->
-        <div class="mb-6 animate-slide-up" style="animation-delay: 0.1s">
+        <!-- Search and Add Button -->
+        <div class="mb-6 animate-slide-up flex gap-4 items-center" style="animation-delay: 0.1s">
+            <div class="flex-1">
+                <input v-model="searchQuery" @input="handleSearch" type="text"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="🔍 Tìm kiếm banner theo tiêu đề hoặc phụ đề...">
+            </div>
             <button @click="showAddForm = true"
                 class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition flex items-center gap-2">
                 <span class="text-xl">➕</span>
@@ -211,6 +216,7 @@ const editingBanner = ref(null);
 const uploading = ref(false);
 const uploadedFile = ref(null);
 const fileInput = ref(null);
+const searchQuery = ref('');
 
 // Pagination state
 const currentPage = ref(1);
@@ -274,13 +280,19 @@ const formatDate = (dateString) => {
 // Load banners from API
 const loadBanners = async () => {
     try {
-        const response = await BannerService.getAll(currentPage.value, itemsPerPage);
+        const response = await BannerService.getAll(currentPage.value, itemsPerPage, searchQuery.value);
         banners.value = response.data?.banners || [];
         totalPages.value = response.data?.pagination?.totalPages || 1;
     } catch (error) {
         console.error('Load banners error:', error);
         alert('❌ Không thể tải danh sách banner!');
     }
+};
+
+// Handle search
+const handleSearch = () => {
+    currentPage.value = 1;
+    loadBanners();
 };
 
 // Save banner

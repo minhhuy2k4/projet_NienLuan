@@ -6,15 +6,25 @@ class BannerService {
   }
 
   // Lấy tất cả banners (có phân trang)
-  async getAll(page = 1, limit = 5) {
+  async getAll(page = 1, limit = 5, search = "") {
     const skip = (page - 1) * limit;
-    const banners = await this.Banner.find({})
+
+    // Build search query
+    const query = {};
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { subtitle: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const banners = await this.Banner.find(query)
       .sort({ order: 1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .toArray();
 
-    const total = await this.Banner.countDocuments({});
+    const total = await this.Banner.countDocuments(query);
 
     return {
       banners,
