@@ -9,7 +9,6 @@ export default defineConfig({
   plugins: [vue(), vueDevTools()],
   server: {
     allowedHosts: ["audio.huyminh.site"],
-    host: true,
     port: 3001,
     proxy: {
       "/api": {
