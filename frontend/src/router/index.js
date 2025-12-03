@@ -158,6 +158,12 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // If the navigation was triggered by browser back/forward, restore saved position
+    if (savedPosition) return savedPosition;
+    // Always scroll to top on normal navigation
+    return { left: 0, top: 0 };
+  },
 });
 
 // Navigation guard để bảo vệ admin routes
