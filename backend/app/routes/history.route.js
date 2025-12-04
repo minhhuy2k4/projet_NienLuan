@@ -13,10 +13,10 @@ router.get("/", history.getHistory);
 // Thêm/cập nhật lịch sử
 router.post("/", history.addHistory);
 
+// Xóa toàn bộ lịch sử (phải đặt trước /:storyId)
+router.delete("/clear", history.clearHistory);
+
 // Xóa một lịch sử
 router.delete("/:storyId", history.removeHistory);
-
-// Xóa toàn bộ lịch sử
-router.delete("/", history.clearHistory);
 
 module.exports = router;

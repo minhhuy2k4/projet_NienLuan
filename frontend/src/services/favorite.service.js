@@ -24,6 +24,10 @@ class FavoriteService {
   async removeFavorite(storyId) {
     return (await this.api.delete(`/${storyId}`)).data;
   }
+
+  async clearAllFavorites() {
+    return (await this.api.delete("/clear")).data;
+  }
 }
 
 export default new FavoriteService();

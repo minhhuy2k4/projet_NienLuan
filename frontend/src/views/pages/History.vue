@@ -5,7 +5,10 @@
             <div class="animate-fade-in mb-8">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
-                        <span class="text-5xl">📚</span>
+                        <svg class="w-12 h-12 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                        </svg>
                         <div>
                             <h1 class="text-4xl font-bold text-gray-800">Lịch Sử Đọc</h1>
                             <p class="text-gray-600">Những truyện bạn đã xem gần đây</p>
@@ -13,7 +16,12 @@
                     </div>
                     <button v-if="histories.length > 0" @click="clearAll"
                         class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2">
-                        <span>🗑️</span> Xóa tất cả
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Xóa tất cả
                     </button>
                 </div>
             </div>
@@ -32,7 +40,10 @@
 
             <!-- Empty State -->
             <div v-else-if="histories.length === 0" class="text-center py-20 animate-slide-up">
-                <div class="text-8xl mb-4">📖</div>
+                <svg class="w-32 h-32 mx-auto mb-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                </svg>
                 <h3 class="text-2xl font-bold text-gray-800 mb-2">Chưa có lịch sử đọc</h3>
                 <p class="text-gray-600 mb-6">Bắt đầu khám phá và đọc truyện ngay!</p>
                 <router-link to="/"
@@ -52,9 +63,12 @@
                             <div class="w-full md:w-32 h-48 md:h-40 rounded-lg overflow-hidden group">
                                 <img v-if="item.image" :src="getStoryImageUrl(item.image)" :alt="item.name"
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                                <div v-else
+                                <div
                                     class="w-full h-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center text-white text-4xl">
-                                    📖
+                                    <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                    </svg>
                                 </div>
                             </div>
                         </router-link>
@@ -79,13 +93,28 @@
                             <!-- Stats -->
                             <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-3">
                                 <span class="flex items-center gap-1">
-                                    📚 {{ item.chapterCount || 0 }} chương
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                    </svg>
+                                    {{ item.chapterCount || 0 }} chương
                                 </span>
                                 <span class="flex items-center gap-1">
-                                    👁️ {{ formatViews(item.totalViews) }}
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                        <path fill-rule="evenodd"
+                                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    {{ formatViews(item.totalViews) }}
                                 </span>
                                 <span class="flex items-center gap-1">
-                                    ⏰ {{ formatDate(item.lastReadAt) }}
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    {{ formatDate(item.lastReadAt) }}
                                 </span>
                             </div>
 
@@ -99,9 +128,15 @@
                                             Chương {{ item.lastChapter.chapterNumber }}: {{ item.lastChapter.title }}
                                         </div>
                                     </div>
-                                    <router-link :to="{ name: 'story.detail', params: { slug: item.slug } }"
+                                    <router-link
+                                        :to="{ name: 'chapter.detail', params: { storySlug: item.slug, chapterNumber: item.lastChapter.chapterNumber } }"
                                         class="ml-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition flex items-center gap-2 flex-shrink-0">
-                                        <span>▶️</span> Tiếp tục
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Tiếp tục
                                     </router-link>
                                 </div>
                             </div>
@@ -116,7 +151,12 @@
                         <div class="flex md:flex-col gap-2 flex-shrink-0">
                             <button @click="removeHistory(item._id)"
                                 class="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-semibold rounded-lg transition flex items-center justify-center gap-2">
-                                <span>🗑️</span> Xóa
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Xóa
                             </button>
                         </div>
                     </div>
@@ -128,27 +168,23 @@
                         class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition">
                         ← Trước
                     </button>
-                    
+
                     <div class="flex gap-2">
-                        <button v-for="page in Math.min(totalPages, 5)" :key="page"
-                            @click="goToPage(page)"
-                            :class="[
-                                'px-4 py-2 rounded-lg transition',
-                                page === currentPage
-                                    ? 'bg-purple-600 text-white'
-                                    : 'bg-white text-gray-700 hover:bg-purple-100 border border-purple-200'
-                            ]">
+                        <button v-for="page in Math.min(totalPages, 5)" :key="page" @click="goToPage(page)" :class="[
+                            'px-4 py-2 rounded-lg transition',
+                            page === currentPage
+                                ? 'bg-purple-600 text-white'
+                                : 'bg-white text-gray-700 hover:bg-purple-100 border border-purple-200'
+                        ]">
                             {{ page }}
                         </button>
                         <span v-if="totalPages > 5" class="px-4 py-2">...</span>
-                        <button v-if="totalPages > 5 && currentPage < totalPages"
-                            @click="goToPage(totalPages)"
-                            :class="[
-                                'px-4 py-2 rounded-lg transition',
-                                totalPages === currentPage
-                                    ? 'bg-purple-600 text-white'
-                                    : 'bg-white text-gray-700 hover:bg-purple-100 border border-purple-200'
-                            ]">
+                        <button v-if="totalPages > 5 && currentPage < totalPages" @click="goToPage(totalPages)" :class="[
+                            'px-4 py-2 rounded-lg transition',
+                            totalPages === currentPage
+                                ? 'bg-purple-600 text-white'
+                                : 'bg-white text-gray-700 hover:bg-purple-100 border border-purple-200'
+                        ]">
                             {{ totalPages }}
                         </button>
                     </div>

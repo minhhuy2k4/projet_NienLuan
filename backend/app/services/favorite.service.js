@@ -159,6 +159,19 @@ class FavoriteService {
   }
 
   /**
+   * Xóa tất cả truyện yêu thích của user
+   */
+  async clearAllFavorites(userId) {
+    const result = await this.User.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: { favorites: [], updatedAt: new Date() },
+      }
+    );
+    return result;
+  }
+
+  /**
    * Đếm số lượt yêu thích của một truyện
    * Tối ưu: Đếm số user có storyId trong favorites
    */

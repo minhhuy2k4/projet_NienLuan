@@ -115,3 +115,20 @@ exports.toggleFavorite = async (req, res) => {
     res.status(500).send({ message: "Lỗi khi toggle yêu thích" });
   }
 };
+
+/**
+ * Xóa tất cả truyện yêu thích
+ */
+exports.clearAllFavorites = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const favoriteService = new FavoriteService(MongoDB.client);
+    await favoriteService.clearAllFavorites(userId);
+
+    res.send({ message: "Đã xóa tất cả yêu thích" });
+  } catch (error) {
+    console.error("Clear all favorites error:", error);
+    res.status(500).send({ message: "Lỗi khi xóa tất cả yêu thích" });
+  }
+};

@@ -19,7 +19,10 @@ router.get("/check/:storyId", favorites.checkFavorite);
 // Thêm vào yêu thích
 router.post("/", favorites.addFavorite);
 
-// Xóa khỏi yêu thích
+// Xóa tất cả yêu thích
+router.delete("/clear", favorites.clearAllFavorites);
+
+// Xóa khỏi yêu thích (phải đặt sau /clear)
 router.delete("/:storyId", favorites.removeFavorite);
 
 module.exports = router;
