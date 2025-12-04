@@ -55,9 +55,6 @@
                             <router-link to="/history" class="dropdown-item" @click="closeDropdown">
                                 📚 Lịch sử đọc
                             </router-link>
-                            <a href="#" class="dropdown-item" @click.prevent="closeDropdown">
-                                ⚙️ Cài đặt
-                            </a>
                             <hr class="dropdown-divider">
                             <a @click="handleLogout" class="dropdown-item logout-item">
                                 🚪 Đăng xuất

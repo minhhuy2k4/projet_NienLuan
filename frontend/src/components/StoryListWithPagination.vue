@@ -1,6 +1,11 @@
 <template>
     <div class="story-list-page">
         <div class="max-w-7xl mx-auto px-4">
+            <!-- Back Button -->
+            <button v-if="showBackButton" @click="$router.back()" class="back-button mb-4 animate-fade-in">
+                ← Quay lại
+            </button>
+
             <!-- Header -->
             <div class="page-header animate-fade-in mb-8">
                 <div class="flex items-center gap-3 mb-2">
@@ -126,12 +131,16 @@ const props = defineProps({
     },
     iconType: {
         type: String,
-        default: 'book',  // 'fire', 'check', 'new', 'book'
-        validator: (value) => ['fire', 'check', 'new', 'book'].includes(value)
+        default: 'book',  // 'fire', 'check', 'new', 'book', 'category'
+        validator: (value) => ['fire', 'check', 'new', 'book', 'category'].includes(value)
     },
     fetchFunction: {
         type: Function,
         required: true
+    },
+    showBackButton: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -223,6 +232,20 @@ onMounted(async () => {
 .page-description {
     color: var(--text-secondary);
     font-size: 1.125rem;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: color var(--transition-base);
+}
+
+.back-button:hover {
+    color: var(--color-primary-light);
 }
 
 .loading-container {
