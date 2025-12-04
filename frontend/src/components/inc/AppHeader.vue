@@ -24,9 +24,18 @@
                     <!-- User Menu cho TẤT CẢ user đã login -->
                     <div class="user-menu" ref="userMenuRef">
                         <button @click="toggleDropdown" class="user-name-button">
-                            Chào, {{ authStore.user.name }}
-                            <span v-if="authStore.isAdmin">(Admin)</span>
-                            ▾
+                            <img v-if="authStore.user.avatar" :src="getAvatarUrl(authStore.user.avatar)"
+                                :alt="authStore.user.name" class="user-avatar" />
+                            <div v-else class="user-avatar-placeholder">
+                                {{ getInitials(authStore.user.name) }}
+                            </div>
+                            <span class="user-name-text">
+                                {{ authStore.user.name }}
+                                <span v-if="authStore.isAdmin" class="admin-badge">Admin</span>
+                            </span>
+                            <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                                <path d="M6 8L2 4h8L6 8z" />
+                            </svg>
                         </button>
                         <div v-if="dropdownOpen" class="dropdown-content">
                             <!-- Chỉ admin mới thấy link này -->
@@ -74,6 +83,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
 import ThemeToggle from '@/components/ThemeToggle.vue';
+import { getAvatarUrl } from '@/utils/media';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -87,6 +97,15 @@ const handleSearch = () => {
         router.push({ path: '/search', query: { q: searchQuery.value } });
         searchQuery.value = '';
     }
+};
+
+const getInitials = (name) => {
+    if (!name) return '?';
+    const parts = name.split(' ');
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
 };
 
 const toggleDropdown = () => {
@@ -281,17 +300,77 @@ onBeforeUnmount(() => {
 .user-name-button {
     background: none;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.75rem;
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-primary);
     border-radius: var(--radius-md);
-    transition: background-color var(--transition-base);
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .user-name-button:hover {
     background-color: var(--bg-tertiary);
+    transform: translateY(-1px);
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-primary);
+    transition: all var(--transition-base);
+}
+
+.user-name-button:hover .user-avatar {
+    border-color: var(--color-primary-light);
+    box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
+}
+
+.user-avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border: 2px solid var(--color-primary);
+    transition: all var(--transition-base);
+}
+
+.user-name-button:hover .user-avatar-placeholder {
+    box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
+}
+
+.user-name-text {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.admin-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    background: var(--color-warning);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+}
+
+.dropdown-arrow {
+    transition: transform var(--transition-base);
+}
+
+.user-menu[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
 }
 
 .dropdown-content {
