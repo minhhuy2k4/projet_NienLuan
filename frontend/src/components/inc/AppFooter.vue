@@ -31,8 +31,8 @@
             <div class="footer-section">
                 <h4 class="footer-title">Hỗ Trợ</h4>
                 <ul class="footer-links">
-                    <li><a href="#faq">Câu hỏi thường gặp</a></li>
-                    <li><a href="#contact">Liên hệ</a></li>
+                    <li><router-link to="/faq">Câu hỏi thường gặp</router-link></li>
+                    <li><router-link to="/contact">Liên hệ</router-link></li>
                     <li><a href="#terms">Điều khoản sử dụng</a></li>
                     <li><a href="#privacy">Chính sách bảo mật</a></li>
                 </ul>

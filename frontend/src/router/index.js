@@ -75,6 +75,16 @@ const routes = [
     name: "search",
     component: () => import("@/views/pages/Search.vue"),
   },
+  {
+    path: "/faq",
+    name: "faq",
+    component: () => import("@/views/pages/FAQ.vue"),
+  },
+  {
+    path: "/contact",
+    name: "contact",
+    component: () => import("@/views/pages/Contact.vue"),
+  },
   // Google OAuth callback route
   {
     path: "/auth/google/callback",
