@@ -7,6 +7,9 @@ const router = express.Router();
 // === CÁC ROUTE CÔNG KHAI (AI CŨNG XEM ĐƯỢC) ===
 router.get("/", stories.findAll);
 router.get("/search", stories.search);
+router.get("/new", stories.getNewStories);
+router.get("/full", stories.getFullStories);
+router.get("/hot", stories.getHotStories);
 router.get("/slug/:slug", stories.findBySlug);
 router.get("/:id", stories.findOne);
 

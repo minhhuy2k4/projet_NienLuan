@@ -24,6 +24,21 @@ const routes = [
     props: true,
   },
   {
+    path: "/new-stories",
+    name: "story.new",
+    component: () => import("@/views/story/NewStories.vue"),
+  },
+  {
+    path: "/full-stories",
+    name: "story.full",
+    component: () => import("@/views/story/FullStories.vue"),
+  },
+  {
+    path: "/hot-stories",
+    name: "story.hot",
+    component: () => import("@/views/story/HotStories.vue"),
+  },
+  {
     path: "/story/:storySlug/:chapterNumber",
     name: "chapter.detail",
     component: () => import("@/views/chapter/ChapterDetail.vue"),

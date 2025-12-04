@@ -17,6 +17,18 @@ class StoryService {
     return (await this.api.get(`/slug/${slug}`)).data;
   }
 
+  async getNewStories(page = 1, limit = 24) {
+    return (await this.api.get("/new", { params: { page, limit } })).data;
+  }
+
+  async getFullStories(page = 1, limit = 24) {
+    return (await this.api.get("/full", { params: { page, limit } })).data;
+  }
+
+  async getHotStories(page = 1, limit = 24) {
+    return (await this.api.get("/hot", { params: { page, limit } })).data;
+  }
+
   async create(data) {
     return (await this.api.post("/", data)).data;
   }

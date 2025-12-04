@@ -209,3 +209,56 @@ exports.delete = async (req, res, next) => {
       .send({ message: "Lỗi khi xóa truyện", error: error.message });
   }
 };
+
+// --- Lấy truyện theo loại với phân trang ---
+
+exports.getNewStories = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 24;
+
+    const storyService = new StoryService(MongoDB.client);
+    const result = await storyService.getNewStories(page, limit);
+
+    res.send(result);
+  } catch (error) {
+    console.error("Get new stories error:", error);
+    return res
+      .status(500)
+      .send({ message: "Lỗi khi lấy truyện mới", error: error.message });
+  }
+};
+
+exports.getFullStories = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 24;
+
+    const storyService = new StoryService(MongoDB.client);
+    const result = await storyService.getFullStories(page, limit);
+
+    res.send(result);
+  } catch (error) {
+    console.error("Get full stories error:", error);
+    return res
+      .status(500)
+      .send({ message: "Lỗi khi lấy truyện full", error: error.message });
+  }
+};
+
+exports.getHotStories = async (req, res, next) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 24;
+
+    const storyService = new StoryService(MongoDB.client);
+    const result = await storyService.getHotStories(page, limit);
+
+    res.send(result);
+  } catch (error) {
+    console.error("Get hot stories error:", error);
+    return res
+      .status(500)
+      .send({ message: "Lỗi khi lấy truyện hot", error: error.message });
+  }
+};

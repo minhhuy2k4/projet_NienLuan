@@ -343,6 +343,192 @@ class StoryService {
 
     return await this.findWithChapterCount(filter);
   }
+
+  /**
+   * Lấy truyện mới cập nhật (theo updatedAt) với phân trang
+   */
+  async getNewStories(page = 1, limit = 24) {
+    const skip = (page - 1) * limit;
+
+    const total = await this.Story.countDocuments();
+
+    const stories = await this.Story.aggregate([
+      // Join với authors
+      {
+        $lookup: {
+          from: "authors",
+          localField: "authors",
+          foreignField: "_id",
+          as: "authorDetails",
+        },
+      },
+      // Join với categories
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categories",
+          foreignField: "_id",
+          as: "categoryDetails",
+        },
+      },
+      // Join với chapters
+      {
+        $lookup: {
+          from: "chapters",
+          localField: "_id",
+          foreignField: "storyId",
+          as: "chapters",
+        },
+      },
+      // Thêm thống kê
+      {
+        $addFields: {
+          chapterCount: { $size: "$chapters" },
+          totalViews: { $sum: "$chapters.views" },
+          latestChapter: { $max: "$chapters.chapterNumber" },
+        },
+      },
+      // Loại bỏ chapters array
+      {
+        $project: {
+          chapters: 0,
+        },
+      },
+      // Sắp xếp theo ngày cập nhật mới nhất
+      { $sort: { updatedAt: -1 } },
+      // Phân trang
+      { $skip: skip },
+      { $limit: limit },
+    ]).toArray();
+
+    return {
+      stories,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  /**
+   * Lấy truyện đã hoàn thành với phân trang
+   */
+  async getFullStories(page = 1, limit = 24) {
+    const skip = (page - 1) * limit;
+
+    const filter = { status: "hoàn thành" };
+    const total = await this.Story.countDocuments(filter);
+
+    const stories = await this.Story.aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "authors",
+          localField: "authors",
+          foreignField: "_id",
+          as: "authorDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categories",
+          foreignField: "_id",
+          as: "categoryDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "chapters",
+          localField: "_id",
+          foreignField: "storyId",
+          as: "chapters",
+        },
+      },
+      {
+        $addFields: {
+          chapterCount: { $size: "$chapters" },
+          totalViews: { $sum: "$chapters.views" },
+          latestChapter: { $max: "$chapters.chapterNumber" },
+        },
+      },
+      {
+        $project: {
+          chapters: 0,
+        },
+      },
+      // Sắp xếp theo ngày hoàn thành
+      { $sort: { updatedAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]).toArray();
+
+    return {
+      stories,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  /**
+   * Lấy truyện hot (nhiều lượt nghe/xem nhất) với phân trang
+   */
+  async getHotStories(page = 1, limit = 24) {
+    const skip = (page - 1) * limit;
+
+    // Get total để tính tổng số trang
+    const total = await this.Story.countDocuments();
+
+    const stories = await this.Story.aggregate([
+      {
+        $lookup: {
+          from: "authors",
+          localField: "authors",
+          foreignField: "_id",
+          as: "authorDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "categories",
+          foreignField: "_id",
+          as: "categoryDetails",
+        },
+      },
+      {
+        $lookup: {
+          from: "chapters",
+          localField: "_id",
+          foreignField: "storyId",
+          as: "chapters",
+        },
+      },
+      {
+        $addFields: {
+          chapterCount: { $size: "$chapters" },
+          totalViews: { $sum: "$chapters.views" },
+          latestChapter: { $max: "$chapters.chapterNumber" },
+        },
+      },
+      {
+        $project: {
+          chapters: 0,
+        },
+      },
+      // Sắp xếp theo tổng lượt xem giảm dần
+      { $sort: { totalViews: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]).toArray();
+
+    return {
+      stories,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 }
 
 module.exports = StoryService;
