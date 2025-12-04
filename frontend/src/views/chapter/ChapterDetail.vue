@@ -123,7 +123,7 @@
                 </div>
             </div>
 
-            <!-- Chapter Description/Content -->
+            <!-- Chapter Content -->
             <div class="rounded-xl shadow-lg p-6 md:p-8 mb-6 animate-slide-up animation-delay-100"
                 style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
                 <h2 class="text-2xl font-bold mb-4 pb-3"
@@ -136,13 +136,13 @@
                     </svg>
                     Nội dung chương
                 </h2>
-                <div class="prose max-w-none">
-                    <p v-if="chapter.description" class="leading-relaxed whitespace-pre-line"
-                        style="color: var(--text-primary);">
-                        {{ chapter.description }}
-                    </p>
+                <div class="prose max-w-none" style="color: var(--text-primary);">
+                    <div v-if="chapter.content" class="leading-relaxed"
+                        style="white-space: pre-wrap; word-wrap: break-word;">
+                        {{ chapter.content }}
+                    </div>
                     <p v-else class="italic" style="color: var(--text-secondary);">
-                        Chương này chưa có nội dung mô tả.
+                        Chương này chưa có nội dung.
                     </p>
                 </div>
             </div>

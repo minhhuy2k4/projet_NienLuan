@@ -6,27 +6,25 @@ class ChapterService {
   }
 
   extractChapterData(payload, isUpdate = false) {
-    const chapter = {
-      title: payload.title,
-      content: payload.content || "",
-      chapterNumber: payload.chapterNumber
-        ? parseInt(payload.chapterNumber)
-        : undefined,
-      duration: payload.duration || 0, // Thời lượng audio (giây)
-      audioUrl: payload.audioUrl || null, // Link file audio
-      isPublished:
-        payload.isPublished !== undefined ? payload.isPublished : true,
-    };
+    const chapter = {};
+
+    // Chỉ thêm các field nếu chúng tồn tại trong payload
+    if (payload.title !== undefined) chapter.title = payload.title;
+    if (payload.content !== undefined) chapter.content = payload.content;
+    if (payload.description !== undefined)
+      chapter.description = payload.description;
+    if (payload.chapterNumber !== undefined)
+      chapter.chapterNumber = parseInt(payload.chapterNumber);
+    if (payload.duration !== undefined)
+      chapter.duration = payload.duration || 0;
+    if (payload.audioUrl !== undefined) chapter.audioUrl = payload.audioUrl;
+    if (payload.isPublished !== undefined)
+      chapter.isPublished = payload.isPublished;
 
     // Chỉ thêm storyId khi create, không update storyId
     if (!isUpdate && payload.storyId) {
       chapter.storyId = new ObjectId(payload.storyId);
     }
-
-    // Xóa các field undefined
-    Object.keys(chapter).forEach(
-      (key) => chapter[key] === undefined && delete chapter[key]
-    );
 
     return chapter;
   }
@@ -68,6 +66,12 @@ class ChapterService {
     };
 
     const updateData = this.extractChapterData(payload, true); // true = isUpdate
+
+    // Chỉ cập nhật nếu có dữ liệu
+    if (Object.keys(updateData).length === 0) {
+      return await this.findById(id);
+    }
+
     updateData.updatedAt = new Date();
 
     const result = await this.Chapter.findOneAndUpdate(
@@ -76,7 +80,6 @@ class ChapterService {
       { returnDocument: "after" }
     );
 
-    // MongoDB driver mới trả về document trực tiếp, không phải result.value
     return result;
   }
 
