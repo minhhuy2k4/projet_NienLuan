@@ -5,6 +5,26 @@ class AdService {
     this.Ad = client.db().collection("ads");
   }
 
+  /**
+   * Chuẩn hóa dữ liệu quảng cáo từ payload
+   */
+  extractAdData(payload) {
+    const ad = {
+      title: payload.title,
+      description: payload.description,
+      image: payload.image,
+      link: payload.link,
+      position: payload.position, // 'home', 'story-detail', 'chapter-detail'
+      order: payload.order !== undefined ? payload.order : 0,
+      isActive: payload.isActive !== undefined ? payload.isActive : true,
+    };
+
+    // Xóa các trường undefined
+    Object.keys(ad).forEach((key) => ad[key] === undefined && delete ad[key]);
+
+    return ad;
+  }
+
   // Lấy tất cả quảng cáo (có phân trang)
   async getAll(page = 1, limit = 5, search = "") {
     const skip = (page - 1) * limit;
@@ -58,19 +78,11 @@ class AdService {
 
   // Tạo quảng cáo mới
   async create(adData) {
-    const ad = {
-      title: adData.title,
-      description: adData.description,
-      image: adData.image,
-      link: adData.link,
-      position: adData.position, // 'home', 'story-detail', 'chapter-detail'
-      order: adData.order || 0,
-      isActive: adData.isActive !== undefined ? adData.isActive : true,
-      clickCount: 0,
-      viewCount: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const ad = this.extractAdData(adData);
+    ad.clickCount = 0;
+    ad.viewCount = 0;
+    ad.createdAt = new Date();
+    ad.updatedAt = new Date();
 
     const result = await this.Ad.insertOne(ad);
     return { _id: result.insertedId, ...ad };
@@ -78,18 +90,8 @@ class AdService {
 
   // Cập nhật quảng cáo
   async update(adId, adData) {
-    const updateData = {
-      updatedAt: new Date(),
-    };
-
-    if (adData.title !== undefined) updateData.title = adData.title;
-    if (adData.description !== undefined)
-      updateData.description = adData.description;
-    if (adData.image !== undefined) updateData.image = adData.image;
-    if (adData.link !== undefined) updateData.link = adData.link;
-    if (adData.position !== undefined) updateData.position = adData.position;
-    if (adData.order !== undefined) updateData.order = adData.order;
-    if (adData.isActive !== undefined) updateData.isActive = adData.isActive;
+    const updateData = this.extractAdData(adData);
+    updateData.updatedAt = new Date();
 
     const result = await this.Ad.findOneAndUpdate(
       { _id: new ObjectId(adId) },

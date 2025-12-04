@@ -73,21 +73,30 @@ class CommentService {
     return filtered;
   }
 
+  /**
+   * Chuẩn hóa dữ liệu comment từ payload
+   */
+  extractCommentData(payload) {
+    const comment = {
+      userId: new ObjectId(payload.userId),
+      chapterId: new ObjectId(payload.chapterId),
+      content: this.filterSensitiveWords(payload.content),
+      parentId: payload.parentId ? new ObjectId(payload.parentId) : null,
+    };
+
+    // Xóa các trường undefined
+    Object.keys(comment).forEach(
+      (key) => comment[key] === undefined && delete comment[key]
+    );
+
+    return comment;
+  }
+
   // Tạo comment mới
   async create(payload) {
-    const { userId, chapterId, content, parentId = null } = payload;
-
-    // Lọc nội dung
-    const filteredContent = this.filterSensitiveWords(content);
-
-    const comment = {
-      userId: new ObjectId(userId),
-      chapterId: new ObjectId(chapterId),
-      content: filteredContent,
-      parentId: parentId ? new ObjectId(parentId) : null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const comment = this.extractCommentData(payload);
+    comment.createdAt = new Date();
+    comment.updatedAt = new Date();
 
     const result = await this.Comment.insertOne(comment);
 

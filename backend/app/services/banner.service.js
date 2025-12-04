@@ -5,6 +5,26 @@ class BannerService {
     this.Banner = client.db().collection("banners");
   }
 
+  /**
+   * Chuẩn hóa dữ liệu banner từ payload
+   */
+  extractBannerData(payload) {
+    const banner = {
+      title: payload.title,
+      subtitle: payload.subtitle,
+      image: payload.image,
+      order: payload.order !== undefined ? payload.order : 0,
+      isActive: payload.isActive !== undefined ? payload.isActive : true,
+    };
+
+    // Xóa các trường undefined
+    Object.keys(banner).forEach(
+      (key) => banner[key] === undefined && delete banner[key]
+    );
+
+    return banner;
+  }
+
   // Lấy tất cả banners (có phân trang)
   async getAll(page = 1, limit = 5, search = "") {
     const skip = (page - 1) * limit;
@@ -55,15 +75,9 @@ class BannerService {
 
   // Tạo banner mới
   async create(bannerData) {
-    const banner = {
-      title: bannerData.title,
-      subtitle: bannerData.subtitle,
-      image: bannerData.image,
-      order: bannerData.order || 0,
-      isActive: bannerData.isActive !== undefined ? bannerData.isActive : true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const banner = this.extractBannerData(bannerData);
+    banner.createdAt = new Date();
+    banner.updatedAt = new Date();
 
     const result = await this.Banner.insertOne(banner);
     return { _id: result.insertedId, ...banner };
@@ -71,17 +85,8 @@ class BannerService {
 
   // Cập nhật banner
   async update(bannerId, bannerData) {
-    const updateData = {
-      updatedAt: new Date(),
-    };
-
-    if (bannerData.title !== undefined) updateData.title = bannerData.title;
-    if (bannerData.subtitle !== undefined)
-      updateData.subtitle = bannerData.subtitle;
-    if (bannerData.image !== undefined) updateData.image = bannerData.image;
-    if (bannerData.order !== undefined) updateData.order = bannerData.order;
-    if (bannerData.isActive !== undefined)
-      updateData.isActive = bannerData.isActive;
+    const updateData = this.extractBannerData(bannerData);
+    updateData.updatedAt = new Date();
 
     const result = await this.Banner.findOneAndUpdate(
       { _id: new ObjectId(bannerId) },
