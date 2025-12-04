@@ -39,7 +39,10 @@
                             class="w-24 h-32 object-cover rounded-lg shadow-md group-hover:scale-105 transition-transform border-2 border-blue-100" />
                         <div v-else
                             class="w-24 h-32 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center text-white text-4xl shadow-md">
-                            📖
+                            <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                            </svg>
                         </div>
                     </router-link>
 
@@ -54,11 +57,20 @@
                         </h1>
                         <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                             <div class="flex items-center gap-2">
-                                <span>👁️</span>
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                    <path fill-rule="evenodd"
+                                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
                                 <span>{{ formatViews(chapter.views || 0) }} lượt xem</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span>📅</span>
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                        clip-rule="evenodd" />
+                                </svg>
                                 <span>{{ formatDate(chapter.createdAt) }}</span>
                             </div>
                             <div v-if="chapter.updatedAt && chapter.updatedAt !== chapter.createdAt"
@@ -74,7 +86,10 @@
                 <div v-if="chapter.audioUrl"
                     class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
                     <div class="flex items-center gap-3 mb-4">
-                        <span class="text-2xl">🎵</span>
+                        <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                        </svg>
                         <h3 class="text-lg font-semibold text-gray-800">Audio truyện</h3>
                     </div>
                     <audio ref="audioPlayer" :src="getAudioUrl(chapter.audioUrl)" controls @play="isPlaying = true"
@@ -99,7 +114,12 @@
             <div
                 class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-6 animate-slide-up animation-delay-100 border border-blue-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-blue-100 pb-3">
-                    📝 Nội dung chương
+                    <svg class="w-6 h-6 inline-block mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    Nội dung chương
                 </h2>
                 <div class="prose max-w-none">
                     <p v-if="chapter.description" class="text-gray-700 leading-relaxed whitespace-pre-line">
@@ -114,7 +134,11 @@
             <!-- Chapter Navigation -->
             <div class="bg-white rounded-xl shadow-lg p-6 animate-slide-up animation-delay-200 border border-blue-100">
                 <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-blue-100 pb-3">
-                    📚 Điều hướng chương
+                    <svg class="w-5 h-5 inline-block mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                    </svg>
+                    Điều hướng chương
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Previous Chapter -->
@@ -176,7 +200,11 @@
             <div v-if="allChapters.length > 0"
                 class="mt-6 bg-white rounded-xl shadow-lg p-6 animate-slide-up animation-delay-300 border border-blue-100">
                 <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-blue-100 pb-3">
-                    📖 Các chương khác
+                    <svg class="w-5 h-5 inline-block mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                    </svg>
+                    Các chương khác
                 </h2>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto">
                     <router-link v-for="(ch, index) in allChapters" :key="ch._id"

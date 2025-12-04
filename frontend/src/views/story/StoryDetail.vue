@@ -30,7 +30,10 @@
                             class="w-full rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300 border-4 border-white" />
                         <div v-else
                             class="w-full aspect-[3/4] bg-gradient-to-br from-gray-400 to-gray-600 rounded-xl flex items-center justify-center text-white text-6xl shadow-xl">
-                            📖
+                            <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                            </svg>
                         </div>
                     </div>
 
@@ -110,7 +113,7 @@
                                 </span>
                             </div>
                             <span class="text-gray-800 text-xl font-bold">{{ (story.averageRating || 0).toFixed(1)
-                                }}</span>
+                            }}</span>
                             <span class="text-gray-500 text-sm">/ {{ story.totalRatings || 0 }} đánh giá</span>
                         </div>
                     </div>
@@ -144,19 +147,35 @@
                             <router-link v-if="story.chapters && story.chapters.length > 0"
                                 :to="{ name: 'chapter.detail', params: { storySlug: story.slug, chapterNumber: story.chapters[0].chapterNumber || 1 } }"
                                 class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-md">
-                                <span class="text-xl">▶️</span> Đọc từ đầu
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Đọc từ đầu
                             </router-link>
                             <router-link v-if="story.chapters && story.chapters.length > 0"
                                 :to="{ name: 'chapter.detail', params: { storySlug: story.slug, chapterNumber: story.chapters[story.chapters.length - 1].chapterNumber || story.chapters.length } }"
                                 class="px-6 py-3 bg-gray-700 hover:bg-gray-800 text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-md">
-                                <span class="text-xl">📖</span> Đọc mới nhất
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                </svg>
+                                Đọc mới nhất
                             </router-link>
                             <button @click="toggleFavorite"
                                 class="px-6 py-3 font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-md"
                                 :class="isFavorite
                                     ? 'bg-red-500 hover:bg-red-600 text-white'
                                     : 'bg-white hover:bg-red-50 text-red-500 border border-red-200'">
-                                <span class="text-xl">{{ isFavorite ? '❤️' : '🤍' }}</span>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path v-if="isFavorite" fill-rule="evenodd"
+                                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                        clip-rule="evenodd" />
+                                    <path v-else
+                                        d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                                        fill="none" stroke="currentColor" stroke-width="2" />
+                                </svg>
                                 {{ isFavorite ? 'Đã thích' : 'Yêu thích' }}
                             </button>
                         </div>
@@ -183,11 +202,31 @@
                                                 Chương {{ chapter.chapterNumber || (index + 1) }}: {{ chapter.title }}
                                             </p>
                                             <div class="flex items-center gap-4 mt-1 text-xs text-gray-500">
-                                                <span>👁️ {{ chapter.views || 0 }}</span>
-                                                <span>📅 {{ formatDate(chapter.createdAt) }}</span>
+                                                <span class="flex items-center gap-1">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                        <path fill-rule="evenodd"
+                                                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    {{ chapter.views || 0 }}
+                                                </span>
+                                                <span class="flex items-center gap-1">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd"
+                                                            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    {{ formatDate(chapter.createdAt) }}
+                                                </span>
                                                 <span v-if="chapter.audioUrl"
-                                                    class="text-green-600 font-medium flex items-center gap-1">🎵 Có
-                                                    audio</span>
+                                                    class="text-green-600 font-medium flex items-center gap-1">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path
+                                                            d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                                                    </svg>
+                                                    Có audio
+                                                </span>
                                             </div>
                                         </div>
 
@@ -196,9 +235,17 @@
                                             :class="isPlaying && currentChapter?._id === chapter._id
                                                 ? 'bg-green-500 hover:bg-green-600 text-white'
                                                 : 'bg-blue-500 hover:bg-blue-600 text-white'">
-                                            <span class="text-white text-xl">
-                                                {{ isPlaying && currentChapter?._id === chapter._id ? '⏸️' : '▶️' }}
-                                            </span>
+                                            <svg v-if="isPlaying && currentChapter?._id === chapter._id" class="w-5 h-5"
+                                                fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
                                         </button>
                                     </div>
                                 </router-link>
@@ -236,7 +283,10 @@
                                     class="w-full h-full object-cover" />
                                 <div v-else
                                     class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-2xl">
-                                    📖
+                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                    </svg>
                                 </div>
                             </div>
                             <div class="flex-1 min-w-0">
