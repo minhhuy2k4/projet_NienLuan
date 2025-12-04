@@ -1,6 +1,6 @@
 <template>
-    <StoryListWithPagination title="Truyện Mới Cập Nhật" description="Những truyện được cập nhật mới nhất" icon="🆕"
-        :fetch-function="fetchNewStories" />
+    <StoryListWithPagination title="Truyện Mới Cập Nhật" description="Những truyện được cập nhật mới nhất"
+        icon-type="new" :fetch-function="fetchNewStories" />
 </template>
 
 <script setup>

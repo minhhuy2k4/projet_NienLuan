@@ -188,10 +188,10 @@ const removeFavorite = async (storyId) => {
         await FavoriteService.removeFavorite(storyId);
         // Reload current page
         await fetchFavorites(currentPage.value);
-        alert('💔 Đã bỏ yêu thích!');
+        alert('Đã bỏ yêu thích!');
     } catch (err) {
         console.error('Remove favorite error:', err);
-        alert('❌ Có lỗi xảy ra!');
+        alert('Có lỗi xảy ra!');
     }
 };
 
@@ -205,10 +205,10 @@ const clearAllFavorites = async () => {
         total.value = 0;
         currentPage.value = 1;
         totalPages.value = 1;
-        alert('✅ Đã xóa toàn bộ yêu thích!');
+        alert('Đã xóa toàn bộ yêu thích!');
     } catch (err) {
         console.error('Clear all favorites error:', err);
-        alert('❌ Có lỗi xảy ra!');
+        alert('Có lỗi xảy ra!');
     }
 };
 
@@ -232,7 +232,7 @@ watch(() => route.query.page, (newPage) => {
 onMounted(async () => {
     // Kiểm tra đăng nhập
     if (!authStore.isLoggedIn) {
-        alert('⚠️ Vui lòng đăng nhập để xem truyện yêu thích');
+        alert('Vui lòng đăng nhập để xem truyện yêu thích');
         router.push('/login');
         return;
     }

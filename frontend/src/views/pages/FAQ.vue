@@ -4,8 +4,12 @@
             <!-- Header -->
             <div class="text-center mb-12 animate-fade-in">
                 <h1 class="text-4xl font-bold text-gray-800 mb-3">
-                    <span class="text-5xl">❓</span>
-                    Câu Hỏi Thường Gặp
+                    <svg class="w-16 h-16 inline-block text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <br />Câu Hỏi Thường Gặp
                 </h1>
                 <p class="text-gray-600 text-lg">
                     Tìm câu trả lời cho những thắc mắc thường gặp của bạn
@@ -17,7 +21,12 @@
                 <div class="relative">
                     <input v-model="searchQuery" type="text" placeholder="Tìm kiếm câu hỏi..."
                         class="w-full px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none text-lg shadow-sm">
-                    <span class="absolute right-5 top-1/2 transform -translate-y-1/2 text-2xl">🔍</span>
+                    <svg class="absolute right-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400"
+                        fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                            clip-rule="evenodd" />
+                    </svg>
                 </div>
             </div>
 

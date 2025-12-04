@@ -326,10 +326,10 @@ const removeHistory = async (storyId) => {
         await HistoryService.deleteHistory(storyId);
         // Reload current page
         await fetchHistory(currentPage.value);
-        alert('✅ Đã xóa lịch sử!');
+        alert('Đã xóa lịch sử!');
     } catch (err) {
         console.error('Remove history error:', err);
-        alert('❌ Có lỗi xảy ra!');
+        alert('Có lỗi xảy ra!');
     }
 };
 
@@ -343,10 +343,10 @@ const clearAll = async () => {
         total.value = 0;
         currentPage.value = 1;
         totalPages.value = 1;
-        alert('✅ Đã xóa toàn bộ lịch sử!');
+        alert('Đã xóa toàn bộ lịch sử!');
     } catch (err) {
         console.error('Clear history error:', err);
-        alert('❌ Có lỗi xảy ra!');
+        alert('Có lỗi xảy ra!');
     }
 };
 
@@ -370,7 +370,7 @@ watch(() => route.query.page, (newPage) => {
 onMounted(async () => {
     // Kiểm tra đăng nhập
     if (!authStore.isLoggedIn) {
-        alert('⚠️ Vui lòng đăng nhập để xem lịch sử');
+        alert('Vui lòng đăng nhập để xem lịch sử');
         router.push('/login');
         return;
     }

@@ -1,6 +1,6 @@
 <template>
     <StoryListWithPagination title="Truyện Hot - Nghe Nhiều Nhất" description="Những truyện có nhiều lượt nghe nhất"
-        icon="🔥" :fetch-function="fetchHotStories" />
+        icon-type="fire" :fetch-function="fetchHotStories" />
 </template>
 
 <script setup>
