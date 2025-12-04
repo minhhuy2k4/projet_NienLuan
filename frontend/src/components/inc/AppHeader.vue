@@ -59,9 +59,9 @@
         <div class="sub-nav">
             <router-link to="/">Trang chủ</router-link>
             <router-link to="/categories">Thể loại</router-link>
-            <a href="#">Truyện mới</a>
-            <a href="#">Truyện Full</a>
-            <a href="#">Truyện Hot</a>
+            <router-link to="/new-stories">Truyện mới</router-link>
+            <router-link to="/full-stories">Truyện Full</router-link>
+            <router-link to="/hot-stories">Truyện Hot</router-link>
         </div>
     </header>
 </template>

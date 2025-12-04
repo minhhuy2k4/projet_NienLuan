@@ -22,8 +22,8 @@
                 <ul class="footer-links">
                     <li><router-link to="/">Trang chủ</router-link></li>
                     <li><router-link to="/categories">Thể loại</router-link></li>
-                    <li><a href="#hot-stories">Truyện hot</a></li>
-                    <li><a href="#new-stories">Truyện mới</a></li>
+                    <li><router-link to="/hot-stories">Truyện hot</router-link></li>
+                    <li><router-link to="/new-stories">Truyện mới</router-link></li>
                 </ul>
             </div>
 
