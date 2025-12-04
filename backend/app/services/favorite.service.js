@@ -67,7 +67,17 @@ class FavoriteService {
    * Lấy danh sách truyện yêu thích của user (với thông tin đầy đủ)
    * Tối ưu: Query trực tiếp từ user.favorites
    */
-  async getFavoritesByUser(userId) {
+  async getFavoritesByUser(userId, page = 1, limit = 12) {
+    const skip = (page - 1) * limit;
+
+    // First, get total count
+    const user = await this.User.findOne(
+      { _id: new ObjectId(userId) },
+      { projection: { favorites: 1 } }
+    );
+    const total = user?.favorites?.length || 0;
+
+    // Then get paginated results
     const result = await this.User.aggregate([
       {
         $match: { _id: new ObjectId(userId) },
@@ -135,9 +145,17 @@ class FavoriteService {
       {
         $replaceRoot: { newRoot: "$story" },
       },
+      // Skip and limit for pagination
+      { $skip: skip },
+      { $limit: limit },
     ]).toArray();
 
-    return result;
+    return {
+      favorites: result,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   /**

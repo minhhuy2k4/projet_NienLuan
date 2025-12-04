@@ -121,15 +121,52 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Pagination -->
+                <div v-if="totalPages > 1" class="flex justify-center items-center gap-2 mt-8">
+                    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+                        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition">
+                        ← Trước
+                    </button>
+                    
+                    <div class="flex gap-2">
+                        <button v-for="page in Math.min(totalPages, 5)" :key="page"
+                            @click="goToPage(page)"
+                            :class="[
+                                'px-4 py-2 rounded-lg transition',
+                                page === currentPage
+                                    ? 'bg-purple-600 text-white'
+                                    : 'bg-white text-gray-700 hover:bg-purple-100 border border-purple-200'
+                            ]">
+                            {{ page }}
+                        </button>
+                        <span v-if="totalPages > 5" class="px-4 py-2">...</span>
+                        <button v-if="totalPages > 5 && currentPage < totalPages"
+                            @click="goToPage(totalPages)"
+                            :class="[
+                                'px-4 py-2 rounded-lg transition',
+                                totalPages === currentPage
+                                    ? 'bg-purple-600 text-white'
+                                    : 'bg-white text-gray-700 hover:bg-purple-100 border border-purple-200'
+                            ]">
+                            {{ totalPages }}
+                        </button>
+                    </div>
+
+                    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+                        class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition">
+                        Sau →
+                    </button>
+                </div>
             </div>
 
             <!-- Stats Summary -->
-            <div v-if="histories.length > 0"
+            <div v-if="total > 0"
                 class="mt-12 bg-white rounded-xl p-6 shadow-lg animate-slide-up border border-purple-100">
                 <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">Thống kê</h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
                     <div>
-                        <div class="text-4xl font-bold text-purple-600">{{ histories.length }}</div>
+                        <div class="text-4xl font-bold text-purple-600">{{ total }}</div>
                         <div class="text-gray-600 mt-1">Truyện đã đọc</div>
                     </div>
                     <div>
@@ -151,18 +188,23 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import HistoryService from '@/services/history.service';
 import { useAuthStore } from '@/stores/auth.store';
 import { getStoryImageUrl } from '@/utils/media';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 
 const histories = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const currentPage = ref(1);
+const totalPages = ref(1);
+const total = ref(0);
+const limit = 10;
 
 // Format views
 const formatViews = (views) => {
@@ -221,13 +263,33 @@ const readingStreak = computed(() => {
     return dates.size;
 });
 
+// Fetch history
+const fetchHistory = async (page = 1) => {
+    loading.value = true;
+    error.value = null;
+    try {
+        const result = await HistoryService.getHistory(page, limit);
+        histories.value = result.histories || [];
+        total.value = result.total || 0;
+        currentPage.value = result.page || 1;
+        totalPages.value = result.totalPages || 1;
+        console.log('History loaded:', result);
+    } catch (err) {
+        console.error('Fetch history error:', err);
+        error.value = 'Không thể tải lịch sử đọc';
+    } finally {
+        loading.value = false;
+    }
+};
+
 // Remove history
 const removeHistory = async (storyId) => {
     if (!confirm('Bạn có chắc muốn xóa lịch sử này?')) return;
 
     try {
         await HistoryService.deleteHistory(storyId);
-        histories.value = histories.value.filter(h => h._id !== storyId);
+        // Reload current page
+        await fetchHistory(currentPage.value);
         alert('✅ Đã xóa lịch sử!');
     } catch (err) {
         console.error('Remove history error:', err);
@@ -242,6 +304,9 @@ const clearAll = async () => {
     try {
         await HistoryService.clearHistory();
         histories.value = [];
+        total.value = 0;
+        currentPage.value = 1;
+        totalPages.value = 1;
         alert('✅ Đã xóa toàn bộ lịch sử!');
     } catch (err) {
         console.error('Clear history error:', err);
@@ -249,7 +314,23 @@ const clearAll = async () => {
     }
 };
 
-// Fetch history
+// Pagination
+const goToPage = (page) => {
+    if (page < 1 || page > totalPages.value || page === currentPage.value) return;
+    currentPage.value = page;
+    fetchHistory(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// Watch route query for page changes
+watch(() => route.query.page, (newPage) => {
+    const page = parseInt(newPage) || 1;
+    if (page !== currentPage.value) {
+        fetchHistory(page);
+    }
+}, { immediate: false });
+
+// Initial load
 onMounted(async () => {
     // Kiểm tra đăng nhập
     if (!authStore.isLoggedIn) {
@@ -258,15 +339,8 @@ onMounted(async () => {
         return;
     }
 
-    try {
-        histories.value = await HistoryService.getHistory();
-        console.log('History loaded:', histories.value);
-    } catch (err) {
-        console.error('Fetch history error:', err);
-        error.value = 'Không thể tải lịch sử đọc';
-    } finally {
-        loading.value = false;
-    }
+    const page = parseInt(route.query.page) || 1;
+    await fetchHistory(page);
 });
 </script>
 

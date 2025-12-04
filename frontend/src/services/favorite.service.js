@@ -9,8 +9,8 @@ class FavoriteService {
     return (await this.api.post("/toggle", { storyId })).data;
   }
 
-  async getFavorites() {
-    return (await this.api.get("/")).data;
+  async getFavorites(page = 1, limit = 12) {
+    return (await this.api.get("/", { params: { page, limit } })).data;
   }
 
   async checkFavorite(storyId) {

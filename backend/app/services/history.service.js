@@ -42,7 +42,14 @@ class HistoryService {
   /**
    * Lấy lịch sử đọc của user (với thông tin đầy đủ)
    */
-  async getHistoryByUser(userId, limit = 50) {
+  async getHistoryByUser(userId, page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+
+    // Get total count
+    const total = await this.History.countDocuments({
+      userId: new ObjectId(userId),
+    });
+
     const histories = await this.History.aggregate([
       {
         $match: { userId: new ObjectId(userId) },
@@ -112,19 +119,25 @@ class HistoryService {
       {
         $sort: { lastReadAt: -1 },
       },
-      // Limit results
-      {
-        $limit: limit,
-      },
+      // Pagination
+      { $skip: skip },
+      { $limit: limit },
     ]).toArray();
 
-    return histories.map((history) => ({
+    const items = histories.map((history) => ({
       ...history.story,
       historyId: history._id,
       lastReadAt: history.lastReadAt,
       lastChapter: history.lastChapter,
       createdAt: history.createdAt,
     }));
+
+    return {
+      histories: items,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   /**

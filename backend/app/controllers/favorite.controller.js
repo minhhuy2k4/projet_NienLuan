@@ -71,11 +71,17 @@ exports.checkFavorite = async (req, res) => {
 exports.getFavorites = async (req, res) => {
   try {
     const userId = req.user.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
 
     const favoriteService = new FavoriteService(MongoDB.client);
-    const favorites = await favoriteService.getFavoritesByUser(userId);
+    const result = await favoriteService.getFavoritesByUser(
+      userId,
+      page,
+      limit
+    );
 
-    res.send(favorites);
+    res.send(result);
   } catch (error) {
     console.error("Get favorites error:", error);
     res.status(500).send({ message: "Lỗi khi lấy danh sách yêu thích" });

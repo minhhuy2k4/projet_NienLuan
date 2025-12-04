@@ -47,14 +47,51 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Pagination -->
+                <div v-if="totalPages > 1" class="flex justify-center items-center gap-2 mt-8">
+                    <button @click="goToPage(currentPage - 1)" :disabled="currentPage === 1"
+                        class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition">
+                        ← Trước
+                    </button>
+                    
+                    <div class="flex gap-2">
+                        <button v-for="page in Math.min(totalPages, 5)" :key="page"
+                            @click="goToPage(page)"
+                            :class="[
+                                'px-4 py-2 rounded-lg transition',
+                                page === currentPage
+                                    ? 'bg-pink-600 text-white'
+                                    : 'bg-white text-gray-700 hover:bg-pink-100 border border-pink-200'
+                            ]">
+                            {{ page }}
+                        </button>
+                        <span v-if="totalPages > 5" class="px-4 py-2">...</span>
+                        <button v-if="totalPages > 5 && currentPage < totalPages"
+                            @click="goToPage(totalPages)"
+                            :class="[
+                                'px-4 py-2 rounded-lg transition',
+                                totalPages === currentPage
+                                    ? 'bg-pink-600 text-white'
+                                    : 'bg-white text-gray-700 hover:bg-pink-100 border border-pink-200'
+                            ]">
+                            {{ totalPages }}
+                        </button>
+                    </div>
+
+                    <button @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages"
+                        class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition">
+                        Sau →
+                    </button>
+                </div>
             </div>
 
             <!-- Stats Summary -->
-            <div v-if="favorites.length > 0"
+            <div v-if="total > 0"
                 class="mt-12 bg-white rounded-xl p-6 shadow-lg animate-slide-up border border-pink-100">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                     <div>
-                        <div class="text-4xl font-bold text-pink-600">{{ favorites.length }}</div>
+                        <div class="text-4xl font-bold text-pink-600">{{ total }}</div>
                         <div class="text-gray-600 mt-1">Truyện yêu thích</div>
                     </div>
                     <div>
@@ -72,18 +109,23 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import FavoriteService from '@/services/favorite.service';
 import { useAuthStore } from '@/stores/auth.store';
 import StoryCard from '@/components/StoryCard.vue';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 
 const favorites = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const currentPage = ref(1);
+const totalPages = ref(1);
+const total = ref(0);
+const limit = 12;
 
 // Computed stats
 const totalChapters = computed(() => {
@@ -98,13 +140,33 @@ const uniqueCategories = computed(() => {
     return allCategories.size;
 });
 
+// Fetch favorites
+const fetchFavorites = async (page = 1) => {
+    loading.value = true;
+    error.value = null;
+    try {
+        const result = await FavoriteService.getFavorites(page, limit);
+        favorites.value = result.favorites || [];
+        total.value = result.total || 0;
+        currentPage.value = result.page || 1;
+        totalPages.value = result.totalPages || 1;
+        console.log('Favorites loaded:', result);
+    } catch (err) {
+        console.error('Fetch favorites error:', err);
+        error.value = 'Không thể tải danh sách yêu thích';
+    } finally {
+        loading.value = false;
+    }
+};
+
 // Remove favorite
 const removeFavorite = async (storyId) => {
     if (!confirm('Bạn có chắc muốn bỏ yêu thích truyện này?')) return;
 
     try {
         await FavoriteService.removeFavorite(storyId);
-        favorites.value = favorites.value.filter(s => s._id !== storyId);
+        // Reload current page
+        await fetchFavorites(currentPage.value);
         alert('💔 Đã bỏ yêu thích!');
     } catch (err) {
         console.error('Remove favorite error:', err);
@@ -112,7 +174,23 @@ const removeFavorite = async (storyId) => {
     }
 };
 
-// Fetch favorites
+// Pagination
+const goToPage = (page) => {
+    if (page < 1 || page > totalPages.value || page === currentPage.value) return;
+    currentPage.value = page;
+    fetchFavorites(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// Watch route query for page changes
+watch(() => route.query.page, (newPage) => {
+    const page = parseInt(newPage) || 1;
+    if (page !== currentPage.value) {
+        fetchFavorites(page);
+    }
+}, { immediate: false });
+
+// Initial load
 onMounted(async () => {
     // Kiểm tra đăng nhập
     if (!authStore.isLoggedIn) {
@@ -121,15 +199,8 @@ onMounted(async () => {
         return;
     }
 
-    try {
-        favorites.value = await FavoriteService.getFavorites();
-        console.log('Favorites loaded:', favorites.value);
-    } catch (err) {
-        console.error('Fetch favorites error:', err);
-        error.value = 'Không thể tải danh sách yêu thích';
-    } finally {
-        loading.value = false;
-    }
+    const page = parseInt(route.query.page) || 1;
+    await fetchFavorites(page);
 });
 </script>
 

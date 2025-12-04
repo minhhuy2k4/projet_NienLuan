@@ -29,12 +29,13 @@ exports.addHistory = async (req, res) => {
 exports.getHistory = async (req, res) => {
   try {
     const userId = req.user.id;
-    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
 
     const historyService = new HistoryService(MongoDB.client);
-    const history = await historyService.getHistoryByUser(userId, limit);
+    const result = await historyService.getHistoryByUser(userId, page, limit);
 
-    res.send(history);
+    res.send(result);
   } catch (error) {
     console.error("Get history error:", error);
     res.status(500).send({ message: "Lỗi khi lấy lịch sử" });

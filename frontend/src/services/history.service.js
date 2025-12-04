@@ -9,8 +9,8 @@ class HistoryService {
     return (await this.api.post("/", { storyId, chapterId })).data;
   }
 
-  async getHistory() {
-    return (await this.api.get("/")).data;
+  async getHistory(page = 1, limit = 10) {
+    return (await this.api.get("/", { params: { page, limit } })).data;
   }
 
   async deleteHistory(historyId) {
