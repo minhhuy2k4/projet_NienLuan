@@ -164,11 +164,11 @@ onMounted(() => {
 .category-banner {
     text-align: center;
     padding: 3rem 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 16px;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    border-radius: var(--radius-2xl);
     color: white;
     margin-bottom: 3rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-xl);
 }
 
 .category-banner h1 {
@@ -191,8 +191,12 @@ onMounted(() => {
 }
 
 .error-message {
-    color: #f44336;
+    color: var(--color-danger);
     font-size: 1.1rem;
+    background-color: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
 }
 
 .categories-container {
@@ -206,29 +210,28 @@ onMounted(() => {
 }
 
 .category-card {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 2px solid transparent;
+    transition: all var(--transition-slow);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
 }
 
 .category-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    border-color: var(--primary-blue);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--color-primary);
 }
 
 .category-icon {
-    font-size: 4rem;
-    margin: 0 auto 1rem;
-    animation: bounce 2s infinite;
     width: 4rem;
     height: 4rem;
-    color: var(--primary-blue);
+    margin: 0 auto var(--spacing-md);
+    color: var(--color-primary);
+    transition: all var(--transition-slow);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -253,15 +256,15 @@ onMounted(() => {
 }
 
 .category-card:hover .category-icon {
-    animation: none;
-    transform: scale(1.2);
+    transform: scale(1.2) rotate(5deg);
+    color: var(--color-secondary);
 }
 
 .category-name {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .category-description {
@@ -273,17 +276,18 @@ onMounted(() => {
 
 .category-stats {
     padding-top: 1rem;
-    border-top: 2px solid #f0f0f0;
+    border-top: 2px solid var(--border-color);
 }
 
 .story-count {
     display: inline-block;
-    padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, #667eea 100%);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
     color: white;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     font-weight: 600;
     font-size: 0.9rem;
+    box-shadow: var(--shadow-md);
 }
 
 /* Responsive */
@@ -324,25 +328,27 @@ onMounted(() => {
     gap: 0.5rem;
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 2px solid #f0f0f0;
+    border-top: 2px solid var(--border-color);
 }
 
 .pagination-button {
-    padding: 0.5rem;
-    background-color: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    padding: var(--spacing-sm);
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    color: var(--text-primary);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all var(--transition-base);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .pagination-button:not(:disabled):hover {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
     color: white;
+    box-shadow: var(--shadow-md);
 }
 
 .pagination-button:disabled {
@@ -351,24 +357,27 @@ onMounted(() => {
 }
 
 .pagination-number {
-    padding: 0.5rem 1rem;
+    padding: var(--spacing-sm) var(--spacing-md);
     min-width: 2.5rem;
-    background-color: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all var(--transition-base);
     font-weight: 600;
 }
 
 .pagination-number:hover {
-    background-color: #f5f5f5;
-    border-color: var(--primary-blue);
+    background: var(--bg-hover);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
 .pagination-number.active {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
     color: white;
+    box-shadow: var(--shadow-md);
 }
 </style>

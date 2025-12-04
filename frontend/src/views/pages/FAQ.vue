@@ -1,17 +1,18 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-12">
+    <div class="page-gradient" style="padding: 3rem 0;">
         <div class="max-w-4xl mx-auto px-4">
             <!-- Header -->
             <div class="text-center mb-12 animate-fade-in">
-                <h1 class="text-4xl font-bold text-gray-800 mb-3">
-                    <svg class="w-16 h-16 inline-block text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <h1 class="page-title">
+                    <svg class="w-16 h-16 inline-block" style="color: var(--color-primary);" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
                             clip-rule="evenodd" />
                     </svg>
                     <br />Câu Hỏi Thường Gặp
                 </h1>
-                <p class="text-gray-600 text-lg">
+                <p class="page-subtitle">
                     Tìm câu trả lời cho những thắc mắc thường gặp của bạn
                 </p>
             </div>
@@ -20,9 +21,9 @@
             <div class="mb-8 animate-slide-up">
                 <div class="relative">
                     <input v-model="searchQuery" type="text" placeholder="Tìm kiếm câu hỏi..."
-                        class="w-full px-6 py-4 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none text-lg shadow-sm">
-                    <svg class="absolute right-5 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400"
-                        fill="currentColor" viewBox="0 0 20 20">
+                        class="form-input-themed w-full text-lg">
+                    <svg class="absolute right-5 top-1/2 transform -translate-y-1/2 w-6 h-6"
+                        style="color: var(--text-secondary);" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                             clip-rule="evenodd" />
@@ -34,10 +35,11 @@
             <div class="mb-8 flex flex-wrap gap-3 justify-center animate-slide-up">
                 <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat" :class="[
                     'px-5 py-2 rounded-full font-semibold transition-all',
-                    selectedCategory === cat
-                        ? 'bg-blue-600 text-white shadow-lg scale-105'
-                        : 'bg-white text-gray-700 hover:bg-blue-50 border border-gray-200'
-                ]">
+                    selectedCategory === cat ? '' : ''
+                ]"
+                    :style="selectedCategory === cat
+                        ? { backgroundColor: 'var(--color-primary)', color: 'white' }
+                        : { backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }">
                     {{ cat }}
                 </button>
             </div>
@@ -45,11 +47,13 @@
             <!-- FAQ List -->
             <div class="space-y-4">
                 <div v-for="(faq, index) in filteredFaqs" :key="index"
-                    class="bg-white rounded-xl shadow-md overflow-hidden animate-slide-up border border-gray-100 hover:shadow-lg transition-shadow"
+                    class="rounded-xl shadow-md overflow-hidden animate-slide-up transition-shadow"
+                    style="background-color: var(--bg-card); border: 1px solid var(--border-color);"
                     :style="{ animationDelay: `${index * 100}ms` }">
                     <button @click="toggleFaq(index)"
-                        class="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
-                        <span class="font-semibold text-gray-800 text-lg pr-4">
+                        class="w-full px-6 py-5 text-left flex justify-between items-center transition-colors"
+                        style="color: var(--text-primary);">
+                        <span class="font-semibold text-lg pr-4">
                             {{ faq.question }}
                         </span>
                         <span class="text-2xl transform transition-transform"
@@ -58,8 +62,8 @@
                         </span>
                     </button>
 
-                    <div v-show="openFaqIndex === index"
-                        class="px-6 pb-5 text-gray-700 leading-relaxed border-t border-gray-100 pt-4 animate-fade-in">
+                    <div v-show="openFaqIndex === index" class="px-6 pb-5 leading-relaxed pt-4 animate-fade-in"
+                        style="border-top: 1px solid var(--border-color); color: var(--text-secondary);">
                         {{ faq.answer }}
                     </div>
                 </div>
@@ -68,16 +72,17 @@
             <!-- No Results -->
             <div v-if="filteredFaqs.length === 0" class="text-center py-12">
                 <div class="text-6xl mb-4">🤔</div>
-                <p class="text-gray-600 text-lg">Không tìm thấy câu hỏi phù hợp</p>
+                <p class="text-lg" style="color: var(--text-secondary);">Không tìm thấy câu hỏi phù hợp</p>
             </div>
 
             <!-- Contact Section -->
-            <div
-                class="mt-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white text-center shadow-xl animate-slide-up">
+            <div class="mt-16 rounded-2xl p-8 text-white text-center shadow-xl animate-slide-up"
+                style="background: linear-gradient(135deg, var(--color-primary), var(--color-accent));">
                 <h3 class="text-2xl font-bold mb-3">Không tìm thấy câu trả lời?</h3>
-                <p class="mb-6 text-blue-100">Đừng lo lắng! Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
+                <p class="mb-6" style="opacity: 0.9;">Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
                 <router-link to="/contact"
-                    class="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-all transform hover:scale-105 shadow-lg">
+                    class="inline-block px-8 py-3 bg-white font-bold rounded-lg transition-all transform hover:scale-105 shadow-lg"
+                    style="color: var(--color-primary);">
                     Liên hệ với chúng tôi →
                 </router-link>
             </div>

@@ -5,6 +5,9 @@ import router from "./router";
 
 // Import CSS toàn cục
 import "./assets/main.css";
+import "./assets/theme.css";
+import "./assets/dark-mode-overrides.css";
+import "./assets/pages.css";
 
 const app = createApp(App);
 

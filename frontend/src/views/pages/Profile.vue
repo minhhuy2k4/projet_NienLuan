@@ -1,28 +1,30 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12">
+    <div class="page-gradient" style="padding: 3rem 0;">
         <div class="max-w-4xl mx-auto px-4">
             <!-- Header -->
             <div class="mb-8 animate-fade-in">
-                <h1 class="text-4xl font-bold text-gray-800 mb-2">Trang Cá Nhân</h1>
-                <p class="text-gray-600">Quản lý thông tin và cài đặt tài khoản</p>
+                <h1 class="page-title">Trang Cá Nhân</h1>
+                <p class="page-subtitle">Quản lý thông tin và cài đặt tài khoản</p>
             </div>
 
             <!-- Loading State -->
             <div v-if="loading" class="flex justify-center items-center py-20">
-                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+                <div class="loading-spinner"></div>
             </div>
 
             <!-- Profile Content -->
             <div v-else class="space-y-6">
                 <!-- Avatar Section -->
-                <div class="bg-white rounded-xl shadow-lg p-6 animate-slide-up">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Ảnh Đại Diện</h2>
+                <div class="rounded-xl shadow-lg p-6 animate-slide-up" style="background-color: var(--bg-card);">
+                    <h2 class="text-2xl font-bold mb-6" style="color: var(--text-primary);">Ảnh Đại Diện</h2>
                     <div class="flex items-center gap-6">
                         <div class="relative animate-fade-in">
                             <img :src="displayAvatar" alt="Avatar"
-                                class="w-32 h-32 rounded-full object-cover border-4 border-blue-200 transition-transform hover:scale-105">
+                                class="w-32 h-32 rounded-full object-cover border-4 transition-transform hover:scale-105"
+                                style="border-color: var(--color-primary);">
                             <label for="avatar-file"
-                                class="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-all hover:scale-110">
+                                class="absolute bottom-0 right-0 text-white p-2 rounded-full cursor-pointer transition-all hover:scale-110"
+                                style="background-color: var(--color-primary);">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                     fill="currentColor">
                                     <path
@@ -35,16 +37,20 @@
                         <div class="flex-1 space-y-4">
                             <!-- Upload từ máy -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Upload từ máy</label>
+                                <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Upload
+                                    từ máy</label>
                                 <div class="flex gap-3">
                                     <label for="avatar-file-input"
-                                        class="flex-1 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-blue-500 transition">
-                                        <span class="text-gray-600">{{ selectedFileName || 'Chọn ảnh từ máy' }}</span>
+                                        class="flex-1 px-4 py-2 border-2 border-dashed rounded-lg text-center cursor-pointer transition"
+                                        style="border-color: var(--border-color); color: var(--text-secondary);">
+                                        <span>{{ selectedFileName || 'Chọn ảnh từ máy' }}</span>
                                     </label>
                                     <input id="avatar-file-input" type="file" accept="image/*"
                                         @change="handleFileUpload" class="hidden">
                                     <button @click="uploadAvatarFile" :disabled="updating || !avatarFile"
-                                        class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                                        class="px-6 py-2 font-semibold rounded-lg transition"
+                                        style="background-color: var(--color-success); color: white;"
+                                        :style="{ opacity: (updating || !avatarFile) ? '0.5' : '1', cursor: (updating || !avatarFile) ? 'not-allowed' : 'pointer' }">
                                         {{ updating ? 'Đang tải...' : 'Upload' }}
                                     </button>
                                 </div>
@@ -52,14 +58,16 @@
 
                             <!-- Hoặc dùng URL -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Hoặc dùng URL từ
+                                <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Hoặc
+                                    dùng URL từ
                                     internet</label>
                                 <div class="flex gap-3">
                                     <input v-model="newAvatarUrl" type="text"
                                         placeholder="Nhập URL ảnh từ internet (https://...)"
-                                        class="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                                        class="form-input-themed flex-1">
                                     <button @click="updateAvatarUrl" :disabled="updating || !newAvatarUrl.trim()"
-                                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                                        class="btn-action-primary"
+                                        :style="{ opacity: (updating || !newAvatarUrl.trim()) ? '0.5' : '1', cursor: (updating || !newAvatarUrl.trim()) ? 'not-allowed' : 'pointer' }">
                                         {{ updating ? 'Đang lưu...' : 'Cập nhật' }}
                                     </button>
                                 </div>
@@ -69,61 +77,116 @@
                 </div>
 
                 <!-- Profile Info Section -->
-                <div class="bg-white rounded-xl shadow-lg p-6 animate-slide-up" style="animation-delay: 0.1s;">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Thông Tin Cá Nhân</h2>
+                <div class="rounded-xl shadow-lg p-6 animate-slide-up"
+                    style="animation-delay: 0.1s; background-color: var(--bg-card);">
+                    <h2 class="text-2xl font-bold mb-6" style="color: var(--text-primary);">Thông Tin Cá Nhân</h2>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Tên hiển thị</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Tên hiển
+                                thị</label>
                             <div class="flex gap-3">
-                                <input v-model="profileForm.name" type="text"
-                                    class="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
-                                <button @click="updateProfile" :disabled="updating"
-                                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                                <input v-model="profileForm.name" type="text" class="form-input-themed flex-1">
+                                <button @click="updateProfile" :disabled="updating" class="btn-action-primary">
                                     {{ updating ? 'Đang lưu...' : 'Lưu' }}
                                 </button>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input v-model="user.email" type="email" disabled
-                                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-600">
-                            <p class="text-sm text-gray-500 mt-1">Email không thể thay đổi</p>
+                            <label class="block text-sm font-medium mb-2"
+                                style="color: var(--text-primary);">Email</label>
+                            <input v-model="user.email" type="email" disabled class="form-input-themed w-full"
+                                style="opacity: 0.6; cursor: not-allowed;">
+                            <p class="text-sm mt-1" style="color: var(--text-secondary);">Email không thể thay đổi</p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Vai trò</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Vai
+                                trò</label>
                             <input :value="user.role === 'admin' ? 'Quản trị viên' : 'Người dùng'" disabled
-                                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+                                class="form-input-themed w-full" style="opacity: 0.6; cursor: not-allowed;">
                         </div>
                         <div v-if="user.provider">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Đăng nhập bằng</label>
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Đăng nhập
+                                bằng</label>
                             <input :value="user.provider === 'google' ? 'Google' : 'Email & Password'" disabled
-                                class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-600">
+                                class="form-input-themed w-full" style="opacity: 0.6; cursor: not-allowed;">
                         </div>
                     </div>
                 </div>
 
                 <!-- Change Password Section (only for local users) -->
-                <div v-if="user.provider !== 'google'" class="bg-white rounded-xl shadow-lg p-6 animate-slide-up"
-                    style="animation-delay: 0.2s;">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Đổi Mật Khẩu</h2>
+                <div v-if="user.provider !== 'google'" class="rounded-xl shadow-lg p-6 animate-slide-up"
+                    style="animation-delay: 0.2s; background-color: var(--bg-card);">
+                    <h2 class="text-2xl font-bold mb-6" style="color: var(--text-primary);">Đổi Mật Khẩu</h2>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Mật khẩu hiện tại</label>
-                            <input v-model="passwordForm.currentPassword" type="password"
-                                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Mật khẩu
+                                hiện tại</label>
+                            <div class="password-input-wrapper">
+                                <input v-model="passwordForm.currentPassword"
+                                    :type="showCurrentPassword ? 'text' : 'password'" class="form-input-themed w-full"
+                                    style="padding-right: 2.5rem;">
+                                <button v-if="passwordForm.currentPassword" type="button"
+                                    @click="showCurrentPassword = !showCurrentPassword" class="password-toggle-btn">
+                                    <svg v-if="!showCurrentPassword" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Mật khẩu mới</label>
-                            <input v-model="passwordForm.newPassword" type="password"
-                                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Mật khẩu
+                                mới</label>
+                            <div class="password-input-wrapper">
+                                <input v-model="passwordForm.newPassword" :type="showNewPassword ? 'text' : 'password'"
+                                    class="form-input-themed w-full" style="padding-right: 2.5rem;">
+                                <button v-if="passwordForm.newPassword" type="button"
+                                    @click="showNewPassword = !showNewPassword" class="password-toggle-btn">
+                                    <svg v-if="!showNewPassword" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Xác nhận mật khẩu mới</label>
-                            <input v-model="passwordForm.confirmPassword" type="password"
-                                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                            <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Xác nhận
+                                mật khẩu mới</label>
+                            <div class="password-input-wrapper">
+                                <input v-model="passwordForm.confirmPassword"
+                                    :type="showConfirmPassword ? 'text' : 'password'" class="form-input-themed w-full"
+                                    style="padding-right: 2.5rem;">
+                                <button v-if="passwordForm.confirmPassword" type="button"
+                                    @click="showConfirmPassword = !showConfirmPassword" class="password-toggle-btn">
+                                    <svg v-if="!showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        <button @click="changePassword" :disabled="updating"
-                            class="w-full px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition disabled:opacity-50">
+                        <button @click="changePassword" :disabled="updating" class="btn-action-danger w-full">
                             {{ updating ? 'Đang cập nhật...' : 'Đổi mật khẩu' }}
                         </button>
                     </div>
@@ -132,9 +195,10 @@
                 <!-- Success/Error Messages -->
                 <div v-if="message" class="fixed bottom-4 right-4 z-50 animate-slide-up">
                     <div :class="[
-                        'px-6 py-4 rounded-lg shadow-lg',
-                        messageType === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-                    ]">
+                        'px-6 py-4 rounded-lg shadow-lg text-white',
+                        messageType === 'success' ? '' : ''
+                    ]"
+                        :style="{ backgroundColor: messageType === 'success' ? 'var(--color-success)' : 'var(--color-danger)' }">
                         {{ message }}
                     </div>
                 </div>
@@ -169,6 +233,10 @@ const passwordForm = ref({
     newPassword: '',
     confirmPassword: ''
 });
+
+const showCurrentPassword = ref(false);
+const showNewPassword = ref(false);
+const showConfirmPassword = ref(false);
 
 const defaultAvatar = 'https://ui-avatars.com/api/?name=User&background=4F46E5&color=fff&size=128';
 
@@ -394,6 +462,53 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Password input wrapper */
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.password-toggle-btn:hover {
+    color: var(--color-primary);
+    background: none !important;
+    border: none !important;
+}
+
+.password-toggle-btn:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.password-toggle-btn:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.password-toggle-btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
 /* Animation for message */
 @keyframes slideIn {
     from {

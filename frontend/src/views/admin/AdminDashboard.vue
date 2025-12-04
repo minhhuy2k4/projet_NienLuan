@@ -37,85 +37,33 @@
     </div>
 </template>
 
+<script setup>
+import { onMounted, onUnmounted } from 'vue';
+
+// Ensure admin always uses light theme
+onMounted(() => {
+    // Force remove dark class when entering admin
+    document.documentElement.classList.remove('dark');
+});
+
+onUnmounted(() => {
+    // Reapply user's theme preference when leaving admin
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+    }
+});
+</script>
+
 <style>
-/* XÓA "scoped" để style áp dụng cho các trang con (router-view) */
-:root {
-    --admin-bg: #f4f7f6;
-    --sidebar-bg: #ffffff;
-    --card-bg: #ffffff;
-    --text-primary: #333;
-    --text-secondary: #777;
-    --border-light: #e9ecef;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
+/* Import admin theme - độc lập với theme chính */
+@import '@/assets/admin-theme.css';
 
-.admin-wrapper {
-    background-color: var(--admin-bg);
-    min-height: 100vh;
-}
-
+/* Override some styles for this specific layout if needed */
 .admin-layout {
-    display: grid;
-    grid-template-columns: 260px 1fr;
     max-width: 1600px;
-    margin: 0 auto;
 }
 
-.sidebar {
-    background-color: var(--sidebar-bg);
-    border-right: 1px solid var(--border-light);
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem 1rem;
-    min-height: 100vh;
-}
-
-.sidebar-header {
-    padding: 0 0.5rem 1.5rem 0.5rem;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.sidebar-header h3 {
-    margin: 0 0 0.25rem 0;
-    color: var(--primary-blue);
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    margin-top: 1.5rem;
-    gap: 0.5rem;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.8rem 1rem;
-    border-radius: 8px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.nav-item .icon {
-    font-size: 1.2rem;
-}
-
-.nav-item:hover {
-    background-color: #f0f7ff;
-    color: var(--primary-blue);
-}
-
-.nav-item.router-link-exact-active {
-    background-color: var(--primary-blue);
-    color: white;
-}
-
-.nav-back {
-    margin-top: auto;
-    border-top: 1px solid var(--border-light);
-}
 
 /* Style chung cho nội dung admin */
 .main-content {

@@ -35,11 +35,12 @@ defineProps({
 
 <style scoped>
 .story-card {
-    background: var(--white-color);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -47,7 +48,8 @@ defineProps({
 
 .story-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
 }
 
 /* Horizontal Layout */
@@ -121,10 +123,16 @@ defineProps({
     line-clamp: 2;
     -webkit-box-orient: vertical;
     line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.story-title a {
+    color: var(--text-primary);
+    transition: color var(--transition-base);
 }
 
 .story-title a:hover {
-    color: var(--primary-blue);
+    color: var(--color-primary);
 }
 
 .story-meta {
@@ -136,7 +144,7 @@ defineProps({
 
 .story-author {
     font-size: 0.85rem;
-    color: var(--secondary-text);
+    color: var(--text-secondary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -144,7 +152,7 @@ defineProps({
 
 .latest-chapter {
     font-size: 0.8rem;
-    color: var(--primary-blue);
+    color: var(--color-primary);
     font-weight: 500;
 }
 </style>

@@ -1,29 +1,32 @@
 <template>
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen" style="background-color: var(--bg-primary);">
         <!-- Loading State -->
         <div v-if="loading" class="flex items-center justify-center min-h-screen">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+            <div class="loading-spinner"></div>
         </div>
 
         <!-- Error State -->
         <div v-else-if="error" class="flex items-center justify-center min-h-screen">
-            <div class="text-red-600 text-xl bg-red-50 p-8 rounded-lg border border-red-200 shadow-lg">{{ error }}</div>
+            <div class="text-xl p-8 rounded-lg border shadow-lg"
+                style="color: var(--color-danger); background-color: var(--bg-secondary); border-color: var(--border-color);">
+                {{ error }}</div>
         </div>
 
         <!-- Story Content -->
         <div v-else-if="story" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
             <!-- Breadcrumb -->
             <nav class="text-sm mb-6 animate-fade-in">
-                <router-link to="/" class="text-gray-500 hover:text-blue-600 transition duration-300">
+                <router-link to="/" style="color: var(--text-secondary);" class="transition duration-300"
+                    @mouseover="$event.target.style.color = 'var(--color-primary)'"
+                    @mouseleave="$event.target.style.color = 'var(--text-secondary)'">
                     Trang chủ
                 </router-link>
-                <span class="text-gray-400 mx-2">/</span>
-                <span class="text-gray-800 font-semibold">{{ story.name }}</span>
+                <span style="color: var(--text-tertiary);" class="mx-2">/</span>
+                <span style="color: var(--text-primary);" class="font-semibold">{{ story.name }}</span>
             </nav>
 
             <!-- Hero Section -->
-            <div
-                class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl shadow-2xl overflow-hidden mb-8 animate-slide-up">
+            <div class="hero-gradient rounded-2xl shadow-2xl overflow-hidden mb-8 animate-slide-up">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 p-6 md:p-8">
                     <!-- Cover Image -->
                     <div class="md:col-span-3">
@@ -41,12 +44,14 @@
                     </div>
 
                     <!-- Story Info -->
-                    <div class="md:col-span-9 text-white space-y-4">
-                        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">{{ story.name }}</h1>
+                    <div class="md:col-span-9 space-y-4">
+                        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
+                            style="color: var(--hero-text-color);">{{ story.name }}</h1>
 
                         <!-- Author & Status -->
                         <div class="flex flex-wrap items-center gap-4 text-sm md:text-base">
-                            <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                            <div class="flex items-center gap-2 px-4 py-2 rounded-full"
+                                style="background-color: rgba(100, 116, 139, 0.3); backdrop-filter: blur(4px);">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
@@ -63,31 +68,37 @@
                         <div class="flex items-center gap-3">
                             <div class="flex gap-1">
                                 <span v-for="i in 5" :key="i" class="text-2xl"
-                                    :class="i <= Math.round(story.averageRating || 0) ? 'text-yellow-400' : 'text-white/30'">
+                                    :style="{ color: i <= Math.round(story.averageRating || 0) ? '#fbbf24' : 'rgba(148, 163, 184, 0.4)' }">
                                     ★
                                 </span>
                             </div>
-                            <span class="text-xl font-bold">{{ (story.averageRating || 0).toFixed(1) }}</span>
-                            <span class="text-white/80">/ {{ story.totalRatings || 0 }} đánh giá</span>
+                            <span class="text-xl font-bold" style="color: var(--hero-text-color);">{{
+                                (story.averageRating || 0).toFixed(1) }}</span>
+                            <span style="color: var(--hero-text-secondary);">/ {{ story.totalRatings || 0 }} đánh
+                                giá</span>
                         </div>
 
                         <!-- Stats -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 pt-2">
-                            <div class="bg-white/15 backdrop-blur-sm rounded-lg p-3 text-center">
-                                <div class="text-2xl font-bold">{{ story.chapterCount || 0 }}</div>
-                                <div class="text-xs text-white/80 mt-1">Chương</div>
+                            <div class="rounded-lg p-3 text-center" style="background-color: rgba(71, 85, 105, 0.35);">
+                                <div class="text-2xl font-bold" style="color: var(--hero-text-color);">{{
+                                    story.chapterCount || 0 }}</div>
+                                <div class="text-xs mt-1" style="color: var(--hero-text-secondary);">Chương</div>
                             </div>
-                            <div class="bg-white/15 backdrop-blur-sm rounded-lg p-3 text-center">
-                                <div class="text-2xl font-bold">{{ formatViews(story.totalViews) }}</div>
-                                <div class="text-xs text-white/80 mt-1">Lượt xem</div>
+                            <div class="rounded-lg p-3 text-center" style="background-color: rgba(71, 85, 105, 0.35);">
+                                <div class="text-2xl font-bold" style="color: var(--hero-text-color);">{{
+                                    formatViews(story.totalViews) }}</div>
+                                <div class="text-xs mt-1" style="color: var(--hero-text-secondary);">Lượt xem</div>
                             </div>
-                            <div class="bg-white/15 backdrop-blur-sm rounded-lg p-3 text-center">
-                                <div class="text-2xl font-bold">{{ story.categoryDetails?.length || 0 }}</div>
-                                <div class="text-xs text-white/80 mt-1">Thể loại</div>
+                            <div class="rounded-lg p-3 text-center" style="background-color: rgba(71, 85, 105, 0.35);">
+                                <div class="text-2xl font-bold" style="color: var(--hero-text-color);">{{
+                                    story.categoryDetails?.length || 0 }}</div>
+                                <div class="text-xs mt-1" style="color: var(--hero-text-secondary);">Thể loại</div>
                             </div>
-                            <div class="bg-white/15 backdrop-blur-sm rounded-lg p-3 text-center">
-                                <div class="text-2xl font-bold">{{ formatDate(story.updatedAt) }}</div>
-                                <div class="text-xs text-white/80 mt-1">Cập nhật</div>
+                            <div class="rounded-lg p-3 text-center" style="background-color: rgba(71, 85, 105, 0.35);">
+                                <div class="text-2xl font-bold" style="color: var(--hero-text-color);">{{
+                                    formatDate(story.updatedAt) }}</div>
+                                <div class="text-xs mt-1" style="color: var(--hero-text-secondary);">Cập nhật</div>
                             </div>
                         </div>
 
@@ -95,7 +106,8 @@
                         <div class="flex flex-wrap gap-3 pt-2">
                             <router-link v-if="story.chapters && story.chapters.length > 0"
                                 :to="{ name: 'chapter.detail', params: { storySlug: story.slug, chapterNumber: story.chapters[0].chapterNumber || 1 } }"
-                                class="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl">
+                                class="px-6 py-3 bg-white font-bold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-lg hover:shadow-xl"
+                                style="color: var(--color-primary);">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
@@ -126,21 +138,23 @@
                 <!-- Left Column: Description & Categories -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Description -->
-                    <div
-                        class="bg-white rounded-xl p-6 shadow-md animate-slide-up animation-delay-100 border border-gray-100">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="rounded-xl p-6 shadow-md animate-slide-up animation-delay-100"
+                        style="background-color: var(--bg-card);">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-2" style="color: var(--text-primary);">
+                            <svg class="w-6 h-6" style="color: var(--color-primary);" fill="currentColor"
+                                viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                                     clip-rule="evenodd" />
                             </svg>
                             Giới thiệu
                         </h2>
-                        <div class="text-gray-700 leading-relaxed space-y-3">
+                        <div class="leading-relaxed space-y-3" style="color: var(--text-primary);">
                             <p class="text-justify">{{ truncatedDescription }}</p>
                         </div>
                         <button v-if="story.description && story.description.length > 250" @click="toggleDescription"
-                            class="mt-4 text-blue-600 hover:text-blue-800 transition font-semibold text-sm flex items-center gap-1">
+                            class="mt-4 transition font-semibold text-sm flex items-center gap-1"
+                            style="color: var(--color-primary);">
                             {{ isDescriptionExpanded ? 'Thu gọn' : 'Xem thêm' }}
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path v-if="isDescriptionExpanded" fill-rule="evenodd"
@@ -154,10 +168,11 @@
                     </div>
 
                     <!-- Categories -->
-                    <div
-                        class="bg-white rounded-xl p-6 shadow-md animate-slide-up animation-delay-150 border border-gray-100">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="rounded-xl p-6 shadow-md animate-slide-up animation-delay-150"
+                        style="background-color: var(--bg-card);">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: var(--text-primary);">
+                            <svg class="w-6 h-6" style="color: var(--color-accent);" fill="currentColor"
+                                viewBox="0 0 20 20">
                                 <path
                                     d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
                             </svg>
@@ -165,17 +180,17 @@
                         </h3>
                         <div class="flex flex-wrap gap-2">
                             <router-link v-for="cat in story.categoryDetails" :key="cat._id"
-                                :to="`/category/${cat.slug}`"
-                                class="px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 text-gray-700 rounded-full text-sm font-medium hover:from-blue-100 hover:to-purple-100 hover:shadow-md transition-all duration-300 border border-gray-200">
+                                :to="`/category/${cat.slug}`" class="category-badge">
                                 {{ cat.name }}
                             </router-link>
                         </div>
                     </div>
 
                     <!-- Chapters List -->
-                    <div
-                        class="bg-white rounded-xl shadow-md animate-slide-up animation-delay-200 border border-gray-100 overflow-hidden">
-                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
+                    <div class="rounded-xl shadow-md animate-slide-up animation-delay-200 overflow-hidden"
+                        style="background-color: var(--bg-card);">
+                        <div class="p-6"
+                            style="background: linear-gradient(135deg, var(--color-primary), var(--color-accent));">
                             <h2 class="text-2xl font-bold text-white flex items-center gap-2">
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                     <path
@@ -190,17 +205,19 @@
                         <div v-if="story.chapters && story.chapters.length > 0"
                             class="max-h-[500px] overflow-y-auto custom-scrollbar">
                             <div v-for="(chapter, index) in story.chapters" :key="chapter._id"
-                                class="group border-b border-gray-100 last:border-b-0 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
+                                class="group transition-all duration-200"
+                                style="border-bottom: 1px solid var(--border-color);">
                                 <router-link
                                     :to="{ name: 'chapter.detail', params: { storySlug: story.slug, chapterNumber: chapter.chapterNumber || (index + 1) } }"
                                     class="block p-4">
                                     <div class="flex items-center justify-between gap-4">
                                         <div class="flex-1 min-w-0">
-                                            <p
-                                                class="font-semibold text-gray-800 group-hover:text-blue-600 transition truncate">
+                                            <p class="font-semibold transition truncate"
+                                                style="color: var(--text-primary);">
                                                 Chương {{ chapter.chapterNumber || (index + 1) }}: {{ chapter.title }}
                                             </p>
-                                            <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
+                                            <div class="flex items-center gap-3 mt-1.5 text-xs"
+                                                style="color: var(--text-secondary);">
                                                 <span class="flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -219,7 +236,8 @@
                                                     {{ formatDate(chapter.createdAt) }}
                                                 </span>
                                                 <span v-if="chapter.audioUrl"
-                                                    class="text-green-600 font-medium flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full">
+                                                    class="font-medium flex items-center gap-1 px-2 py-0.5 rounded-full"
+                                                    style="color: var(--color-success); background-color: var(--bg-secondary);">
                                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                                         <path
                                                             d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
@@ -230,10 +248,10 @@
                                         </div>
 
                                         <button v-if="chapter.audioUrl" @click.prevent.stop="playChapter(chapter)"
-                                            class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 shadow-md flex-shrink-0"
-                                            :class="isPlaying && currentChapter?._id === chapter._id
-                                                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
-                                                : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white'">
+                                            class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 shadow-md flex-shrink-0 text-white"
+                                            :style="isPlaying && currentChapter?._id === chapter._id
+                                                ? { background: 'linear-gradient(135deg, var(--color-success), #059669)' }
+                                                : { background: 'linear-gradient(135deg, var(--color-primary), var(--color-accent))' }">
                                             <svg v-if="isPlaying && currentChapter?._id === chapter._id" class="w-5 h-5"
                                                 fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd"
@@ -250,8 +268,10 @@
                                 </router-link>
                             </div>
                         </div>
-                        <div v-else class="text-center text-gray-500 py-12 bg-gray-50">
-                            <svg class="w-16 h-16 mx-auto mb-3 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <div v-else class="text-center py-12"
+                            style="background-color: var(--bg-secondary); color: var(--text-secondary);">
+                            <svg class="w-16 h-16 mx-auto mb-3" style="color: var(--text-secondary); opacity: 0.5;"
+                                fill="currentColor" viewBox="0 0 20 20">
                                 <path
                                     d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
                             </svg>
@@ -263,10 +283,11 @@
                 <!-- Right Column: Sidebar -->
                 <div class="lg:col-span-1 space-y-6">
                     <!-- Quick Actions -->
-                    <div
-                        class="bg-white rounded-xl p-6 shadow-md animate-slide-up animation-delay-250 border border-gray-100 sticky top-6">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <svg class="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="rounded-xl p-6 shadow-md animate-slide-up animation-delay-250 sticky top-6"
+                        style="background-color: var(--bg-card);">
+                        <h3 class="text-lg font-bold mb-4 flex items-center gap-2" style="color: var(--text-primary);">
+                            <svg class="w-5 h-5" style="color: var(--color-accent);" fill="currentColor"
+                                viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
                                     clip-rule="evenodd" />
@@ -276,7 +297,8 @@
                         <div class="space-y-3">
                             <router-link v-if="story.chapters && story.chapters.length > 0"
                                 :to="{ name: 'chapter.detail', params: { storySlug: story.slug, chapterNumber: story.chapters[story.chapters.length - 1].chapterNumber || story.chapters.length } }"
-                                class="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center justify-center gap-2 shadow-md">
+                                class="w-full px-4 py-3 text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center justify-center gap-2 shadow-md"
+                                style="background: linear-gradient(135deg, var(--color-primary), var(--color-accent));">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
@@ -287,7 +309,8 @@
                     </div>
 
                     <!-- Ad Display -->
-                    <div class="bg-gray-100 rounded-xl overflow-hidden shadow-md animate-slide-up animation-delay-300">
+                    <div class="rounded-xl overflow-hidden shadow-md animate-slide-up animation-delay-300"
+                        style="background-color: var(--bg-secondary);">
                         <AdDisplay position="story-detail" />
                     </div>
                 </div>
@@ -295,8 +318,8 @@
 
             <!-- Rating Section -->
             <div class="mt-10 animate-slide-up animation-delay-400">
-                <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-yellow-500 to-orange-500 p-6">
+                <div class="rounded-xl shadow-md overflow-hidden" style="background-color: var(--bg-card);">
+                    <div class="p-6" style="background: linear-gradient(135deg, #fbbf24, var(--color-accent));">
                         <h2 class="text-2xl font-bold text-white flex items-center gap-2">
                             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                                 <path
@@ -316,25 +339,29 @@
         <!-- Sticky Audio Player -->
         <transition name="slide-up">
             <div v-if="currentChapter && currentChapter.audioUrl"
-                class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-gray-200 shadow-2xl z-50">
+                class="fixed bottom-0 left-0 right-0 backdrop-blur-sm shadow-2xl z-50"
+                style="background-color: var(--bg-card); opacity: 0.98; border-top: 1px solid var(--border-color);">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
                     <div class="flex flex-col md:flex-row items-center gap-4">
                         <div class="flex items-center gap-4 flex-1 min-w-0">
-                            <div
-                                class="w-14 h-14 rounded-md overflow-hidden flex-shrink-0 border border-gray-200 shadow-sm">
+                            <div class="w-14 h-14 rounded-md overflow-hidden flex-shrink-0 shadow-sm"
+                                style="border: 1px solid var(--border-color);">
                                 <img v-if="story.image" :src="getStoryImageUrl(story.image)" :alt="story.name"
                                     class="w-full h-full object-cover" />
-                                <div v-else
-                                    class="w-full h-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-2xl">
-                                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <div v-else class="w-full h-full flex items-center justify-center text-2xl"
+                                    style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover));">
+                                    <svg class="w-8 h-8" style="color: var(--text-secondary);" fill="currentColor"
+                                        viewBox="0 0 20 20">
                                         <path
                                             d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
                                     </svg>
                                 </div>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="text-gray-800 font-semibold truncate">{{ currentChapter.title }}</h4>
-                                <p class="text-gray-600 text-sm">Chương {{ currentChapter.chapterNumber }}</p>
+                                <h4 class="font-semibold truncate" style="color: var(--text-primary);">{{
+                                    currentChapter.title }}</h4>
+                                <p class="text-sm" style="color: var(--text-secondary);">Chương {{
+                                    currentChapter.chapterNumber }}</p>
                             </div>
                         </div>
 

@@ -1,6 +1,8 @@
 <template>
-    <div class="bg-white rounded-xl shadow-lg p-6 border border-blue-100">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-blue-100 pb-3">
+    <div class="rounded-xl shadow-lg p-6 border"
+        style="background-color: var(--bg-card); border-color: var(--border-color);">
+        <h2 class="text-2xl font-bold mb-6 border-b pb-3"
+            style="color: var(--text-primary); border-color: var(--border-color);">
             💬 Bình luận ({{ totalCount }})
         </h2>
 
@@ -12,13 +14,13 @@
                     @error="$event.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(authStore.user?.name || 'User')}&background=random&color=fff`" />
                 <div class="flex-1">
                     <textarea v-model="newComment" @keydown.ctrl.enter="submitComment" :disabled="submitting"
-                        placeholder="Viết bình luận của bạn... (Ctrl+Enter để gửi)"
-                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                        placeholder="Viết bình luận của bạn... (Ctrl+Enter để gửi)" class="form-textarea-themed"
                         rows="3" maxlength="1000"></textarea>
                     <div class="flex justify-between items-center mt-2">
-                        <span class="text-sm text-gray-500">{{ newComment.length }}/1000</span>
+                        <span class="text-sm" style="color: var(--text-secondary);">{{ newComment.length }}/1000</span>
                         <button @click="submitComment" :disabled="!newComment.trim() || submitting"
-                            class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="btn-action-primary"
+                            :style="{ opacity: (!newComment.trim() || submitting) ? '0.5' : '1', cursor: (!newComment.trim() || submitting) ? 'not-allowed' : 'pointer' }">
                             {{ submitting ? 'Đang gửi...' : 'Gửi bình luận' }}
                         </button>
                     </div>
@@ -27,17 +29,17 @@
         </div>
 
         <!-- Login prompt -->
-        <div v-else class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-            <p class="text-gray-700 mb-3">Đăng nhập để bình luận</p>
-            <router-link to="/login"
-                class="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+        <div v-else class="mb-6 p-4 rounded-lg text-center border"
+            style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <p class="mb-3" style="color: var(--text-primary);">Đăng nhập để bình luận</p>
+            <router-link to="/login" class="btn-action-primary">
                 Đăng nhập
             </router-link>
         </div>
 
         <!-- Comments List -->
         <div v-if="loading" class="text-center py-8">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mx-auto"></div>
+            <div class="loading-spinner mx-auto"></div>
         </div>
 
         <div v-else-if="comments.length === 0" class="text-center py-8 text-gray-500">
@@ -54,15 +56,13 @@
 
         <!-- Pagination -->
         <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center gap-4">
-            <button @click="prevPage" :disabled="currentPage === 1"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+            <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn">
                 ← Trước
             </button>
-            <span class="text-gray-700 font-medium">
+            <span class="font-medium" style="color: var(--text-primary);">
                 Trang {{ currentPage }} / {{ totalPages }}
             </span>
-            <button @click="nextPage" :disabled="currentPage === totalPages"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+            <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-btn">
                 Sau →
             </button>
         </div>

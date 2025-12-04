@@ -156,128 +156,139 @@ onMounted(async () => {
 
 <style scoped>
 .home-container {
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: var(--spacing-xl) var(--spacing-md);
+    background-color: var(--bg-primary);
 }
 
 .story-section {
-    margin-bottom: 3rem;
+    margin-bottom: var(--spacing-2xl);
 }
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md) 0;
 }
 
 .section-title {
     font-size: 1.5rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--primary-text);
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
+    margin: 0;
 }
 
-.section-title .icon {
-    font-size: 1.75rem;
+.section-title svg {
+    filter: drop-shadow(0 2px 4px rgba(13, 148, 136, 0.3));
+    fill: var(--gradient-start);
 }
 
 .view-all-link {
-    color: #3b82f6;
+    color: var(--color-primary);
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    transition: all var(--transition-base);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 2px solid var(--color-primary);
 }
 
 .view-all-link:hover {
-    background-color: #eff6ff;
-    color: #2563eb;
+    background: var(--color-primary);
+    color: white;
     transform: translateX(4px);
 }
 
 .story-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.5rem;
+    gap: var(--spacing-lg);
 }
 
 .loading,
 .error {
     text-align: center;
     font-size: 1.2rem;
-    color: var(--secondary-text);
-    padding: 2rem;
+    padding: var(--spacing-xl);
+}
+
+.loading {
+    color: var(--color-primary);
 }
 
 .error {
-    color: #ef4444;
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slide-up {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fade-in {
-    animation: fade-in 0.6s ease-out;
-}
-
-.animate-slide-up {
-    animation: slide-up 0.8s ease-out;
+    color: var(--color-danger);
+    background-color: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+    .story-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: var(--spacing-md);
+    }
+}
+
 @media (max-width: 768px) {
     .home-container {
-        padding: 1rem 0.5rem;
+        padding: var(--spacing-lg) var(--spacing-sm);
     }
 
     .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: var(--spacing-md);
     }
 
     .section-title {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
+    }
+
+    .view-all-link {
+        font-size: 0.875rem;
+        padding: var(--spacing-xs) var(--spacing-md);
     }
 
     .story-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 1rem;
+        gap: var(--spacing-md);
     }
 }
 
 @media (max-width: 480px) {
+    .home-container {
+        padding: var(--spacing-md) var(--spacing-xs);
+    }
+
+    .section-header {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .section-title {
+        font-size: 1rem;
+    }
+
+    .section-title svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
     .story-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+        gap: var(--spacing-sm);
     }
 }
 </style>

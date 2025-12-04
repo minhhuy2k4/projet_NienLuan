@@ -1,20 +1,26 @@
 <template>
-    <div class="rating-section bg-white rounded-xl shadow-lg p-6 sm:p-8">
+    <div class="rating-section rounded-xl shadow-lg p-6 sm:p-8" style="background-color: var(--bg-card);">
         <!-- Header -->
-        <h3 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+        <h3 class="text-2xl sm:text-3xl font-bold mb-6 flex items-center gap-3" style="color: var(--text-primary);">
+            <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                </path>
+            </svg>
             <span>Đánh Giá & Nhận Xét</span>
         </h3>
 
         <!-- Rating Summary -->
         <div v-if="stats" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <!-- Average Rating -->
-            <div class="flex flex-col items-center justify-center text-center p-6 bg-gray-50 rounded-xl border border-gray-200">
-                <div class="text-6xl font-bold text-gray-800 mb-2">
+            <div class="flex flex-col items-center justify-center text-center p-6 rounded-xl border"
+                style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="text-6xl font-bold mb-2" style="color: var(--text-primary);">
                     {{ averageRating.toFixed(1) }}
                 </div>
                 <div class="flex justify-center mb-2">
-                    <div v-for="star in 5" :key="star" class="text-3xl" :class="star <= Math.round(averageRating) ? 'text-yellow-400' : 'text-gray-300'">★</div>
+                    <div v-for="star in 5" :key="star" class="text-3xl"
+                        :class="star <= Math.round(averageRating) ? 'text-yellow-400' : 'text-gray-300'">★</div>
                 </div>
                 <div class="text-gray-500">
                     Dựa trên {{ totalRatings }} đánh giá
@@ -24,90 +30,109 @@
             <!-- Rating Distribution -->
             <div class="flex flex-col justify-center space-y-2">
                 <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="flex items-center gap-3">
-                    <span class="w-16 text-sm font-semibold text-gray-600 flex items-center">{{ star }} <span class="text-yellow-400 ml-1">★</span></span>
-                    <div class="flex-1 h-4 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="h-full bg-yellow-400 transition-all duration-500 rounded-full" :style="{ width: getRatingPercentage(star) + '%' }"></div>
+                    <span class="w-16 text-sm font-semibold flex items-center" style="color: var(--text-primary);">{{
+                        star }} <span class="text-yellow-400 ml-1">★</span></span>
+                    <div class="flex-1 h-4 rounded-full overflow-hidden" style="background-color: var(--bg-secondary);">
+                        <div class="h-full bg-yellow-400 transition-all duration-500 rounded-full"
+                            :style="{ width: getRatingPercentage(star) + '%' }"></div>
                     </div>
-                    <span class="w-12 text-sm text-gray-500 text-right font-mono">{{ stats[star] }}</span>
+                    <span class="w-12 text-sm text-right font-mono" style="color: var(--text-secondary);">{{ stats[star]
+                        }}</span>
                 </div>
             </div>
         </div>
 
         <!-- User's Rating Form (if logged in) -->
-        <div v-if="authStore.isLoggedIn" class="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200">
-            <h4 class="font-bold text-lg text-gray-800 mb-4">
+        <div v-if="authStore.isLoggedIn" class="mb-8 p-6 rounded-xl border"
+            style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <h4 class="font-bold text-lg mb-4" style="color: var(--text-primary);">
                 {{ userRating ? 'Cập nhật đánh giá của bạn:' : 'Bạn nghĩ sao về truyện này?' }}
             </h4>
 
             <div class="flex items-center gap-4 mb-4">
-                <span class="font-semibold text-gray-700">Chất lượng:</span>
+                <span class="font-semibold" style="color: var(--text-primary);">Chất lượng:</span>
                 <div class="flex gap-1" @mouseleave="hoveredRating = 0">
-                    <button v-for="star in 5" :key="star" @click="selectedRating = star" @mouseenter="hoveredRating = star" type="button" class="focus:outline-none">
-                        <svg class="w-8 h-8 transition-transform hover:scale-110" :class="(star <= (hoveredRating || selectedRating)) ? 'text-yellow-400' : 'text-gray-300'" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    <button v-for="star in 5" :key="star" @click="selectedRating = star"
+                        @mouseenter="hoveredRating = star" type="button" class="focus:outline-none">
+                        <svg class="w-8 h-8 transition-transform hover:scale-110"
+                            :class="(star <= (hoveredRating || selectedRating)) ? 'text-yellow-400' : 'text-gray-300'"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z">
+                            </path>
+                        </svg>
                     </button>
                 </div>
             </div>
 
             <div class="mb-4">
                 <textarea v-model="comment" rows="3" placeholder="Viết nhận xét của bạn (tùy chọn)..."
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"></textarea>
+                    class="form-textarea-themed"></textarea>
             </div>
 
             <div class="flex items-center gap-4">
-                <button @click="submitRating" :disabled="selectedRating === 0 || submitting"
-                    class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
-                    <span v-if="submitting" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                <button @click="submitRating" :disabled="selectedRating === 0 || submitting" class="btn-action-primary"
+                    :style="{ opacity: (selectedRating === 0 || submitting) ? '0.6' : '1', cursor: (selectedRating === 0 || submitting) ? 'not-allowed' : 'pointer' }">
+                    <span v-if="submitting"
+                        class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
                     <span>{{ userRating ? 'Cập nhật' : 'Gửi đánh giá' }}</span>
                 </button>
 
-                <button v-if="userRating" @click="deleteRating"
-                    class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition flex items-center gap-2">
+                <button v-if="userRating" @click="deleteRating" class="btn-action-danger">
                     <span>🗑️</span> Xóa
                 </button>
             </div>
         </div>
 
         <!-- Login Prompt -->
-        <div v-else class="mb-8 p-6 bg-blue-50 rounded-xl border border-blue-200 text-center">
-            <p class="text-gray-700 mb-4 font-semibold">Vui lòng đăng nhập để đánh giá và bình luận.</p>
-            <router-link to="/login"
-                class="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-md hover:shadow-lg">
+        <div v-else class="mb-8 p-6 rounded-xl border text-center"
+            style="background-color: var(--bg-secondary); border-color: var(--border-color);">
+            <p class="mb-4 font-semibold" style="color: var(--text-primary);">Vui lòng đăng nhập để đánh giá và bình
+                luận.</p>
+            <router-link to="/login" class="btn-action-primary">
                 Đăng nhập ngay
             </router-link>
         </div>
 
         <!-- Ratings List -->
         <div v-if="ratings.length > 0">
-            <h4 class="font-bold text-xl text-gray-800 mb-4">Tất cả nhận xét</h4>
+            <h4 class="font-bold text-xl mb-4" style="color: var(--text-primary);">Tất cả nhận xét</h4>
             <div class="space-y-6">
-                <div v-for="rating in ratings" :key="rating._id" class="flex items-start space-x-4 p-4 border-b border-gray-100 last:border-b-0">
+                <div v-for="rating in ratings" :key="rating._id" class="flex items-start space-x-4 p-4"
+                    style="border-bottom: 1px solid var(--border-color);">
                     <div class="flex-shrink-0">
-                        <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold text-gray-600 text-lg">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg"
+                            style="background-color: var(--bg-secondary); color: var(--text-primary);">
                             {{ rating.user.name ? rating.user.name.charAt(0).toUpperCase() : 'U' }}
                         </div>
                     </div>
                     <div class="flex-1">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="font-semibold text-gray-900">{{ rating.user.name || rating.user.email }}</p>
-                                <p class="text-sm text-gray-500">{{ formatDate(rating.createdAt) }}</p>
+                                <p class="font-semibold" style="color: var(--text-primary);">{{ rating.user.name ||
+                                    rating.user.email }}</p>
+                                <p class="text-sm" style="color: var(--text-secondary);">{{ formatDate(rating.createdAt)
+                                    }}</p>
                             </div>
                             <div class="flex">
-                                <div v-for="star in 5" :key="star" class="text-lg" :class="star <= rating.rating ? 'text-yellow-400' : 'text-gray-300'">★</div>
+                                <div v-for="star in 5" :key="star" class="text-lg"
+                                    :class="star <= rating.rating ? 'text-yellow-400' : 'text-gray-300'">★</div>
                             </div>
                         </div>
-                        <p v-if="rating.comment" class="text-gray-700 mt-2 prose prose-sm max-w-none">{{ rating.comment }}</p>
+                        <p v-if="rating.comment" class="mt-2 prose prose-sm max-w-none"
+                            style="color: var(--text-primary);">{{ rating.comment }}</p>
                     </div>
                 </div>
             </div>
 
             <button v-if="canLoadMore" @click="loadMoreRatings"
-                class="mt-6 w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition">
+                class="mt-6 w-full px-6 py-3 font-semibold rounded-lg transition"
+                style="background-color: var(--bg-hover); color: var(--text-primary);">
                 Tải thêm nhận xét
             </button>
         </div>
 
-        <div v-else class="text-center py-12 text-gray-500">
+        <div v-else class="text-center py-12" style="color: var(--text-secondary);">
             <div class="text-5xl mb-4">🤔</div>
             <p class="font-semibold">Chưa có đánh giá nào.</p>
             <p>Hãy là người đầu tiên nhận xét về truyện này!</p>

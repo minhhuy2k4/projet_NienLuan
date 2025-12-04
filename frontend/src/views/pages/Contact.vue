@@ -1,25 +1,27 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-12">
+    <div class="page-gradient" style="padding: 3rem 0;">
         <div class="max-w-5xl mx-auto px-4">
             <!-- Header -->
             <div class="text-center mb-12 animate-fade-in">
-                <h1 class="text-4xl font-bold text-gray-800 mb-3">
-                    <svg class="w-16 h-16 inline-block text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                <h1 class="page-title">
+                    <svg class="w-16 h-16 inline-block" style="color: var(--color-primary);" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
                     <br />Liên Hệ Với Chúng Tôi
                 </h1>
-                <p class="text-gray-600 text-lg">
+                <p class="page-subtitle">
                     Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn
                 </p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Contact Form -->
-                <div class="bg-white rounded-2xl shadow-xl p-8 animate-slide-up border border-gray-100">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                        <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                <div class="rounded-2xl shadow-xl p-8 animate-slide-up" style="background-color: var(--bg-card);">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-2" style="color: var(--text-primary);">
+                        <svg class="w-6 h-6" style="color: var(--color-primary);" fill="currentColor"
+                            viewBox="0 0 20 20">
                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                         </svg>
@@ -29,38 +31,37 @@
                     <form @submit.prevent="handleSubmit" class="space-y-5">
                         <!-- Name -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                Họ và tên <span class="text-red-500">*</span>
+                            <label class="block text-sm font-semibold mb-2" style="color: var(--text-primary);">
+                                Họ và tên <span style="color: var(--color-danger);">*</span>
                             </label>
                             <input v-model="form.name" type="text" required placeholder="Nguyễn Văn A"
-                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors">
+                                class="form-input-themed w-full">
                         </div>
 
                         <!-- Email -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                Email <span class="text-red-500">*</span>
+                            <label class="block text-sm font-semibold mb-2" style="color: var(--text-primary);">
+                                Email <span style="color: var(--color-danger);">*</span>
                             </label>
                             <input v-model="form.email" type="email" required placeholder="email@example.com"
-                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors">
+                                class="form-input-themed w-full">
                         </div>
 
                         <!-- Phone -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            <label class="block text-sm font-semibold mb-2" style="color: var(--text-primary);">
                                 Số điện thoại
                             </label>
                             <input v-model="form.phone" type="tel" placeholder="0123 456 789"
-                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors">
+                                class="form-input-themed w-full">
                         </div>
 
                         <!-- Subject -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                Chủ đề <span class="text-red-500">*</span>
+                            <label class="block text-sm font-semibold mb-2" style="color: var(--text-primary);">
+                                Chủ đề <span style="color: var(--color-danger);">*</span>
                             </label>
-                            <select v-model="form.subject" required
-                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors">
+                            <select v-model="form.subject" required class="form-input-themed w-full">
                                 <option value="">-- Chọn chủ đề --</option>
                                 <option value="support">Hỗ trợ kỹ thuật</option>
                                 <option value="feedback">Góp ý / Phản hồi</option>
@@ -72,17 +73,18 @@
 
                         <!-- Message -->
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                Nội dung <span class="text-red-500">*</span>
+                            <label class="block text-sm font-semibold mb-2" style="color: var(--text-primary);">
+                                Nội dung <span style="color: var(--color-danger);">*</span>
                             </label>
                             <textarea v-model="form.message" required rows="5"
                                 placeholder="Nhập nội dung tin nhắn của bạn..."
-                                class="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-purple-500 focus:outline-none transition-colors resize-none"></textarea>
+                                class="form-input-themed w-full resize-none"></textarea>
                         </div>
 
                         <!-- Submit Button -->
                         <button type="submit" :disabled="submitting"
-                            class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg">
+                            class="w-full py-4 text-white font-bold rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                            style="background: linear-gradient(135deg, var(--color-primary), var(--color-accent));">
                             <span v-if="!submitting" class="flex items-center justify-center gap-2">
                                 Gửi tin nhắn
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -95,8 +97,8 @@
                     </form>
 
                     <!-- Success Message -->
-                    <div v-if="showSuccess"
-                        class="mt-4 p-4 bg-green-100 border border-green-300 text-green-800 rounded-lg animate-fade-in flex items-center gap-2">
+                    <div v-if="showSuccess" class="mt-4 p-4 rounded-lg animate-fade-in flex items-center gap-2"
+                        style="background-color: var(--color-success); color: white; opacity: 0.9;">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -109,10 +111,11 @@
                 <!-- Contact Info -->
                 <div class="space-y-6">
                     <!-- Contact Cards -->
-                    <div class="bg-white rounded-2xl shadow-xl p-6 animate-slide-up border border-gray-100"
-                        style="animation-delay: 100ms">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="rounded-2xl shadow-xl p-6 animate-slide-up"
+                        style="animation-delay: 100ms; background-color: var(--bg-card);">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: var(--text-primary);">
+                            <svg class="w-6 h-6" style="color: var(--color-primary);" fill="currentColor"
+                                viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                                     clip-rule="evenodd" />
@@ -122,46 +125,51 @@
 
                         <div class="space-y-4">
                             <!-- Email -->
-                            <div
-                                class="flex items-start gap-4 p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                                <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="flex items-start gap-4 p-4 rounded-lg transition-colors"
+                                style="background-color: var(--bg-hover);">
+                                <svg class="w-8 h-8" style="color: var(--color-primary);" fill="currentColor"
+                                    viewBox="0 0 20 20">
                                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                                 </svg>
                                 <div>
-                                    <div class="font-semibold text-gray-800">Email</div>
-                                    <a href="mailto:support@audiotruyen.vn" class="text-purple-600 hover:underline">
+                                    <div class="font-semibold" style="color: var(--text-primary);">Email</div>
+                                    <a href="mailto:support@audiotruyen.vn" style="color: var(--color-primary);"
+                                        class="hover:underline">
                                         support@audiotruyen.vn
                                     </a>
                                 </div>
                             </div>
 
                             <!-- Phone -->
-                            <div
-                                class="flex items-start gap-4 p-4 bg-pink-50 rounded-lg hover:bg-pink-100 transition-colors">
-                                <svg class="w-8 h-8 text-pink-600" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="flex items-start gap-4 p-4 rounded-lg transition-colors"
+                                style="background-color: var(--bg-hover);">
+                                <svg class="w-8 h-8" style="color: var(--color-accent);" fill="currentColor"
+                                    viewBox="0 0 20 20">
                                     <path
                                         d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                                 </svg>
                                 <div>
-                                    <div class="font-semibold text-gray-800">Điện thoại</div>
-                                    <a href="tel:0123456789" class="text-pink-600 hover:underline">
+                                    <div class="font-semibold" style="color: var(--text-primary);">Điện thoại</div>
+                                    <a href="tel:0123456789" style="color: var(--color-accent);"
+                                        class="hover:underline">
                                         0123 456 789
                                     </a>
                                 </div>
                             </div>
 
                             <!-- Address -->
-                            <div
-                                class="flex items-start gap-4 p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                                <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="flex items-start gap-4 p-4 rounded-lg transition-colors"
+                                style="background-color: var(--bg-hover);">
+                                <svg class="w-8 h-8" style="color: var(--color-primary);" fill="currentColor"
+                                    viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z"
                                         clip-rule="evenodd" />
                                 </svg>
                                 <div>
-                                    <div class="font-semibold text-gray-800">Địa chỉ</div>
-                                    <p class="text-gray-700">
+                                    <div class="font-semibold" style="color: var(--text-primary);">Địa chỉ</div>
+                                    <p style="color: var(--text-secondary);">
                                         123 Đường ABC, Quận 1<br>
                                         TP. Hồ Chí Minh, Việt Nam
                                     </p>
@@ -169,16 +177,17 @@
                             </div>
 
                             <!-- Working Hours -->
-                            <div
-                                class="flex items-start gap-4 p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                                <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="flex items-start gap-4 p-4 rounded-lg transition-colors"
+                                style="background-color: var(--bg-hover);">
+                                <svg class="w-8 h-8" style="color: var(--color-success);" fill="currentColor"
+                                    viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                                         clip-rule="evenodd" />
                                 </svg>
                                 <div>
-                                    <div class="font-semibold text-gray-800">Giờ làm việc</div>
-                                    <p class="text-gray-700">
+                                    <div class="font-semibold" style="color: var(--text-primary);">Giờ làm việc</div>
+                                    <p style="color: var(--text-secondary);">
                                         Thứ 2 - Thứ 6: 8:00 - 18:00<br>
                                         Thứ 7 - Chủ nhật: 9:00 - 17:00
                                     </p>
@@ -188,10 +197,11 @@
                     </div>
 
                     <!-- Social Media -->
-                    <div class="bg-white rounded-2xl shadow-xl p-6 animate-slide-up border border-gray-100"
-                        style="animation-delay: 200ms">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="rounded-2xl shadow-xl p-6 animate-slide-up"
+                        style="animation-delay: 200ms; background-color: var(--bg-card);">
+                        <h3 class="text-xl font-bold mb-4 flex items-center gap-2" style="color: var(--text-primary);">
+                            <svg class="w-6 h-6" style="color: var(--color-primary);" fill="currentColor"
+                                viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
                                     clip-rule="evenodd" />

@@ -12,6 +12,9 @@
             </div>
 
             <div class="nav-right">
+                <!-- Theme Toggle Button -->
+                <ThemeToggle />
+
                 <template v-if="!authStore.isLoggedIn">
                     <router-link to="/login" class="nav-button">Đăng nhập</router-link>
                     <router-link to="/register" class="nav-button primary">Đăng ký</router-link>
@@ -70,6 +73,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.store';
+import ThemeToggle from '@/components/ThemeToggle.vue';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -116,9 +120,10 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .main-header {
-    background: var(--white-color);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-md);
     border-bottom: 1px solid var(--border-color);
+    transition: all var(--transition-base);
 }
 
 .navbar {
@@ -139,13 +144,14 @@ onBeforeUnmount(() => {
 .logo {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--primary-blue);
+    color: var(--color-primary);
     text-decoration: none;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, color var(--transition-base);
 }
 
 .logo:hover {
     transform: scale(1.05);
+    color: var(--color-primary-light);
 }
 
 .search-bar {
@@ -155,29 +161,38 @@ onBeforeUnmount(() => {
 .search-bar input {
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--border-color);
-    border-radius: 5px 0 0 5px;
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
     outline: none;
     min-width: 250px;
-    transition: border-color 0.3s ease;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border-color var(--transition-base);
+}
+
+.search-bar input::placeholder {
+    color: var(--text-tertiary);
 }
 
 .search-bar input:focus {
-    border-color: var(--primary-blue);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
 }
 
 .search-bar button {
     border: none;
     padding: 0 0.75rem;
-    background: #f0f0f0;
+    background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     border-left: none;
-    border-radius: 0 5px 5px 0;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-base);
+    color: var(--text-secondary);
 }
 
 .search-bar button:hover {
-    background: #e0e0e0;
+    background: var(--bg-hover);
+    color: var(--text-primary);
 }
 
 .nav-right {
@@ -188,37 +203,38 @@ onBeforeUnmount(() => {
 
 .nav-button {
     padding: 0.5rem 1rem;
-    border-radius: 5px;
+    border-radius: var(--radius-md);
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: all var(--transition-base);
     border: 1px solid transparent;
     background: none;
     font-size: 0.9rem;
     cursor: pointer;
     text-decoration: none;
-    color: var(--primary-text);
+    color: var(--text-primary);
 }
 
 .nav-button:hover {
-    background-color: #f0f0f0;
+    background-color: var(--bg-tertiary);
     transform: translateY(-1px);
 }
 
 .nav-button.primary {
-    background-color: var(--primary-blue);
+    background-color: var(--color-primary);
     color: white;
-    border-color: var(--primary-blue);
+    border-color: var(--color-primary);
 }
 
 .nav-button.primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
+    background-color: var(--color-primary-light);
+    border-color: var(--color-primary-light);
+    box-shadow: var(--shadow-md);
 }
 
 .user-info {
     font-weight: 500;
     padding: 0 0.5rem;
-    color: var(--primary-text);
+    color: var(--text-primary);
 }
 
 .sub-nav {
@@ -232,13 +248,29 @@ onBeforeUnmount(() => {
 }
 
 .sub-nav a {
-    color: var(--primary-text);
+    color: var(--text-primary);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color var(--transition-base);
+    position: relative;
+}
+
+.sub-nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width var(--transition-base);
 }
 
 .sub-nav a:hover {
-    color: var(--primary-blue);
+    color: var(--color-primary);
+}
+
+.sub-nav a:hover::after {
+    width: 100%;
 }
 
 .user-menu {
@@ -253,13 +285,13 @@ onBeforeUnmount(() => {
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--primary-text);
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    color: var(--text-primary);
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-base);
 }
 
 .user-name-button:hover {
-    background-color: #f0f0f0;
+    background-color: var(--bg-tertiary);
 }
 
 .dropdown-content {
@@ -267,10 +299,10 @@ onBeforeUnmount(() => {
     position: absolute;
     right: 0;
     top: 100%;
-    background-color: var(--white-color);
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background-color: var(--bg-card);
+    min-width: 200px;
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-lg);
     z-index: 100;
     margin-top: 0.5rem;
     border: 1px solid var(--border-color);
@@ -291,26 +323,27 @@ onBeforeUnmount(() => {
 }
 
 .dropdown-item {
-    color: var(--primary-text);
+    color: var(--text-primary);
     padding: 10px 14px;
     text-decoration: none;
     display: block;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color var(--transition-base), color var(--transition-base);
 }
 
 .dropdown-item:hover {
-    background-color: #f1f1f1;
+    background-color: var(--bg-tertiary);
+    color: var(--color-primary);
 }
 
 .logout-item {
-    color: #dc3545;
+    color: var(--color-danger);
     font-weight: 500;
 }
 
 .logout-item:hover {
-    background-color: #fff5f5;
+    background-color: rgba(239, 68, 68, 0.1);
 }
 
 .dropdown-divider {

@@ -1,14 +1,14 @@
 <template>
-    <main class="category-detail-page">
+    <main class="category-detail-page page-bg">
         <!-- Loading State -->
         <div v-if="loading" class="loading-container">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mx-auto"></div>
+            <div class="loading-spinner mx-auto"></div>
         </div>
 
         <!-- Error State -->
         <div v-else-if="error" class="error-container">
-            <p class="error-message">{{ error }}</p>
-            <button @click="$router.back()" class="back-button">Quay lại</button>
+            <p class="error-message" style="color: var(--color-danger);">{{ error }}</p>
+            <button @click="$router.back()" class="btn-action-primary">Quay lại</button>
         </div>
 
         <!-- Category Content -->
@@ -205,6 +205,8 @@ onMounted(() => {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    background-color: var(--bg-primary);
+    min-height: 100vh;
 }
 
 .loading-container,
@@ -236,7 +238,7 @@ onMounted(() => {
 }
 
 .category-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
     border-radius: 16px;
     padding: 3rem 2rem;
     color: white;
@@ -395,19 +397,19 @@ onMounted(() => {
 
 .pagination-button {
     padding: 0.5rem;
-    background-color: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all var(--transition-base);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .pagination-button:not(:disabled):hover {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
     color: white;
 }
 
@@ -419,22 +421,22 @@ onMounted(() => {
 .pagination-number {
     padding: 0.5rem 1rem;
     min-width: 2.5rem;
-    background-color: white;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.3s;
+    transition: all var(--transition-base);
     font-weight: 600;
 }
 
 .pagination-number:hover {
-    background-color: #f5f5f5;
-    border-color: var(--primary-blue);
+    background-color: var(--bg-hover);
+    border-color: var(--color-primary);
 }
 
 .pagination-number.active {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
     color: white;
 }
 </style>

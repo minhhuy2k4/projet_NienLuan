@@ -7,17 +7,18 @@
             <div class="flex-1">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h5 class="font-semibold text-sm text-gray-800">{{ comment.user?.name || 'Anonymous' }}</h5>
-                        <p class="text-xs text-gray-500">{{ formatDate(comment.createdAt) }}</p>
+                        <h5 class="font-semibold text-sm" style="color: var(--text-primary);">{{ comment.user?.name ||
+                            'Anonymous' }}</h5>
+                        <p class="text-xs" style="color: var(--text-secondary);">{{ formatDate(comment.createdAt) }}</p>
                     </div>
                     <div class="flex gap-2">
                         <button v-if="authStore.user?._id === comment.user?._id" @click="$emit('edit', comment)"
-                            class="text-blue-600 hover:text-blue-700 text-sm transition">
+                            class="transition text-sm" style="color: var(--color-primary);">
                             ✏️
                         </button>
                         <button v-if="authStore.user?._id === comment.user?._id || authStore.isAdmin"
-                            @click="$emit('delete', comment._id)"
-                            class="text-red-600 hover:text-red-700 text-sm transition">
+                            @click="$emit('delete', comment._id)" class="transition text-sm"
+                            style="color: var(--color-danger);">
                             🗑️
                         </button>
                     </div>
@@ -25,22 +26,21 @@
 
                 <!-- Content Display -->
                 <div v-if="!comment.isEditing">
-                    <p class="text-gray-700 text-sm mt-1 whitespace-pre-line" v-html="formatContent(comment.content)">
+                    <p class="text-sm mt-1 whitespace-pre-line" style="color: var(--text-primary);"
+                        v-html="formatContent(comment.content)">
                     </p>
                 </div>
 
                 <!-- Edit Form -->
                 <div v-else class="mt-2">
-                    <textarea v-model="comment.editContent"
-                        class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none text-sm"
-                        rows="2" maxlength="1000"></textarea>
+                    <textarea v-model="comment.editContent" class="form-input-themed w-full text-sm" rows="2"
+                        maxlength="1000"></textarea>
                     <div class="flex gap-2 mt-2">
-                        <button @click="$emit('save-edit', comment)"
-                            class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition">
+                        <button @click="$emit('save-edit', comment)" class="btn-action-primary px-3 py-1 text-sm">
                             Lưu
                         </button>
-                        <button @click="$emit('cancel-edit', comment)"
-                            class="px-3 py-1 bg-gray-300 hover:bg-gray-400 text-gray-700 text-sm rounded transition">
+                        <button @click="$emit('cancel-edit', comment)" class="px-3 py-1 text-sm rounded transition"
+                            style="background-color: var(--bg-hover); color: var(--text-primary);">
                             Hủy
                         </button>
                     </div>
@@ -50,17 +50,17 @@
                 <div class="flex items-center gap-3 mt-2 text-xs">
                     <button @click="$emit('toggle-like', comment)" :disabled="!authStore.isLoggedIn"
                         class="flex items-center gap-1 transition"
-                        :class="comment.isLiked ? 'text-red-600' : 'text-gray-600 hover:text-red-600'">
+                        :style="{ color: comment.isLiked ? 'var(--color-danger)' : 'var(--text-secondary)' }">
                         <span>{{ comment.isLiked ? '❤️' : '🤍' }}</span>
                         <span>{{ comment.likeCount || 0 }}</span>
                     </button>
-                    <button @click="$emit('toggle-reply', comment)" v-if="authStore.isLoggedIn"
-                        class="text-gray-600 hover:text-blue-600 transition">
+                    <button @click="$emit('toggle-reply', comment)" v-if="authStore.isLoggedIn" class="transition"
+                        style="color: var(--text-secondary);">
                         💬 Trả lời
                     </button>
                     <button @click="$emit('report', comment._id)"
-                        v-if="authStore.isLoggedIn && authStore.user?._id !== comment.user?._id"
-                        class="text-gray-600 hover:text-orange-600 transition">
+                        v-if="authStore.isLoggedIn && authStore.user?._id !== comment.user?._id" class="transition"
+                        style="color: var(--text-secondary);">
                         🚩 Báo cáo
                     </button>
                 </div>
@@ -68,14 +68,13 @@
                 <!-- Reply Form -->
                 <div v-if="comment.showReplyForm" class="mt-3 flex gap-2">
                     <textarea v-model="comment.replyContent" placeholder="Viết câu trả lời..."
-                        class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none text-sm"
-                        rows="2" maxlength="500"></textarea>
+                        class="form-input-themed flex-1 text-sm" rows="2" maxlength="500"></textarea>
                     <button @click="$emit('submit-reply', comment)" :disabled="!comment.replyContent?.trim()"
-                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50 text-sm">
+                        class="btn-action-primary px-4 py-2 text-sm">
                         Gửi
                     </button>
-                    <button @click="$emit('cancel-reply', comment)"
-                        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg transition text-sm">
+                    <button @click="$emit('cancel-reply', comment)" class="px-4 py-2 text-sm rounded-lg transition"
+                        style="background-color: var(--bg-hover); color: var(--text-primary);">
                         Hủy
                     </button>
                 </div>
@@ -86,7 +85,8 @@
         <div v-if="comment.replies && comment.replies.length > 0">
             <!-- Nút xem/ẩn replies -->
             <button @click="toggleShowReplies"
-                class="text-blue-600 hover:text-blue-700 font-semibold text-sm mt-2 ml-2 transition flex items-center gap-1">
+                class="font-semibold text-sm mt-2 ml-2 transition flex items-center gap-1"
+                style="color: var(--color-primary);">
                 <span v-if="showReplies">▲ Ẩn {{ comment.replies.length }} trả lời</span>
                 <span v-else>▼ Xem {{ comment.replies.length }} trả lời</span>
             </button>

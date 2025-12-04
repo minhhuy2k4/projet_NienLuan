@@ -1,27 +1,34 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div class="page-gradient" style="min-height: 100vh;">
         <!-- Loading State -->
         <div v-if="loading" class="flex items-center justify-center min-h-screen">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600"></div>
+            <div class="loading-spinner"></div>
         </div>
 
         <!-- Error State -->
         <div v-else-if="error" class="flex items-center justify-center min-h-screen">
-            <div class="text-red-600 text-xl bg-red-50 p-8 rounded-lg border border-red-200">{{ error }}</div>
+            <div class="text-xl p-8 rounded-lg border"
+                style="color: var(--color-danger); background-color: var(--bg-secondary); border-color: var(--border-color);">
+                {{ error }}</div>
         </div>
 
         <!-- Chapter Content -->
         <div v-else-if="chapter && story" class="max-w-5xl mx-auto px-4 py-8">
             <!-- Breadcrumb -->
             <nav class="text-sm mb-6 animate-fade-in">
-                <router-link to="/" class="text-gray-600 hover:text-blue-600 transition">Trang chủ</router-link>
-                <span class="text-gray-400 mx-2">/</span>
+                <router-link to="/" style="color: var(--text-secondary);" class="transition"
+                    @mouseover="$event.target.style.color = 'var(--color-primary)'"
+                    @mouseleave="$event.target.style.color = 'var(--text-secondary)'">Trang chủ</router-link>
+                <span class="mx-2" style="color: var(--text-tertiary);">/</span>
                 <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
-                    class="text-gray-600 hover:text-blue-600 transition">
+                    style="color: var(--text-secondary);" class="transition"
+                    @mouseover="$event.target.style.color = 'var(--color-primary)'"
+                    @mouseleave="$event.target.style.color = 'var(--text-secondary)'">
                     {{ story.name }}
                 </router-link>
-                <span class="text-gray-400 mx-2">/</span>
-                <span class="text-gray-800 font-semibold">Chương {{ chapter.chapterNumber }}</span>
+                <span class="mx-2" style="color: var(--text-secondary);">/</span>
+                <span class="font-semibold" style="color: var(--text-primary);">Chương {{ chapter.chapterNumber
+                    }}</span>
             </nav>
 
             <!-- Quảng cáo chi tiết chương -->
@@ -30,7 +37,8 @@
             </div>
 
             <!-- Chapter Header -->
-            <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-6 animate-slide-up border border-blue-100">
+            <div class="rounded-xl shadow-lg p-6 md:p-8 mb-6 animate-slide-up"
+                style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
                 <div class="flex items-start gap-4 mb-6">
                     <!-- Story Cover -->
                     <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
@@ -49,13 +57,15 @@
                     <!-- Chapter Info -->
                     <div class="flex-1 min-w-0">
                         <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
-                            class="text-gray-600 hover:text-blue-600 transition text-sm mb-2 inline-block">
+                            class="transition text-sm mb-2 inline-block" style="color: var(--text-secondary);"
+                            @mouseover="$event.target.style.color = 'var(--color-primary)'"
+                            @mouseleave="$event.target.style.color = 'var(--text-secondary)'">
                             ← Quay lại {{ story.name }}
                         </router-link>
-                        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                        <h1 class="text-3xl md:text-4xl font-bold mb-2" style="color: var(--text-primary);">
                             Chương {{ chapter.chapterNumber }}: {{ chapter.title }}
                         </h1>
-                        <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                        <div class="flex flex-wrap items-center gap-4 text-sm" style="color: var(--text-secondary);">
                             <div class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -83,38 +93,43 @@
                 </div>
 
                 <!-- Audio Player (if available) -->
-                <div v-if="chapter.audioUrl"
-                    class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200">
+                <div v-if="chapter.audioUrl" class="rounded-xl p-6 border-2"
+                    style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover)); border-color: var(--color-primary);">
                     <div class="flex items-center gap-3 mb-4">
-                        <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-6 h-6" style="color: var(--color-primary);" fill="currentColor"
+                            viewBox="0 0 20 20">
                             <path
                                 d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
                         </svg>
-                        <h3 class="text-lg font-semibold text-gray-800">Audio truyện</h3>
+                        <h3 class="text-lg font-semibold" style="color: var(--text-primary);">Audio truyện</h3>
                     </div>
                     <audio ref="audioPlayer" :src="getAudioUrl(chapter.audioUrl)" controls @play="isPlaying = true"
                         @pause="isPlaying = false" @ended="onAudioEnded" @timeupdate="updateProgress"
                         class="w-full h-12 rounded-lg"></audio>
 
                     <!-- Progress Info -->
-                    <div v-if="audioPlayer" class="mt-3 text-sm text-gray-600 flex justify-between">
+                    <div v-if="audioPlayer" class="mt-3 text-sm flex justify-between"
+                        style="color: var(--text-secondary);">
                         <span>{{ formatTime(currentTime) }}</span>
                         <span>{{ formatTime(duration) }}</span>
                     </div>
                 </div>
 
                 <!-- No Audio Message -->
-                <div v-else class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
+                <div v-else class="rounded-xl p-6 text-center border"
+                    style="background-color: var(--bg-secondary); border-color: var(--color-warning);">
                     <span class="text-4xl mb-2 block">🔇</span>
-                    <p class="text-gray-700 font-medium">Chương này chưa có audio</p>
+                    <p class="font-medium" style="color: var(--text-primary);">Chương này chưa có audio</p>
                 </div>
             </div>
 
             <!-- Chapter Description/Content -->
-            <div
-                class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-6 animate-slide-up animation-delay-100 border border-blue-100">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-blue-100 pb-3">
-                    <svg class="w-6 h-6 inline-block mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+            <div class="rounded-xl shadow-lg p-6 md:p-8 mb-6 animate-slide-up animation-delay-100"
+                style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
+                <h2 class="text-2xl font-bold mb-4 pb-3"
+                    style="color: var(--text-primary); border-bottom: 1px solid var(--border-color);">
+                    <svg class="w-6 h-6 inline-block mr-2" style="color: var(--color-primary);" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
                             clip-rule="evenodd" />
@@ -122,19 +137,23 @@
                     Nội dung chương
                 </h2>
                 <div class="prose max-w-none">
-                    <p v-if="chapter.description" class="text-gray-700 leading-relaxed whitespace-pre-line">
+                    <p v-if="chapter.description" class="leading-relaxed whitespace-pre-line"
+                        style="color: var(--text-primary);">
                         {{ chapter.description }}
                     </p>
-                    <p v-else class="text-gray-500 italic">
+                    <p v-else class="italic" style="color: var(--text-secondary);">
                         Chương này chưa có nội dung mô tả.
                     </p>
                 </div>
             </div>
 
             <!-- Chapter Navigation -->
-            <div class="bg-white rounded-xl shadow-lg p-6 animate-slide-up animation-delay-200 border border-blue-100">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-blue-100 pb-3">
-                    <svg class="w-5 h-5 inline-block mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+            <div class="rounded-xl shadow-lg p-6 animate-slide-up animation-delay-200"
+                style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
+                <h2 class="text-xl font-bold mb-4 pb-3"
+                    style="color: var(--text-primary); border-bottom: 1px solid var(--border-color);">
+                    <svg class="w-5 h-5 inline-block mr-2" style="color: var(--color-primary);" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path
                             d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
                     </svg>
@@ -144,63 +163,73 @@
                     <!-- Previous Chapter -->
                     <button v-if="previousChapter"
                         @click="goToChapter(previousChapter.chapterNumber || (allChapters.indexOf(previousChapter) + 1))"
-                        class="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-lg transition-all transform hover:scale-105 border border-blue-200 group">
+                        class="flex items-center gap-3 p-4 rounded-lg transition-all transform hover:scale-105 group"
+                        style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover)); border: 1px solid var(--border-color);">
                         <span class="text-2xl group-hover:scale-110 transition-transform">⬅️</span>
                         <div class="text-left flex-1 min-w-0">
-                            <div class="text-xs text-gray-600 mb-1">Chương trước</div>
-                            <div class="font-semibold text-gray-800 truncate">
+                            <div class="text-xs mb-1" style="color: var(--text-secondary);">Chương trước</div>
+                            <div class="font-semibold truncate" style="color: var(--text-primary);">
                                 Ch.{{ previousChapter.chapterNumber || (allChapters.indexOf(previousChapter) + 1) }}: {{
                                     previousChapter.title }}
                             </div>
                         </div>
                     </button>
-                    <div v-else class="p-4 bg-gray-100 rounded-lg text-center text-gray-400 border border-gray-200">
+                    <div v-else class="p-4 rounded-lg text-center"
+                        style="background-color: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color);">
                         <span>⬅️</span>
                         <div class="text-sm mt-1">Không có chương trước</div>
                     </div>
 
                     <!-- Story List -->
                     <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
-                        class="flex flex-col items-center justify-center gap-2 p-4 bg-gradient-to-r from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 rounded-lg transition-all transform hover:scale-105 border border-purple-200 group">
+                        class="flex flex-col items-center justify-center gap-2 p-4 rounded-lg transition-all transform hover:scale-105 group"
+                        style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover)); border: 1px solid var(--border-color);">
                         <span class="text-2xl group-hover:scale-110 transition-transform">📑</span>
-                        <div class="font-semibold text-gray-800 text-center">Danh sách chương</div>
+                        <div class="font-semibold text-center" style="color: var(--text-primary);">Danh sách chương
+                        </div>
                     </router-link>
 
                     <!-- Next Chapter -->
                     <button v-if="nextChapter"
                         @click="goToChapter(nextChapter.chapterNumber || (allChapters.indexOf(nextChapter) + 1))"
-                        class="flex items-center gap-3 p-4 bg-gradient-to-r from-green-50 to-green-100 hover:from-green-100 hover:to-green-200 rounded-lg transition-all transform hover:scale-105 border border-green-200 group">
+                        class="flex items-center gap-3 p-4 rounded-lg transition-all transform hover:scale-105 group"
+                        style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover)); border: 1px solid var(--border-color);">
                         <div class="text-right flex-1 min-w-0">
-                            <div class="text-xs text-gray-600 mb-1">Chương tiếp theo</div>
-                            <div class="font-semibold text-gray-800 truncate">
+                            <div class="text-xs mb-1" style="color: var(--text-secondary);">Chương tiếp theo</div>
+                            <div class="font-semibold truncate" style="color: var(--text-primary);">
                                 Ch.{{ nextChapter.chapterNumber || (allChapters.indexOf(nextChapter) + 1) }}: {{
                                     nextChapter.title }}
                             </div>
                         </div>
                         <span class="text-2xl group-hover:scale-110 transition-transform">➡️</span>
                     </button>
-                    <div v-else class="p-4 bg-gray-100 rounded-lg text-center text-gray-400 border border-gray-200">
+                    <div v-else class="p-4 rounded-lg text-center"
+                        style="background-color: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color);">
                         <span>➡️</span>
                         <div class="text-sm mt-1">Không có chương tiếp theo</div>
                     </div>
                 </div>
 
                 <!-- Auto-play toggle -->
-                <div v-if="nextChapter && chapter.audioUrl"
-                    class="mt-6 pt-6 border-t border-blue-100 flex items-center justify-center gap-3">
+                <div v-if="nextChapter && chapter.audioUrl" class="mt-6 pt-6 flex items-center justify-center gap-3"
+                    style="border-top: 1px solid var(--border-color);">
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" v-model="autoPlayNext"
                             class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" />
-                        <span class="text-gray-700 font-medium">🔄 Tự động chuyển chương khi hết audio</span>
+                        <span class="font-medium" style="color: var(--text-secondary);">🔄 Tự động chuyển chương khi hết
+                            audio</span>
                     </label>
                 </div>
             </div>
 
             <!-- Related Chapters -->
             <div v-if="allChapters.length > 0"
-                class="mt-6 bg-white rounded-xl shadow-lg p-6 animate-slide-up animation-delay-300 border border-blue-100">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b border-blue-100 pb-3">
-                    <svg class="w-5 h-5 inline-block mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                class="mt-6 rounded-xl shadow-lg p-6 animate-slide-up animation-delay-300"
+                style="background-color: var(--bg-card); border: 1px solid var(--border-color);">
+                <h2 class="text-xl font-bold mb-4 pb-3"
+                    style="color: var(--text-primary); border-bottom: 1px solid var(--border-color);">
+                    <svg class="w-5 h-5 inline-block mr-2" style="color: var(--color-primary);" fill="currentColor"
+                        viewBox="0 0 20 20">
                         <path
                             d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
                     </svg>
@@ -209,12 +238,13 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto">
                     <router-link v-for="(ch, index) in allChapters" :key="ch._id"
                         :to="{ name: 'chapter.detail', params: { storySlug: props.storySlug, chapterNumber: ch.chapterNumber || (index + 1) } }"
-                        class="p-3 rounded-lg transition-all border-2" :class="ch._id === chapter._id
-                            ? 'bg-blue-100 border-blue-500 font-bold'
-                            : 'bg-gray-50 border-gray-200 hover:bg-blue-50 hover:border-blue-300'">
-                        <div class="text-sm text-gray-600 mb-1">Chương {{ ch.chapterNumber || (index + 1) }}</div>
+                        class="p-3 rounded-lg transition-all border-2" :style="ch._id === chapter._id
+                            ? { backgroundColor: 'var(--bg-hover)', borderColor: 'var(--color-primary)', fontWeight: '600' }
+                            : { backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }">
+                        <div class="text-sm mb-1" style="color: var(--text-secondary);">Chương {{ ch.chapterNumber ||
+                            (index + 1) }}</div>
                         <div class="text-xs truncate"
-                            :class="ch._id === chapter._id ? 'text-blue-700' : 'text-gray-700'">
+                            :style="{ color: ch._id === chapter._id ? 'var(--color-primary)' : 'var(--text-primary)' }">
                             {{ ch.title }}
                         </div>
                     </router-link>
