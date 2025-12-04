@@ -5,19 +5,99 @@
                 <router-link to="/" class="logo">
                     <span>🎧 AudioTruyen</span>
                 </router-link>
-                <div class="search-bar">
+                <div class="search-bar" :class="{ 'mobile-search-open': mobileSearchOpen }">
                     <input type="text" placeholder="Tìm truyện..." v-model="searchQuery" @keyup.enter="handleSearch">
                     <button @click="handleSearch">🔍</button>
                 </div>
             </div>
 
-            <div class="nav-right">
-                <!-- Theme Toggle Button -->
-                <ThemeToggle />
+            <!-- Mobile Search Toggle -->
+            <button class="mobile-search-toggle" @click="toggleMobileSearch" aria-label="Search"
+                :class="{ 'hidden': mobileMenuOpen }">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" @click="toggleMobileMenu" aria-label="Menu">
+                <svg v-if="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+
+
+            <!-- Mobile Overlay -->
+            <div v-if="mobileMenuOpen" class="mobile-overlay" @click="closeMobileMenu"></div>
+
+            <!-- Mobile Menu Dropdown -->
+            <div v-if="mobileMenuOpen" class="mobile-menu-dropdown">
+                <!-- User Info Section -->
+                <div class="mobile-user-section" v-if="authStore.isLoggedIn">
+                    <div class="mobile-user-info">
+                        <img v-if="authStore.user.avatar" :src="getAvatarUrl(authStore.user.avatar)"
+                            :alt="authStore.user.name" class="mobile-user-avatar" />
+                        <div v-else class="mobile-user-avatar-placeholder">
+                            {{ getInitials(authStore.user.name) }}
+                        </div>
+                        <div class="mobile-user-details">
+                            <span class="mobile-user-name">{{ authStore.user.name }}</span>
+                            <span v-if="authStore.isAdmin" class="mobile-admin-badge">Admin</span>
+                        </div>
+                    </div>
+                    <div class="mobile-user-links">
+                        <router-link v-if="authStore.isAdmin" to="/admin" @click="closeMobileMenu">
+                            📊 Trang Quản Lý
+                        </router-link>
+                        <router-link to="/profile" @click="closeMobileMenu">
+                            👤 Trang cá nhân
+                        </router-link>
+                        <router-link to="/favorites" @click="closeMobileMenu">
+                            ❤️ Truyện yêu thích
+                        </router-link>
+                        <router-link to="/history" @click="closeMobileMenu">
+                            📚 Lịch sử đọc
+                        </router-link>
+                        <a @click="handleLogout" class="mobile-logout">
+                            🚪 Đăng xuất
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Login/Register for non-logged users -->
+                <div class="mobile-auth-section" v-else>
+                    <router-link to="/login" class="mobile-auth-btn" @click="closeMobileMenu">Đăng nhập</router-link>
+                    <router-link to="/register" class="mobile-auth-btn primary" @click="closeMobileMenu">Đăng ký</router-link>
+                </div>
+
+                <!-- Sub Navigation -->
+                <div class="mobile-sub-nav">
+                    <router-link to="/" @click="closeMobileMenu">Trang chủ</router-link>
+                    <router-link to="/categories" @click="closeMobileMenu">Thể loại</router-link>
+                    <router-link to="/new-stories" @click="closeMobileMenu">Truyện mới</router-link>
+                    <router-link to="/full-stories" @click="closeMobileMenu">Truyện Full</router-link>
+                    <router-link to="/hot-stories" @click="closeMobileMenu">Truyện Hot</router-link>
+                </div>
+
+                <!-- Theme Toggle -->
+                <div class="mobile-theme-toggle">
+                    <ThemeToggle />
+                </div>
+            </div>
+
+            <div class="nav-right" :class="{ 'mobile-nav-open': mobileMenuOpen }">
+                <!-- Theme Toggle Button - Desktop -->
+                <ThemeToggle class="desktop-theme-toggle" />
 
                 <template v-if="!authStore.isLoggedIn">
-                    <router-link to="/login" class="nav-button">Đăng nhập</router-link>
-                    <router-link to="/register" class="nav-button primary">Đăng ký</router-link>
+                    <router-link to="/login" class="nav-button" @click="closeMobileMenu">Đăng nhập</router-link>
+                    <router-link to="/register" class="nav-button primary" @click="closeMobileMenu">Đăng
+                        ký</router-link>
                 </template>
 
                 <template v-else>
@@ -40,19 +120,19 @@
                         <div v-if="dropdownOpen" class="dropdown-content">
                             <!-- Chỉ admin mới thấy link này -->
                             <router-link v-if="authStore.isAdmin" to="/admin" class="dropdown-item"
-                                @click="closeDropdown">
+                                @click="closeDropdownAndMenu">
                                 📊 Trang Quản Lý
                             </router-link>
                             <hr v-if="authStore.isAdmin" class="dropdown-divider">
 
                             <!-- Tất cả user đều thấy -->
-                            <router-link to="/profile" class="dropdown-item" @click="closeDropdown">
+                            <router-link to="/profile" class="dropdown-item" @click="closeDropdownAndMenu">
                                 👤 Trang cá nhân
                             </router-link>
-                            <router-link to="/favorites" class="dropdown-item" @click="closeDropdown">
+                            <router-link to="/favorites" class="dropdown-item" @click="closeDropdownAndMenu">
                                 ❤️ Truyện yêu thích
                             </router-link>
-                            <router-link to="/history" class="dropdown-item" @click="closeDropdown">
+                            <router-link to="/history" class="dropdown-item" @click="closeDropdownAndMenu">
                                 📚 Lịch sử đọc
                             </router-link>
                             <hr class="dropdown-divider">
@@ -62,15 +142,21 @@
                         </div>
                     </div>
                 </template>
+
+                <!-- Theme Toggle with Label -->
+                <div class="theme-section">
+                    <span class="theme-label">Chế độ hiển thị</span>
+                    <ThemeToggle />
+                </div>
             </div>
         </nav>
 
         <div class="sub-nav">
-            <router-link to="/">Trang chủ</router-link>
-            <router-link to="/categories">Thể loại</router-link>
-            <router-link to="/new-stories">Truyện mới</router-link>
-            <router-link to="/full-stories">Truyện Full</router-link>
-            <router-link to="/hot-stories">Truyện Hot</router-link>
+            <router-link to="/" @click="closeMobileMenu">Trang chủ</router-link>
+            <router-link to="/categories" @click="closeMobileMenu">Thể loại</router-link>
+            <router-link to="/new-stories" @click="closeMobileMenu">Truyện mới</router-link>
+            <router-link to="/full-stories" @click="closeMobileMenu">Truyện Full</router-link>
+            <router-link to="/hot-stories" @click="closeMobileMenu">Truyện Hot</router-link>
         </div>
     </header>
 </template>
@@ -88,6 +174,8 @@ const router = useRouter();
 const searchQuery = ref('');
 const dropdownOpen = ref(false);
 const userMenuRef = ref(null);
+const mobileMenuOpen = ref(false);
+const mobileSearchOpen = ref(false);
 
 const handleSearch = () => {
     if (searchQuery.value.trim()) {
@@ -115,8 +203,33 @@ const closeDropdown = () => {
 
 const handleLogout = () => {
     closeDropdown();
+    closeMobileMenu();
     authStore.logout();
     router.push('/login');
+};
+
+const toggleMobileMenu = () => {
+    mobileMenuOpen.value = !mobileMenuOpen.value;
+    if (mobileMenuOpen.value) {
+        mobileSearchOpen.value = false;
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+};
+
+const closeMobileMenu = () => {
+    mobileMenuOpen.value = false;
+    document.body.style.overflow = '';
+};
+
+const toggleMobileSearch = () => {
+    mobileSearchOpen.value = !mobileSearchOpen.value;
+};
+
+const closeDropdownAndMenu = () => {
+    closeDropdown();
+    closeMobileMenu();
 };
 
 const handleClickOutside = (event) => {
@@ -131,6 +244,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     document.removeEventListener('click', handleClickOutside);
+    document.body.style.overflow = '';
 });
 </script>
 
@@ -428,27 +542,365 @@ onBeforeUnmount(() => {
     margin: 0;
 }
 
-/* Responsive */
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle,
+.mobile-search-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: var(--text-primary);
+    transition: all var(--transition-base);
+    z-index: 1001;
+}
+
+.mobile-search-toggle.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.theme-section {
+    display: none;
+}
+
+.desktop-theme-toggle {
+    display: block;
+}
+
+.mobile-overlay {
+    display: none;
+}
+
 @media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
+    .mobile-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+.mobile-menu-toggle svg,
+.mobile-search-toggle svg {
+    width: 24px;
+    height: 24px;
+}
+
+.mobile-menu-toggle:hover,
+.mobile-search-toggle:hover {
+    color: var(--color-primary);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .search-bar {
+        display: none;
+    }
+
+    .mobile-search-toggle {
+        display: block;
+    }
+
+    .search-bar.mobile-search-open {
+        display: flex;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        z-index: 99;
+        animation: slideDown 0.3s ease;
+    }
+
+    .mobile-search-open input {
+        width: 100%;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 998;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .mobile-menu-dropdown {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 999;
+        animation: slideDown 0.3s ease;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+
+    .mobile-user-section {
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem 1.5rem;
+        background: var(--bg-secondary);
+    }
+
+    .mobile-user-info {
+        display: flex;
+        align-items: center;
         gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .mobile-user-avatar,
+    .mobile-user-avatar-placeholder {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .mobile-user-avatar-placeholder {
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .mobile-user-details {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .mobile-user-name {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--text-primary);
+    }
+
+    .mobile-admin-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        background: var(--color-warning);
+        color: white;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        width: fit-content;
+    }
+
+    .mobile-user-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .mobile-user-links a {
+        padding: 0.75rem 1rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: 0.95rem;
+        background: var(--bg-card);
+        border-radius: var(--radius-md);
+        transition: all 0.3s ease;
+    }
+
+    .mobile-user-links a:hover {
+        background: var(--bg-hover);
+        transform: translateX(5px);
+    }
+
+    .mobile-logout {
+        color: var(--color-danger) !important;
+        font-weight: 500;
+    }
+
+    .mobile-auth-section {
+        padding: 1rem 1.5rem;
+        display: flex;
+        gap: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+    }
+
+    .mobile-auth-btn {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        text-align: center;
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+
+    .mobile-auth-btn.primary {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+    }
+
+    .mobile-auth-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .mobile-sub-nav {
+        display: flex;
+        flex-direction: column;
+        padding: 0.5rem 0;
+    }
+
+    .mobile-sub-nav a {
+        padding: 1rem 1.5rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        border-bottom: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-sub-nav a:hover {
+        background: var(--bg-hover);
+        padding-left: 2rem;
+    }
+
+    .dropdown-icon {
+        opacity: 0.5;
+    }
+
+    .mobile-theme-toggle {
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-secondary);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .main-header {
+        position: relative;
+    }
+
+    .navbar {
+        padding: 0.5rem 1rem;
+        position: relative;
     }
 
     .nav-left {
-        width: 100%;
-        flex-direction: column;
-        gap: 0.75rem;
+        flex: 1;
+        gap: 0.5rem;
     }
 
-    .search-bar input {
-        min-width: 200px;
+    .logo {
+        font-size: 1.25rem;
+    }
+
+    .logo span {
+        white-space: nowrap;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .nav-right {
+        display: none;
     }
 
     .sub-nav {
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: center;
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .nav-right {
+        width: 100%;
+        max-width: 100%;
+        right: -100%;
+    }
+
+    .navbar {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .sub-nav {
+        padding: 0.5rem;
+    }
+
+    .sub-nav a {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
     }
 }
 </style>
