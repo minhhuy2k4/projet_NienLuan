@@ -217,6 +217,58 @@
                 </div>
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <Teleport to="body">
+            <div v-if="showDialog" class="dialog-overlay" @click="closeDialog">
+                <div class="dialog-content" @click.stop>
+                    <div class="dialog-header">
+                        <div class="dialog-icon" :class="dialogType === 'danger' ? 'danger' : 'warning'">
+                            <svg v-if="dialogType === 'danger'" class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <svg v-else class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <h3 class="dialog-title">{{ dialogTitle }}</h3>
+                        <p class="dialog-message">{{ dialogMessage }}</p>
+                    </div>
+                    <div class="dialog-actions">
+                        <button @click="closeDialog" class="dialog-btn dialog-btn-cancel">
+                            Hủy
+                        </button>
+                        <button @click="confirmDialog" class="dialog-btn dialog-btn-confirm"
+                            :class="dialogType === 'danger' ? 'danger' : 'warning'">
+                            {{ dialogConfirmText }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Teleport>
+
+        <!-- Success/Error Toast -->
+        <Teleport to="body">
+            <Transition name="toast">
+                <div v-if="showToast" class="toast" :class="toastType">
+                    <svg v-if="toastType === 'success'" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <svg v-else class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span>{{ toastMessage }}</span>
+                </div>
+            </Transition>
+        </Teleport>
     </div>
 </template>
 
@@ -238,6 +290,19 @@ const currentPage = ref(1);
 const totalPages = ref(1);
 const total = ref(0);
 const limit = 10;
+
+// Dialog state
+const showDialog = ref(false);
+const dialogTitle = ref('');
+const dialogMessage = ref('');
+const dialogConfirmText = ref('Xác nhận');
+const dialogType = ref('warning');
+const dialogCallback = ref(null);
+
+// Toast state
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success');
 
 // Format views
 const formatViews = (views) => {
@@ -315,36 +380,79 @@ const fetchHistory = async (page = 1) => {
     }
 };
 
+// Dialog helpers
+const openDialog = (title, message, callback, type = 'warning', confirmText = 'Xác nhận') => {
+    dialogTitle.value = title;
+    dialogMessage.value = message;
+    dialogCallback.value = callback;
+    dialogType.value = type;
+    dialogConfirmText.value = confirmText;
+    showDialog.value = true;
+};
+
+const closeDialog = () => {
+    showDialog.value = false;
+    dialogCallback.value = null;
+};
+
+const confirmDialog = async () => {
+    if (dialogCallback.value) {
+        await dialogCallback.value();
+    }
+    closeDialog();
+};
+
+// Toast helper
+const showToastMessage = (message, type = 'success') => {
+    toastMessage.value = message;
+    toastType.value = type;
+    showToast.value = true;
+    setTimeout(() => {
+        showToast.value = false;
+    }, 3000);
+};
+
 // Remove history
 const removeHistory = async (storyId) => {
-    if (!confirm('Bạn có chắc muốn xóa lịch sử này?')) return;
-
-    try {
-        await HistoryService.deleteHistory(storyId);
-        // Reload current page
-        await fetchHistory(currentPage.value);
-        alert('Đã xóa lịch sử!');
-    } catch (err) {
-        console.error('Remove history error:', err);
-        alert('Có lỗi xảy ra!');
-    }
+    openDialog(
+        'Xác nhận xóa lịch sử',
+        'Bạn có chắc muốn xóa lịch sử này?',
+        async () => {
+            try {
+                await HistoryService.deleteHistory(storyId);
+                await fetchHistory(currentPage.value);
+                showToastMessage('Đã xóa lịch sử!', 'success');
+            } catch (err) {
+                console.error('Remove history error:', err);
+                showToastMessage('Có lỗi xảy ra!', 'error');
+            }
+        },
+        'warning',
+        'Xóa'
+    );
 };
 
 // Clear all history
 const clearAll = async () => {
-    if (!confirm('Bạn có chắc muốn xóa TẤT CẢ lịch sử đọc?')) return;
-
-    try {
-        await HistoryService.clearHistory();
-        histories.value = [];
-        total.value = 0;
-        currentPage.value = 1;
-        totalPages.value = 1;
-        alert('Đã xóa toàn bộ lịch sử!');
-    } catch (err) {
-        console.error('Clear history error:', err);
-        alert('Có lỗi xảy ra!');
-    }
+    openDialog(
+        'Xóa tất cả lịch sử',
+        'Bạn có chắc muốn xóa TẤT CẢ lịch sử đọc? Hành động này không thể hoàn tác.',
+        async () => {
+            try {
+                await HistoryService.clearHistory();
+                histories.value = [];
+                total.value = 0;
+                currentPage.value = 1;
+                totalPages.value = 1;
+                showToastMessage('Đã xóa toàn bộ lịch sử!', 'success');
+            } catch (err) {
+                console.error('Clear history error:', err);
+                showToastMessage('Có lỗi xảy ra!', 'error');
+            }
+        },
+        'danger',
+        'Xóa tất cả'
+    );
 };
 
 // Pagination
@@ -413,5 +521,172 @@ onMounted(async () => {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+/* Dialog Styles */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fade-in 0.2s ease-out;
+}
+
+.dialog-content {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    overflow: hidden;
+    animation: scale-up 0.3s ease-out;
+}
+
+@keyframes scale-up {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.dialog-header {
+    padding: 2rem;
+    text-align: center;
+}
+
+.dialog-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialog-icon.warning {
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--color-warning);
+}
+
+.dialog-icon.danger {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--color-danger);
+}
+
+.dialog-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.dialog-message {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0 2rem 2rem;
+}
+
+.dialog-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dialog-btn-cancel {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.dialog-btn-cancel:hover {
+    background: var(--bg-hover);
+}
+
+.dialog-btn-confirm {
+    color: white;
+}
+
+.dialog-btn-confirm.warning {
+    background: var(--color-warning);
+}
+
+.dialog-btn-confirm.warning:hover {
+    background: #f59e0b;
+}
+
+.dialog-btn-confirm.danger {
+    background: var(--color-danger);
+}
+
+.dialog-btn-confirm.danger:hover {
+    background: #dc2626;
+}
+
+/* Toast Styles */
+.toast {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: var(--bg-card);
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 10000;
+    min-width: 300px;
+    border-left: 4px solid;
+}
+
+.toast.success {
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+.toast.error {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.toast span {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.toast-enter-active,
+.toast-leave-active {
+    transition: all 0.3s ease;
+}
+
+.toast-enter-from {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.toast-leave-to {
+    transform: translateY(-20px);
+    opacity: 0;
 }
 </style>
