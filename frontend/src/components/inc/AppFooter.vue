@@ -3,7 +3,8 @@
         <div class="footer-container">
             <!-- Logo & Giới thiệu -->
             <div class="footer-section">
-                <h3 class="footer-logo">🎧 AudioTruyen</h3>
+                <h3 class="footer-logo"><img src="/favicon.ico" alt="AudioTruyen" class="footer-logo-icon" />
+                    AudioTruyen</h3>
                 <p class="footer-description">
                     Nền tảng nghe truyện audio online hàng đầu Việt Nam.
                     Hàng nghìn truyện hay, cập nhật liên tục.
@@ -110,10 +111,20 @@ const currentYear = computed(() => new Date().getFullYear());
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     background: linear-gradient(45deg, #fff, #f0f0f0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.footer-logo-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 6px;
 }
 
 .footer-description {

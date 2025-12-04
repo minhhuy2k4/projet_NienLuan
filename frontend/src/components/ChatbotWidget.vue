@@ -5,10 +5,7 @@
                 <header class="chat-header">
                     <div class="header-content">
                         <div class="bot-avatar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M8.5 2A1.5 1.5 0 0 0 7 3.5V5H5.5A1.5 1.5 0 0 0 4 6.5v13A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 18.5 5H17V3.5A1.5 1.5 0 0 0 15.5 2h-7zM9 5h6V3.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0-.5.5V5zm-2.5 3a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm10 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zM8 13.5c0-.828.895-1.5 2-1.5s2 .672 2 1.5S11.105 15 10 15s-2-.672-2-1.5zm6 0c0-.828.895-1.5 2-1.5s2 .672 2 1.5-.895 1.5-2 1.5-2-.672-2-1.5zM8 17h8c.276 0 .5.224.5.5s-.224.5-.5.5H8c-.276 0-.5-.224-.5-.5s.224-.5.5-.5z" />
-                            </svg>
+                            <img src="/ChatBot.png" alt="ChatBot" />
                         </div>
                         <div class="header-info">
                             <h3>AudioBot</h3>
@@ -38,10 +35,7 @@
                     <div v-for="(msg, index) in messages" :key="index" class="message" :class="`message-${msg.sender}`"
                         :style="{ animationDelay: `${index * 0.1}s` }">
                         <div v-if="msg.sender === 'bot'" class="message-avatar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M8.5 2A1.5 1.5 0 0 0 7 3.5V5H5.5A1.5 1.5 0 0 0 4 6.5v13A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 18.5 5H17V3.5A1.5 1.5 0 0 0 15.5 2h-7z" />
-                            </svg>
+                            <img src="/ChatBot.png" alt="ChatBot" />
                         </div>
                         <div class="message-bubble">
                             <div class="message-text" v-html="formatMessage(msg.text)"></div>
@@ -50,10 +44,7 @@
                     </div>
                     <div v-if="isLoading" class="message message-bot">
                         <div class="message-avatar">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M8.5 2A1.5 1.5 0 0 0 7 3.5V5H5.5A1.5 1.5 0 0 0 4 6.5v13A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 18.5 5H17V3.5A1.5 1.5 0 0 0 15.5 2h-7z" />
-                            </svg>
+                            <img src="/ChatBot.png" alt="ChatBot" />
                         </div>
                         <div class="message-bubble typing-indicator">
                             <span></span><span></span><span></span>
@@ -309,10 +300,11 @@ const sendMessage = async () => {
     backdrop-filter: blur(10px);
 }
 
-.bot-avatar svg {
+.bot-avatar img {
     width: 24px;
     height: 24px;
-    color: white;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .header-info h3 {
@@ -461,10 +453,11 @@ const sendMessage = async () => {
     flex-shrink: 0;
 }
 
-.message-avatar svg {
+.message-avatar img {
     width: 18px;
     height: 18px;
-    color: white;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .message-bubble {

@@ -202,6 +202,13 @@
             <span class="text-6xl mb-4 block">🎨</span>
             <p class="text-gray-600 text-lg">Chưa có banner nào</p>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </div>
 </template>
 
@@ -209,6 +216,8 @@
 import { ref, onMounted } from 'vue';
 import BannerService from '@/services/banner.service';
 import { getBannerUrl } from '@/utils/media';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const banners = ref([]);
 const showAddForm = ref(false);
@@ -231,6 +240,22 @@ const formData = ref({
     isActive: true
 });
 
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
+
 // Handle image error
 const handleImageError = (e) => {
     e.target.src = 'https://via.placeholder.com/400x200?text=Image+Not+Found';
@@ -246,10 +271,18 @@ const handleFileUpload = async (event) => {
         const response = await BannerService.uploadImage(file);
         formData.value.image = response.data.imageUrl;
         uploadedFile.value = file.name;
-        alert('✅ Upload ảnh thành công!');
+        toastConfig.value = {
+            message: 'Upload ảnh thành công!',
+            type: 'success'
+        };
+        showToast.value = true;
     } catch (error) {
         console.error('Upload error:', error);
-        alert('❌ Lỗi khi upload ảnh!');
+        toastConfig.value = {
+            message: 'Lỗi khi upload ảnh!',
+            type: 'error'
+        };
+        showToast.value = true;
     } finally {
         uploading.value = false;
     }
@@ -285,7 +318,11 @@ const loadBanners = async () => {
         totalPages.value = response.data?.pagination?.totalPages || 1;
     } catch (error) {
         console.error('Load banners error:', error);
-        alert('❌ Không thể tải danh sách banner!');
+        toastConfig.value = {
+            message: 'Không thể tải danh sách banner!',
+            type: 'error'
+        };
+        showToast.value = true;
     }
 };
 
@@ -301,11 +338,19 @@ const saveBanner = async () => {
         if (editingBanner.value) {
             // Update existing
             await BannerService.update(editingBanner.value._id, formData.value);
-            alert('✅ Đã cập nhật banner thành công!');
+            toastConfig.value = {
+                message: 'Đã cập nhật banner thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         } else {
             // Add new
             await BannerService.create(formData.value);
-            alert('✅ Đã thêm banner thành công!');
+            toastConfig.value = {
+                message: 'Đã thêm banner thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
             currentPage.value = 1; // Go to first page after adding
         }
 
@@ -313,7 +358,11 @@ const saveBanner = async () => {
         cancelForm();
     } catch (error) {
         console.error('Save banner error:', error);
-        alert('❌ Có lỗi xảy ra khi lưu banner!');
+        toastConfig.value = {
+            message: 'Có lỗi xảy ra khi lưu banner!',
+            type: 'error'
+        };
+        showToast.value = true;
     }
 };
 
@@ -357,22 +406,40 @@ const toggleActive = async (banner) => {
         await loadBanners();
     } catch (error) {
         console.error('Toggle active error:', error);
-        alert('❌ Có lỗi xảy ra!');
+        toastConfig.value = {
+            message: 'Có lỗi xảy ra!',
+            type: 'error'
+        };
+        showToast.value = true;
     }
 };
 
 // Delete banner
 const deleteBanner = async (id) => {
-    if (!confirm('🗑️ Bạn có chắc muốn xóa banner này?')) return;
-
-    try {
-        await BannerService.delete(id);
-        alert('✅ Đã xóa banner!');
-        await loadBanners();
-    } catch (error) {
-        console.error('Delete banner error:', error);
-        alert('❌ Có lỗi xảy ra khi xóa banner!');
-    }
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc muốn xóa banner này?',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await BannerService.delete(id);
+                toastConfig.value = {
+                    message: 'Đã xóa banner!',
+                    type: 'success'
+                };
+                showToast.value = true;
+                await loadBanners();
+            } catch (error) {
+                console.error('Delete banner error:', error);
+                toastConfig.value = {
+                    message: 'Có lỗi xảy ra khi xóa banner!',
+                    type: 'error'
+                };
+                showToast.value = true;
+            }
+        }
+    };
+    showDialog.value = true;
 };
 
 // Pagination

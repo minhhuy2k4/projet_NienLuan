@@ -83,16 +83,25 @@
                 <!-- Displaying info -->
                 <div v-if="paginatedCategories.length > 0" class="mt-4 text-center text-sm text-gray-600">
                     Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
-                    filteredCategories.length) }} / Tổng {{ filteredCategories.length }} thể loại
+                        filteredCategories.length) }} / Tổng {{ filteredCategories.length }} thể loại
                 </div>
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import categoryService from '@/services/category.service';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const categoryList = ref([]);
 const formData = ref({ name: '', description: '' });
@@ -102,6 +111,22 @@ const error = ref(null);
 const searchQuery = ref('');
 const currentPage = ref(1);
 const itemsPerPage = 5;
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
 
 // Filtered categories based on search
 const filteredCategories = computed(() => {
@@ -162,18 +187,39 @@ const handleSubmit = async () => {
                 categoryList.value[index] = updated;
             }
             editingCategory.value = null;
+
+            // Hiển thị toast thành công
+            toastConfig.value = {
+                message: 'Cập nhật thể loại thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         } else {
             // Tạo thể loại mới
             console.log('Creating category:', formData.value);
             const created = await categoryService.create(formData.value);
             console.log('Category created:', created);
             categoryList.value.push(created);
+
+            // Hiển thị toast thành công
+            toastConfig.value = {
+                message: 'Thêm thể loại thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         }
 
         formData.value = { name: '', description: '' };
     } catch (err) {
         console.error('Error saving category:', err);
         error.value = 'Lỗi khi lưu thể loại.';
+
+        // Hiển thị toast lỗi
+        toastConfig.value = {
+            message: err.response?.data?.message || 'Lỗi khi lưu thể loại.',
+            type: 'error'
+        };
+        showToast.value = true;
     }
     finally {
         loading.value = false;
@@ -196,38 +242,50 @@ const cancelEdit = () => {
 };
 
 const deleteCategory = async (id) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa thể loại này?')) {
-        return;
-    }
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc chắn muốn xóa thể loại này?',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await categoryService.delete(id);
+                categoryList.value = categoryList.value.filter(c => c._id !== id);
 
-    try {
-        await categoryService.delete(id);
-        categoryList.value = categoryList.value.filter(c => c._id !== id);
+                if (editingCategory.value === id) {
+                    cancelEdit();
+                }
 
-        if (editingCategory.value === id) {
-            cancelEdit();
-        }
+                // Hiển thị thông báo thành công
+                toastConfig.value = {
+                    message: 'Xóa thể loại thành công!',
+                    type: 'success'
+                };
+                showToast.value = true;
+            } catch (err) {
+                console.error('Error deleting category:', err);
 
-        // Hiển thị thông báo thành công
-        alert('✅ Xóa thể loại thành công!');
-    } catch (err) {
-        console.error('Error deleting category:', err);
+                // Hiển thị thông báo lỗi chi tiết từ backend
+                let errorMessage = 'Lỗi khi xóa thể loại.';
 
-        // Hiển thị thông báo lỗi chi tiết từ backend
-        let errorMessage = 'Lỗi khi xóa thể loại.';
+                if (err.response) {
+                    // Lỗi từ backend (400, 404, 500...)
+                    if (err.response.status === 400 && err.response.data?.message) {
+                        // Lỗi "có truyện đang dùng"
+                        errorMessage = err.response.data.message;
+                    } else if (err.response.data?.message) {
+                        errorMessage = err.response.data.message;
+                    }
+                }
 
-        if (err.response) {
-            // Lỗi từ backend (400, 404, 500...)
-            if (err.response.status === 400 && err.response.data?.message) {
-                // Lỗi "có truyện đang dùng"
-                errorMessage = err.response.data.message;
-            } else if (err.response.data?.message) {
-                errorMessage = err.response.data.message;
+                toastConfig.value = {
+                    message: errorMessage,
+                    type: 'error'
+                };
+                showToast.value = true;
             }
         }
-
-        alert('❌ ' + errorMessage);
-    }
+    };
+    showDialog.value = true;
 };
 </script>
 

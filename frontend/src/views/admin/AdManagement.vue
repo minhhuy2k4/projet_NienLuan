@@ -218,6 +218,13 @@
             <span class="text-6xl mb-4 block">📢</span>
             <p class="text-gray-600 text-lg">Chưa có quảng cáo nào</p>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </div>
 </template>
 
@@ -225,6 +232,8 @@
 import { ref, onMounted } from 'vue';
 import AdService from '@/services/ad.service';
 import { getAdUrl } from '@/utils/media';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const ads = ref([]);
 const showAddForm = ref(false);
@@ -248,6 +257,22 @@ const formData = ref({
     order: 0
 });
 
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
+
 // Get position label
 const getPositionLabel = (position) => {
     const labels = {
@@ -268,10 +293,18 @@ const handleFileUpload = async (event) => {
         const response = await AdService.uploadImage(file);
         formData.value.image = response.data.imageUrl;
         uploadedFile.value = file.name;
-        alert('✅ Upload ảnh thành công!');
+        toastConfig.value = {
+            message: 'Upload ảnh thành công!',
+            type: 'success'
+        };
+        showToast.value = true;
     } catch (error) {
         console.error('Upload error:', error);
-        alert('❌ Lỗi khi upload ảnh!');
+        toastConfig.value = {
+            message: 'Lỗi khi upload ảnh!',
+            type: 'error'
+        };
+        showToast.value = true;
     } finally {
         uploading.value = false;
     }
@@ -294,7 +327,11 @@ const loadAds = async () => {
         totalPages.value = response.data?.pagination?.totalPages || 1;
     } catch (error) {
         console.error('Load ads error:', error);
-        alert('❌ Không thể tải danh sách quảng cáo!');
+        toastConfig.value = {
+            message: 'Không thể tải danh sách quảng cáo!',
+            type: 'error'
+        };
+        showToast.value = true;
     }
 };
 
@@ -310,11 +347,19 @@ const saveAd = async () => {
         if (editingAd.value) {
             // Update existing
             await AdService.update(editingAd.value._id, formData.value);
-            alert('✅ Đã cập nhật quảng cáo thành công!');
+            toastConfig.value = {
+                message: 'Đã cập nhật quảng cáo thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         } else {
             // Add new
             await AdService.create(formData.value);
-            alert('✅ Đã thêm quảng cáo thành công!');
+            toastConfig.value = {
+                message: 'Đã thêm quảng cáo thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
             currentPage.value = 1; // Go to first page after adding
         }
 
@@ -322,7 +367,11 @@ const saveAd = async () => {
         cancelForm();
     } catch (error) {
         console.error('Save ad error:', error);
-        alert('❌ Có lỗi xảy ra khi lưu quảng cáo!');
+        toastConfig.value = {
+            message: 'Có lỗi xảy ra khi lưu quảng cáo!',
+            type: 'error'
+        };
+        showToast.value = true;
     }
 };
 
@@ -368,22 +417,40 @@ const toggleActive = async (ad) => {
         await loadAds();
     } catch (error) {
         console.error('Toggle active error:', error);
-        alert('❌ Có lỗi xảy ra!');
+        toastConfig.value = {
+            message: 'Có lỗi xảy ra!',
+            type: 'error'
+        };
+        showToast.value = true;
     }
 };
 
 // Delete ad
 const deleteAd = async (id) => {
-    if (!confirm('🗑️ Bạn có chắc muốn xóa quảng cáo này?')) return;
-
-    try {
-        await AdService.delete(id);
-        alert('✅ Đã xóa quảng cáo!');
-        await loadAds();
-    } catch (error) {
-        console.error('Delete ad error:', error);
-        alert('❌ Có lỗi xảy ra khi xóa quảng cáo!');
-    }
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc muốn xóa quảng cáo này?',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await AdService.delete(id);
+                toastConfig.value = {
+                    message: 'Đã xóa quảng cáo!',
+                    type: 'success'
+                };
+                showToast.value = true;
+                await loadAds();
+            } catch (error) {
+                console.error('Delete ad error:', error);
+                toastConfig.value = {
+                    message: 'Có lỗi xảy ra khi xóa quảng cáo!',
+                    type: 'error'
+                };
+                showToast.value = true;
+            }
+        }
+    };
+    showDialog.value = true;
 };
 
 // Pagination

@@ -116,7 +116,7 @@
                 <!-- Displaying info -->
                 <div v-if="paginatedStories.length > 0" class="mt-4 text-center text-sm text-gray-600">
                     Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
-                    filteredStories.length) }} / Tổng {{ filteredStories.length }} truyện
+                        filteredStories.length) }} / Tổng {{ filteredStories.length }} truyện
                 </div>
             </div>
 
@@ -131,6 +131,13 @@
                 </p>
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </div>
 </template>
 
@@ -138,6 +145,8 @@
 import { ref, computed, onMounted } from "vue";
 import storyService from "@/services/story.service";
 import { getStoryImageUrl } from '@/utils/media';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const stories = ref([]);
 const loading = ref(true);
@@ -145,6 +154,22 @@ const error = ref("");
 const searchQuery = ref("");
 const currentPage = ref(1);
 const itemsPerPage = 5;
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
 
 // Filtered stories based on search
 const filteredStories = computed(() => {
@@ -209,15 +234,35 @@ const fetchStories = async () => {
 };
 
 const deleteStory = async (id) => {
-    if (confirm("Bạn có chắc muốn xóa truyện này?")) {
-        try {
-            await storyService.delete(id);
-            await fetchStories(); // Refresh list
-        } catch (err) {
-            console.error("Error deleting story:", err);
-            alert("Lỗi khi xóa truyện");
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc muốn xóa truyện này?',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await storyService.delete(id);
+                await fetchStories(); // Refresh list
+
+                dialogConfig.value = {
+                    title: 'Thành công',
+                    message: 'Xóa truyện thành công!',
+                    type: 'success',
+                    onConfirm: () => { showDialog.value = false; }
+                };
+                showDialog.value = true;
+            } catch (err) {
+                console.error("Error deleting story:", err);
+                dialogConfig.value = {
+                    title: 'Lỗi',
+                    message: 'Lỗi khi xóa truyện',
+                    type: 'danger',
+                    onConfirm: () => { showDialog.value = false; }
+                };
+                showDialog.value = true;
+            }
         }
-    }
+    };
+    showDialog.value = true;
 };
 
 onMounted(() => {

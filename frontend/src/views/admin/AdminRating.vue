@@ -154,12 +154,21 @@
                 Hiển thị {{ skip + 1 }} - {{ Math.min(skip + limit, totalCount) }} / Tổng {{ totalCount }} đánh giá
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import RatingService from '@/services/rating.service';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 import { getStoryImageUrl } from '@/utils/media';
 
 const ratings = ref([]);
@@ -172,6 +181,22 @@ const skip = ref(0);
 const filters = ref({
     rating: '',
     search: ''
+});
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
 });
 
 const currentPage = computed(() => Math.floor(skip.value / limit.value) + 1);
@@ -206,16 +231,30 @@ const handleFilterChange = () => {
 
 // Delete rating
 const deleteRating = async (ratingId) => {
-    if (!confirm('Bạn có chắc muốn xóa đánh giá này?')) return;
-
-    try {
-        await RatingService.deleteRatingById(ratingId);
-        alert('✅ Đã xóa đánh giá!');
-        loadRatings();
-    } catch (err) {
-        console.error('Delete rating error:', err);
-        alert('❌ Có lỗi xảy ra!');
-    }
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc muốn xóa đánh giá này?',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await RatingService.deleteRatingById(ratingId);
+                toastConfig.value = {
+                    message: 'Đã xóa đánh giá!',
+                    type: 'success'
+                };
+                showToast.value = true;
+                loadRatings();
+            } catch (err) {
+                console.error('Delete rating error:', err);
+                toastConfig.value = {
+                    message: 'Có lỗi xảy ra!',
+                    type: 'error'
+                };
+                showToast.value = true;
+            }
+        }
+    };
+    showDialog.value = true;
 };
 
 // Pagination
@@ -255,6 +294,7 @@ onMounted(async () => {
 .line-clamp-1 {
     display: -webkit-box;
     -webkit-line-clamp: 1;
+    line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

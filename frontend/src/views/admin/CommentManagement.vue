@@ -92,7 +92,7 @@
             <div v-if="reports && reports.length > 0 && activeTab === 'reports'"
                 class="mt-4 text-center text-sm text-gray-600">
                 Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
-                reports.length) }} / Tổng {{ reports.length }} báo cáo
+                    reports.length) }} / Tổng {{ reports.length }} báo cáo
             </div>
         </div>
 
@@ -176,9 +176,16 @@
             <div v-if="allComments && allComments.length > 0 && activeTab === 'comments'"
                 class="mt-4 text-center text-sm text-gray-600">
                 Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
-                allComments.length) }} / Tổng {{ allComments.length }} bình luận
+                    allComments.length) }} / Tổng {{ allComments.length }} bình luận
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </div>
 </template>
 
@@ -187,6 +194,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 import CommentService from '@/services/comment.service';
 import { getAvatarUrl } from '@/utils/media';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const authStore = useAuthStore();
 
@@ -202,6 +211,22 @@ const totalPages = ref(1);
 const itemsPerPage = 10;
 
 let searchTimeout = null;
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
 
 // Tab class
 const tabClass = (tab) => {
@@ -237,7 +262,11 @@ const loadReports = async () => {
         console.error('Load reports error:', error);
         reports.value = [];
         totalPages.value = 1;
-        alert('❌ Không thể tải danh sách báo cáo!');
+        toastConfig.value = {
+            message: 'Không thể tải danh sách báo cáo!',
+            type: 'error'
+        };
+        showToast.value = true;
     } finally {
         loading.value = false;
     }
@@ -256,20 +285,34 @@ const loadReportStats = async () => {
 
 // Delete reported comment (xóa comment và tất cả reports liên quan)
 const deleteReportedComment = async (reportId, commentId) => {
-    if (!confirm('🗑️ Bạn có chắc muốn XÓA bình luận này? Tất cả báo cáo liên quan cũng sẽ bị xóa.')) return;
-
-    try {
-        // Xóa comment (sẽ tự động xóa tất cả reports liên quan)
-        if (commentId) {
-            await CommentService.delete(commentId);
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc muốn XÓA bình luận này? Tất cả báo cáo liên quan cũng sẽ bị xóa.',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                // Xóa comment (sẽ tự động xóa tất cả reports liên quan)
+                if (commentId) {
+                    await CommentService.delete(commentId);
+                }
+                toastConfig.value = {
+                    message: 'Đã xóa bình luận và báo cáo!',
+                    type: 'success'
+                };
+                showToast.value = true;
+                await loadReports();
+                await loadReportStats();
+            } catch (error) {
+                console.error('Delete reported comment error:', error);
+                toastConfig.value = {
+                    message: 'Có lỗi xảy ra!',
+                    type: 'error'
+                };
+                showToast.value = true;
+            }
         }
-        alert('✅ Đã xóa bình luận và báo cáo!');
-        await loadReports();
-        await loadReportStats();
-    } catch (error) {
-        console.error('Delete reported comment error:', error);
-        alert('❌ Có lỗi xảy ra!');
-    }
+    };
+    showDialog.value = true;
 };
 
 // Load all comments
@@ -283,7 +326,13 @@ const loadComments = async () => {
         console.error('Load comments error:', error);
         allComments.value = [];
         totalPages.value = 1;
-        alert('❌ Không thể tải danh sách bình luận!');
+        dialogConfig.value = {
+            title: 'Lỗi',
+            message: 'Không thể tải danh sách bình luận!',
+            type: 'danger',
+            onConfirm: () => { showDialog.value = false; }
+        };
+        showDialog.value = true;
     } finally {
         loading.value = false;
     }
@@ -291,16 +340,30 @@ const loadComments = async () => {
 
 // Delete comment
 const deleteComment = async (commentId) => {
-    if (!confirm('🗑️ Bạn có chắc muốn xóa bình luận này?')) return;
-
-    try {
-        await CommentService.delete(commentId);
-        alert('✅ Đã xóa bình luận!');
-        await loadComments();
-    } catch (error) {
-        console.error('Delete comment error:', error);
-        alert('❌ Có lỗi xảy ra!');
-    }
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc muốn xóa bình luận này?',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await CommentService.delete(commentId);
+                toastConfig.value = {
+                    message: 'Đã xóa bình luận!',
+                    type: 'success'
+                };
+                showToast.value = true;
+                await loadComments();
+            } catch (error) {
+                console.error('Delete comment error:', error);
+                toastConfig.value = {
+                    message: 'Có lỗi xảy ra!',
+                    type: 'error'
+                };
+                showToast.value = true;
+            }
+        }
+    };
+    showDialog.value = true;
 };
 
 // Debounce search

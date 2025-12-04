@@ -114,6 +114,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </div>
 </template>
 
@@ -123,6 +130,8 @@ import { useRoute } from 'vue-router';
 import storyService from '@/services/story.service';
 import chapterService from '@/services/chapter.service';
 import { getStoryImageUrl, getAudioUrl } from '@/utils/media';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const route = useRoute();
 const storyId = route.params.storyId;
@@ -135,6 +144,22 @@ const selectedAudio = ref(null);
 const audioInput = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 5;
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
 
 // Paginated chapters
 const paginatedChapters = computed(() => {
@@ -166,7 +191,11 @@ const loadData = async () => {
         chapters.value = chaptersData;
     } catch (error) {
         console.error('Error:', error);
-        alert('Lỗi khi tải dữ liệu');
+        toastConfig.value = {
+            message: 'Lỗi khi tải dữ liệu',
+            type: 'error'
+        };
+        showToast.value = true;
     } finally {
         loading.value = false;
     }
@@ -193,11 +222,19 @@ const saveChapter = async () => {
             await uploadAudio(savedChapter);
         }
 
-        alert(editingChapter.value ? 'Cập nhật thành công!' : 'Tạo chương thành công!');
+        toastConfig.value = {
+            message: editingChapter.value ? 'Cập nhật chương thành công!' : 'Tạo chương thành công!',
+            type: 'success'
+        };
+        showToast.value = true;
         cancelEdit();
     } catch (error) {
         console.error('Error:', error);
-        alert('Lỗi khi lưu chương');
+        toastConfig.value = {
+            message: 'Lỗi khi lưu chương',
+            type: 'error'
+        };
+        showToast.value = true;
     } finally {
         loading.value = false;
     }
@@ -253,7 +290,11 @@ const uploadAudio = async (chapter) => {
         if (audioInput.value) audioInput.value.value = '';
     } catch (error) {
         console.error('Error uploading audio:', error);
-        alert('Lỗi khi upload audio');
+        toastConfig.value = {
+            message: 'Lỗi khi upload audio',
+            type: 'error'
+        };
+        showToast.value = true;
     }
 };
 
@@ -280,10 +321,18 @@ const uploadAudioForChapter = async (chapter) => {
                 chapters.value[index].audioUrl = result.audioUrl;
             }
 
-            alert('Upload audio thành công!');
+            toastConfig.value = {
+                message: 'Upload audio thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         } catch (error) {
             console.error('Error:', error);
-            alert('Lỗi khi upload audio');
+            toastConfig.value = {
+                message: 'Lỗi khi upload audio',
+                type: 'error'
+            };
+            showToast.value = true;
         } finally {
             loading.value = false;
         }
@@ -300,16 +349,36 @@ const formatFileSize = (bytes) => {
 };
 
 const deleteChapter = async (chapter) => {
-    if (!confirm('Xóa chương : ?')) return;
-    try {
-        await chapterService.delete(chapter._id);
-        chapters.value = chapters.value.filter(c => c._id !== chapter._id);
-        if (editingChapter.value && editingChapter.value._id === chapter._id) cancelEdit();
-        alert('Xóa thành công!');
-    } catch (error) {
-        console.error('Error:', error);
-        alert('Lỗi khi xóa chương');
-    }
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: `Bạn có chắc muốn xóa chương ${chapter.chapterNumber}: ${chapter.title}?`,
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await chapterService.delete(chapter._id);
+                chapters.value = chapters.value.filter(c => c._id !== chapter._id);
+                if (editingChapter.value && editingChapter.value._id === chapter._id) cancelEdit();
+
+                dialogConfig.value = {
+                    title: 'Thành công',
+                    message: 'Xóa chương thành công!',
+                    type: 'success',
+                    onConfirm: () => { showDialog.value = false; }
+                };
+                showDialog.value = true;
+            } catch (error) {
+                console.error('Error:', error);
+                dialogConfig.value = {
+                    title: 'Lỗi',
+                    message: 'Lỗi khi xóa chương',
+                    type: 'danger',
+                    onConfirm: () => { showDialog.value = false; }
+                };
+                showDialog.value = true;
+            }
+        }
+    };
+    showDialog.value = true;
 };
 
 onMounted(() => {

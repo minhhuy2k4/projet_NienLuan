@@ -88,16 +88,25 @@
                 <!-- Displaying info -->
                 <div v-if="paginatedAuthors.length > 0" class="mt-4 text-center text-sm text-gray-600">
                     Hiển thị {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage,
-                    filteredAuthors.length) }} / Tổng {{ filteredAuthors.length }} tác giả
+                        filteredAuthors.length) }} / Tổng {{ filteredAuthors.length }} tác giả
                 </div>
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </main>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import authorService from '@/services/author.service';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const authorList = ref([]);
 const formData = ref({ fullName: '', email: '', bio: '' });
@@ -107,6 +116,22 @@ const error = ref(null);
 const searchQuery = ref('');
 const currentPage = ref(1);
 const itemsPerPage = 5;
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
 
 // Filtered authors based on search
 const filteredAuthors = computed(() => {
@@ -174,12 +199,24 @@ const handleSubmit = async () => {
                 authorList.value[index] = updated;
             }
             editingAuthor.value = null;
+
+            toastConfig.value = {
+                message: 'Cập nhật tác giả thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         } else {
             // Tạo tác giả mới
             console.log('Creating author:', formData.value);
             const created = await authorService.create(formData.value);
             console.log('Author created:', created);
             authorList.value.push(created);
+
+            toastConfig.value = {
+                message: 'Thêm tác giả thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         }
 
         formData.value = { fullName: '', email: '', bio: '' };
@@ -218,38 +255,50 @@ const cancelEdit = () => {
 };
 
 const deleteAuthor = async (id) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa tác giả này?')) {
-        return;
-    }
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc chắn muốn xóa tác giả này?',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await authorService.delete(id);
+                authorList.value = authorList.value.filter(a => a._id !== id);
 
-    try {
-        await authorService.delete(id);
-        authorList.value = authorList.value.filter(a => a._id !== id);
+                if (editingAuthor.value === id) {
+                    cancelEdit();
+                }
 
-        if (editingAuthor.value === id) {
-            cancelEdit();
-        }
+                // Hiển thị thông báo thành công
+                toastConfig.value = {
+                    message: 'Xóa tác giả thành công!',
+                    type: 'success'
+                };
+                showToast.value = true;
+            } catch (err) {
+                console.error('Error deleting author:', err);
 
-        // Hiển thị thông báo thành công
-        alert('✅ Xóa tác giả thành công!');
-    } catch (err) {
-        console.error('Error deleting author:', err);
+                // Hiển thị thông báo lỗi chi tiết từ backend
+                let errorMessage = 'Lỗi khi xóa tác giả.';
 
-        // Hiển thị thông báo lỗi chi tiết từ backend
-        let errorMessage = 'Lỗi khi xóa tác giả.';
+                if (err.response) {
+                    // Lỗi từ backend (400, 404, 500...)
+                    if (err.response.status === 400 && err.response.data?.message) {
+                        // Lỗi "có truyện đang dùng"
+                        errorMessage = err.response.data.message;
+                    } else if (err.response.data?.message) {
+                        errorMessage = err.response.data.message;
+                    }
+                }
 
-        if (err.response) {
-            // Lỗi từ backend (400, 404, 500...)
-            if (err.response.status === 400 && err.response.data?.message) {
-                // Lỗi "có truyện đang dùng"
-                errorMessage = err.response.data.message;
-            } else if (err.response.data?.message) {
-                errorMessage = err.response.data.message;
+                toastConfig.value = {
+                    message: errorMessage,
+                    type: 'error'
+                };
+                showToast.value = true;
             }
         }
-
-        alert('❌ ' + errorMessage);
-    }
+    };
+    showDialog.value = true;
 };
 </script>
 

@@ -118,6 +118,13 @@
                 </form>
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </main>
 </template>
 
@@ -127,6 +134,8 @@ import storyService from '@/services/story.service';
 import authorService from '@/services/author.service';
 import categoryService from '@/services/category.service';
 import { getStoryImageUrl } from '@/utils/media';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const props = defineProps({
     id: {
@@ -146,6 +155,22 @@ const loadingSubmit = ref(false);
 const uploading = ref(false);
 const error = ref(null);
 const successMessage = ref('');
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
 
 onMounted(async () => {
     try {
@@ -176,12 +201,20 @@ const handleCoverSelect = (event) => {
 
     // Validate file
     if (file.size > 5 * 1024 * 1024) {
-        alert('Kích thước ảnh không được vượt quá 5MB');
+        toastConfig.value = {
+            message: 'Kích thước ảnh không được vượt quá 5MB',
+            type: 'warning'
+        };
+        showToast.value = true;
         return;
     }
 
     if (!file.type.startsWith('image/')) {
-        alert('Vui lòng chọn file ảnh');
+        toastConfig.value = {
+            message: 'Vui lòng chọn file ảnh',
+            type: 'warning'
+        };
+        showToast.value = true;
         return;
     }
 
@@ -212,10 +245,18 @@ const uploadCover = async () => {
         const input = document.getElementById('coverInput');
         if (input) input.value = '';
 
-        alert('Upload ảnh bìa thành công!');
+        toastConfig.value = {
+            message: 'Upload ảnh bìa thành công!',
+            type: 'success'
+        };
+        showToast.value = true;
     } catch (err) {
         console.error('Upload cover error:', err);
-        alert('Lỗi khi upload ảnh bìa');
+        toastConfig.value = {
+            message: 'Lỗi khi upload ảnh bìa',
+            type: 'error'
+        };
+        showToast.value = true;
     } finally {
         uploading.value = false;
     }

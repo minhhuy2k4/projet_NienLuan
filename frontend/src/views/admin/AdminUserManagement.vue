@@ -29,7 +29,8 @@
                     </div>
                     <div class="form-group" v-if="editingUser">
                         <label for="password">Mật khẩu mới (để trống nếu không đổi)</label>
-                        <input type="password" id="password" v-model="formData.password" minlength="6" class="form-input">
+                        <input type="password" id="password" v-model="formData.password" minlength="6"
+                            class="form-input">
                         <small class="text-gray-500 mt-1">Mật khẩu phải có ít nhất 6 ký tự</small>
                     </div>
                     <div class="form-group">
@@ -195,6 +196,13 @@
                 }} trên tổng số {{ total }} người dùng
             </div>
         </div>
+
+        <!-- Confirm Dialog -->
+        <ConfirmDialog v-model="showDialog" :title="dialogConfig.title" :message="dialogConfig.message"
+            :type="dialogConfig.type" @confirm="dialogConfig.onConfirm" />
+
+        <!-- Toast Notification -->
+        <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
     </div>
 </template>
 
@@ -202,6 +210,8 @@
 import { ref, onMounted, computed } from 'vue';
 import userService from '@/services/user.service';
 import { getAvatarUrl } from '@/utils/media';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import Toast from '@/components/Toast.vue';
 
 const userList = ref([]);
 const formData = ref({
@@ -227,6 +237,22 @@ const resetUser = ref(null);
 const newPassword = ref('');
 const resetLoading = ref(false);
 const resetError = ref(null);
+
+// Dialog state
+const showDialog = ref(false);
+const dialogConfig = ref({
+    title: '',
+    message: '',
+    type: 'info',
+    onConfirm: null
+});
+
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({
+    message: '',
+    type: 'success'
+});
 
 const getUserAvatar = (avatarPath) => {
     return getAvatarUrl(avatarPath) || DEFAULT_AVATAR;
@@ -259,7 +285,11 @@ async function fetchUsers() {
         total.value = result.total;
     } catch (err) {
         console.error('Error fetching users:', err);
-        error.value = 'Lỗi khi tải danh sách người dùng.';
+        toastConfig.value = {
+            message: 'Lỗi khi tải danh sách người dùng.',
+            type: 'error'
+        };
+        showToast.value = true;
     } finally {
         loading.value = false;
     }
@@ -303,10 +333,18 @@ const handleSubmit = async () => {
                 updates.password = formData.value.password;
             }
             await userService.updateUser(editingUser.value, updates);
-            alert('✅ Cập nhật người dùng thành công!');
+            toastConfig.value = {
+                message: 'Cập nhật người dùng thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         } else {
             await userService.createUser(formData.value);
-            alert('✅ Tạo người dùng thành công!');
+            toastConfig.value = {
+                message: 'Tạo người dùng thành công!',
+                type: 'success'
+            };
+            showToast.value = true;
         }
         closeUserModal();
         fetchUsers();
@@ -331,21 +369,33 @@ const editUser = (user) => {
 };
 
 const deleteUser = async (id) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa người dùng này? Thao tác này không thể hoàn tác.')) {
-        return;
-    }
-
-    try {
-        await userService.deleteUser(id);
-        alert('✅ Xóa người dùng thành công!');
-        if (userList.value.length === 1 && currentPage.value > 1) {
-            currentPage.value--;
+    dialogConfig.value = {
+        title: 'Xác nhận xóa',
+        message: 'Bạn có chắc chắn muốn xóa người dùng này? Thao tác này không thể hoàn tác.',
+        type: 'danger',
+        onConfirm: async () => {
+            try {
+                await userService.deleteUser(id);
+                toastConfig.value = {
+                    message: 'Xóa người dùng thành công!',
+                    type: 'success'
+                };
+                showToast.value = true;
+                if (userList.value.length === 1 && currentPage.value > 1) {
+                    currentPage.value--;
+                }
+                fetchUsers();
+            } catch (err) {
+                console.error('Error deleting user:', err);
+                toastConfig.value = {
+                    message: err.response?.data?.message || 'Lỗi khi xóa người dùng.',
+                    type: 'error'
+                };
+                showToast.value = true;
+            }
         }
-        fetchUsers();
-    } catch (err) {
-        console.error('Error deleting user:', err);
-        alert('❌ ' + (err.response?.data?.message || 'Lỗi khi xóa người dùng.'));
-    }
+    };
+    showDialog.value = true;
 };
 
 const showResetPasswordModal = (user) => {
@@ -372,7 +422,11 @@ const handleResetPassword = async () => {
 
     try {
         await userService.resetPassword(resetUser.value._id, newPassword.value);
-        alert('✅ Reset mật khẩu thành công!');
+        toastConfig.value = {
+            message: 'Reset mật khẩu thành công!',
+            type: 'success'
+        };
+        showToast.value = true;
         closeResetModal();
     } catch (err) {
         console.error('Error resetting password:', err);

@@ -1,6 +1,6 @@
 <template>
     <StoryListWithPagination :title="categoryTitle" :description="categoryDescription" icon-type="category"
-        :fetch-function="fetchCategoryStories" :show-back-button="true" />
+        :fetch-function="fetchCategoryStories" :show-back-button="true" :enable-filter="true" />
 </template>
 
 <script setup>

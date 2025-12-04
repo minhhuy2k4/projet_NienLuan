@@ -3,7 +3,7 @@
         <nav class="navbar">
             <div class="nav-left">
                 <router-link to="/" class="logo">
-                    <span>🎧 AudioTruyen</span>
+                    <span><img src="/favicon.ico" alt="AudioTruyen" class="logo-icon" /> AudioTruyen</span>
                 </router-link>
                 <div class="search-bar" :class="{ 'mobile-search-open': mobileSearchOpen }">
                     <input type="text" placeholder="Tìm truyện..." v-model="searchQuery" @keyup.enter="handleSearch">
@@ -72,7 +72,8 @@
                 <!-- Login/Register for non-logged users -->
                 <div class="mobile-auth-section" v-else>
                     <router-link to="/login" class="mobile-auth-btn" @click="closeMobileMenu">Đăng nhập</router-link>
-                    <router-link to="/register" class="mobile-auth-btn primary" @click="closeMobileMenu">Đăng ký</router-link>
+                    <router-link to="/register" class="mobile-auth-btn primary" @click="closeMobileMenu">Đăng
+                        ký</router-link>
                 </div>
 
                 <!-- Sub Navigation -->
@@ -282,6 +283,22 @@ onBeforeUnmount(() => {
 .logo:hover {
     transform: scale(1.05);
     color: var(--color-primary-light);
+}
+
+/* Logo image sizing (global) */
+.logo .logo-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@media (max-width: 480px) {
+    .logo .logo-icon {
+        width: 18px;
+        height: 18px;
+    }
 }
 
 .search-bar {
@@ -828,6 +845,7 @@ onBeforeUnmount(() => {
         from {
             opacity: 0;
         }
+
         to {
             opacity: 1;
         }
@@ -838,6 +856,7 @@ onBeforeUnmount(() => {
             opacity: 0;
             transform: translateY(-10px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -864,6 +883,17 @@ onBeforeUnmount(() => {
 
     .logo span {
         white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .logo-icon {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        display: inline-block;
+        vertical-align: middle;
     }
 
     .mobile-menu-toggle {

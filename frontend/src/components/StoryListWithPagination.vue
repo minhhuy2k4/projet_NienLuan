@@ -37,6 +37,25 @@
                     <h1 class="page-title">{{ title }}</h1>
                 </div>
                 <p class="page-description">{{ description }}</p>
+
+                <!-- Filter Section -->
+                <div v-if="enableFilter" class="mt-4 flex flex-wrap gap-3">
+                    <select v-model="sortBy" @change="handleSortChange"
+                        class="px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2"
+                        style="background-color: var(--bg-card); color: var(--text-primary); border-color: var(--border-color);">
+                        <option value="latest">Mới cập nhật</option>
+                        <option value="views">Xem nhiều nhất</option>
+                        <option value="rating">Đánh giá cao</option>
+                        <option value="name">Tên A-Z</option>
+                    </select>
+                    <select v-model="statusFilter" @change="handleFilterChange"
+                        class="px-4 py-2 rounded-lg border text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2"
+                        style="background-color: var(--bg-card); color: var(--text-primary); border-color: var(--border-color);">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="đang cập nhật">Đang cập nhật</option>
+                        <option value="hoàn thành">Hoàn thành</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Loading State -->
@@ -141,6 +160,10 @@ const props = defineProps({
     showBackButton: {
         type: Boolean,
         default: false
+    },
+    enableFilter: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -152,6 +175,16 @@ const error = ref(null);
 const currentPage = ref(1);
 const totalPages = ref(1);
 const total = ref(0);
+const sortBy = ref('latest');
+const statusFilter = ref('');
+
+const handleSortChange = () => {
+    fetchStories(1);
+};
+
+const handleFilterChange = () => {
+    fetchStories(1);
+};
 
 // Computed visible pages for pagination
 const visiblePages = computed(() => {
@@ -170,9 +203,41 @@ const fetchStories = async (page = 1) => {
     loading.value = true;
     error.value = null;
     try {
-        const result = await props.fetchFunction(page, 24);
+        const result = await props.fetchFunction(page, 24, sortBy.value, statusFilter.value);
         stories.value = result.stories || [];
-        total.value = result.total || 0;
+
+        // Apply client-side filtering and sorting if enabled
+        if (props.enableFilter) {
+            let filtered = [...stories.value];
+
+            // Filter by status
+            if (statusFilter.value) {
+                filtered = filtered.filter(story =>
+                    story.status?.toLowerCase() === statusFilter.value.toLowerCase()
+                );
+            }
+
+            // Sort
+            switch (sortBy.value) {
+                case 'views':
+                    filtered.sort((a, b) => (b.totalViews || 0) - (a.totalViews || 0));
+                    break;
+                case 'rating':
+                    filtered.sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0));
+                    break;
+                case 'name':
+                    filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+                    break;
+                case 'latest':
+                default:
+                    filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                    break;
+            }
+
+            stories.value = filtered;
+        }
+
+        total.value = result.total || stories.value.length;
         currentPage.value = result.page || 1;
         totalPages.value = result.totalPages || 1;
     } catch (err) {

@@ -202,9 +202,8 @@
                             </h2>
                         </div>
 
-                        <div v-if="story.chapters && story.chapters.length > 0"
-                            class="max-h-[500px] overflow-y-auto custom-scrollbar">
-                            <div v-for="(chapter, index) in story.chapters" :key="chapter._id"
+                        <div v-if="story.chapters && story.chapters.length > 0">
+                            <div v-for="(chapter, index) in paginatedChapters" :key="chapter._id"
                                 class="group transition-all duration-200"
                                 style="border-bottom: 1px solid var(--border-color);">
                                 <router-link
@@ -266,6 +265,28 @@
                                         </button>
                                     </div>
                                 </router-link>
+                            </div>
+
+                            <!-- Pagination for chapters -->
+                            <div v-if="totalChapterPages > 1"
+                                class="flex items-center justify-center gap-2 p-4 border-t"
+                                style="border-color: var(--border-color);">
+                                <button @click="goToChapterPage(chapterPage - 1)" :disabled="chapterPage === 1"
+                                    class="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200"
+                                    :class="chapterPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-700'"
+                                    style="color: var(--text-primary); background-color: var(--bg-secondary);">
+                                    ←
+                                </button>
+                                <span class="text-sm font-medium px-3" style="color: var(--text-secondary);">
+                                    {{ chapterPage }} / {{ totalChapterPages }}
+                                </span>
+                                <button @click="goToChapterPage(chapterPage + 1)"
+                                    :disabled="chapterPage === totalChapterPages"
+                                    class="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200"
+                                    :class="chapterPage === totalChapterPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-700'"
+                                    style="color: var(--text-primary); background-color: var(--bg-secondary);">
+                                    →
+                                </button>
                             </div>
                         </div>
                         <div v-else class="text-center py-12"
@@ -404,6 +425,28 @@ const audioPlayer = ref(null);
 const playProgress = ref(0);
 const isFavorite = ref(false);
 const isDescriptionExpanded = ref(false);
+
+// Phân trang cho chương
+const chapterPage = ref(1);
+const chaptersPerPage = 5;
+
+const paginatedChapters = computed(() => {
+    if (!story.value?.chapters) return [];
+    const start = (chapterPage.value - 1) * chaptersPerPage;
+    const end = start + chaptersPerPage;
+    return story.value.chapters.slice(start, end);
+});
+
+const totalChapterPages = computed(() => {
+    if (!story.value?.chapters) return 0;
+    return Math.ceil(story.value.chapters.length / chaptersPerPage);
+});
+
+const goToChapterPage = (page) => {
+    if (page >= 1 && page <= totalChapterPages.value) {
+        chapterPage.value = page;
+    }
+};
 
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
