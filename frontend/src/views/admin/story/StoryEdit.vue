@@ -413,27 +413,45 @@ const handleStoryUpdate = async () => {
 .story-stats {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 8px;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.6rem;
+    background: #fbfcfd;
+    border-radius: 6px;
 }
 
 .stat-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr auto;
     align-items: center;
+    gap: 0.5rem;
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     color: #7f8c8d;
+    margin: 0;
 }
 
 .stat-value {
-    font-weight: 600;
+    font-size: clamp(0.75rem, 1.2vw, 1rem);
+    font-weight: 500;
     color: #2c3e50;
+    line-height: 1.05;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.stat-value[data-type="status"] {
+    white-space: normal;
+    text-align: right;
+    font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+}
+
+@media (max-width: 480px) {
+    .stat-value {
+        font-size: 0.95rem;
+    }
 }
 
 .btn-manage-chapters {

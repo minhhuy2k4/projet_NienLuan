@@ -362,7 +362,7 @@
             <div v-if="currentChapter && currentChapter.audioUrl"
                 class="fixed bottom-0 left-0 right-0 backdrop-blur-sm shadow-2xl z-50"
                 style="background-color: var(--bg-card); opacity: 0.98; border-top: 1px solid var(--border-color);">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 relative">
                     <div class="flex flex-col md:flex-row items-center gap-4">
                         <div class="flex items-center gap-4 flex-1 min-w-0">
                             <div class="w-14 h-14 rounded-md overflow-hidden flex-shrink-0 shadow-sm"
@@ -385,6 +385,17 @@
                                     currentChapter.chapterNumber }}</p>
                             </div>
                         </div>
+
+                        <!-- Close button placed next to audio controls -->
+                        <button @click="closeStickyPlayer" aria-label="Đóng trình phát"
+                            class="w-9 h-9 rounded-full flex items-center justify-center text-white bg-white/5 hover:bg-white/10 transition mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" aria-hidden="true">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
 
                         <audio ref="audioPlayer" :src="getAudioUrl(currentChapter.audioUrl)" controls
                             @play="isPlaying = true" @pause="isPlaying = false" @ended="onAudioEnded"
@@ -551,6 +562,20 @@ const toggleFavorite = async () => {
         console.error('Toggle favorite error:', err);
         alert('❌ Có lỗi xảy ra. Vui lòng thử lại!');
     }
+};
+
+const closeStickyPlayer = () => {
+    try {
+        if (audioPlayer.value) {
+            audioPlayer.value.pause();
+            // reset progress if desired
+            // audioPlayer.value.currentTime = 0;
+        }
+    } catch (err) {
+        console.error('Error closing sticky player:', err);
+    }
+    isPlaying.value = false;
+    currentChapter.value = null;
 };
 
 const checkFavoriteStatus = async () => {
