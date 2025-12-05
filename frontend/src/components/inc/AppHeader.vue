@@ -294,8 +294,8 @@ onBeforeUnmount(() => {
 
 /* Logo image sizing (global) */
 .logo .logo-icon {
-    width: 22px;
-    height: 22px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
     display: inline-block;
     vertical-align: middle;
@@ -303,8 +303,8 @@ onBeforeUnmount(() => {
 
 @media (max-width: 480px) {
     .logo .logo-icon {
-        width: 18px;
-        height: 18px;
+        width: 24px;
+        height: 24px;
     }
 }
 

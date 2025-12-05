@@ -17,6 +17,11 @@ class BannerService {
       isActive: payload.isActive !== undefined ? payload.isActive : true,
     };
 
+    // Chỉ thêm categoryId nếu có giá trị
+    if (payload.categoryId && payload.categoryId.trim() !== "") {
+      banner.categoryId = payload.categoryId;
+    }
+
     // Xóa các trường undefined
     Object.keys(banner).forEach(
       (key) => banner[key] === undefined && delete banner[key]
@@ -44,6 +49,24 @@ class BannerService {
       .limit(limit)
       .toArray();
 
+    // Populate category details if categoryId exists
+    const Category = this.Banner.s.db.collection("categories");
+    for (let banner of banners) {
+      if (banner.categoryId) {
+        try {
+          const category = await Category.findOne({
+            _id: new ObjectId(banner.categoryId),
+          });
+          if (category) {
+            banner.categorySlug = category.slug;
+            banner.categoryName = category.name;
+          }
+        } catch (err) {
+          console.error("Error populating category:", err);
+        }
+      }
+    }
+
     const total = await this.Banner.countDocuments(query);
 
     return {
@@ -62,6 +85,25 @@ class BannerService {
     const banners = await this.Banner.find({ isActive: true })
       .sort({ order: 1 })
       .toArray();
+
+    // Populate category details if categoryId exists
+    const Category = this.Banner.s.db.collection("categories");
+    for (let banner of banners) {
+      if (banner.categoryId) {
+        try {
+          const category = await Category.findOne({
+            _id: new ObjectId(banner.categoryId),
+          });
+          if (category) {
+            banner.categorySlug = category.slug;
+            banner.categoryName = category.name;
+          }
+        } catch (err) {
+          console.error("Error populating category:", err);
+        }
+      }
+    }
+
     return banners;
   }
 

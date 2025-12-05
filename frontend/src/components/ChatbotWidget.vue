@@ -70,11 +70,7 @@
 
         <button @click="toggleChat" class="chat-toggle-button" :class="{ 'is-open': isOpen }">
             <transition name="icon-fade" mode="out-in">
-                <svg v-if="!isOpen" key="chat" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                    fill="currentColor">
-                    <path
-                        d="M8.5 2A1.5 1.5 0 0 0 7 3.5V5H5.5A1.5 1.5 0 0 0 4 6.5v13A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5v-13A1.5 1.5 0 0 0 18.5 5H17V3.5A1.5 1.5 0 0 0 15.5 2h-7z" />
-                </svg>
+                <img v-if="!isOpen" key="chat" src="/ChatBot.png" alt="ChatBot" class="chat-toggle-icon" />
                 <svg v-else key="close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -199,8 +195,8 @@ const sendMessage = async () => {
 }
 
 .chat-toggle-button {
-    width: 60px;
-    height: 60px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
     color: white;
@@ -215,8 +211,16 @@ const sendMessage = async () => {
 }
 
 .chat-toggle-button svg {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
+}
+
+.chat-toggle-button .chat-toggle-icon {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
 }
 
 .chat-toggle-button:hover {
@@ -290,8 +294,8 @@ const sendMessage = async () => {
 }
 
 .bot-avatar {
-    width: 42px;
-    height: 42px;
+    width: 48px;
+    height: 48px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     display: flex;
@@ -301,8 +305,8 @@ const sendMessage = async () => {
 }
 
 .bot-avatar img {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -443,8 +447,8 @@ const sendMessage = async () => {
 }
 
 .message-avatar {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 100%);
     border-radius: 50%;
     display: flex;
@@ -454,8 +458,8 @@ const sendMessage = async () => {
 }
 
 .message-avatar img {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     object-fit: cover;
 }

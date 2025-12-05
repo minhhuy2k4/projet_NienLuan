@@ -4,7 +4,8 @@
             <!-- Slides -->
             <div class="slides-wrapper" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
                 <div v-for="(slide, index) in slides" :key="index" class="slide"
-                    :style="{ backgroundImage: `url(${slide.image})` }">
+                    :style="{ backgroundImage: `url(${slide.image})` }" @click="handleSlideClick(slide)"
+                    :class="{ 'clickable': slide.categorySlug }">
                     <div class="slide-overlay"></div>
                     <div class="slide-content">
                         <h2 class="slide-title animate-fade-in">{{ slide.title }}</h2>
@@ -33,9 +34,11 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter } from 'vue-router';
 import BannerService from '@/services/banner.service';
 import { getBannerUrl } from '@/utils/media';
 
+const router = useRouter();
 const currentSlide = ref(0);
 const autoplayInterval = ref(null);
 const slides = ref([]);
@@ -69,7 +72,9 @@ const loadBanners = async () => {
             slides.value = banners.map(b => ({
                 image: getBannerUrl(b.image),
                 title: b.title,
-                subtitle: b.subtitle
+                subtitle: b.subtitle,
+                categorySlug: b.categorySlug,
+                categoryName: b.categoryName
             }));
         } else {
             slides.value = defaultSlides;
@@ -90,6 +95,12 @@ const prevSlide = () => {
 
 const goToSlide = (index) => {
     currentSlide.value = index;
+};
+
+const handleSlideClick = (slide) => {
+    if (slide.categorySlug) {
+        router.push(`/category/${slide.categorySlug}`);
+    }
 };
 
 const startAutoplay = () => {
@@ -143,6 +154,22 @@ onUnmounted(() => {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    transition: transform 0.3s ease;
+}
+
+.slide.clickable {
+    cursor: pointer;
+}
+
+.slide.clickable:hover {
+    transform: scale(1.02);
+}
+
+.slide.clickable:hover .slide-overlay {
+    background: linear-gradient(to right,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.3) 50%,
+            rgba(0, 0, 0, 0.1) 100%);
 }
 
 .slide-overlay {
@@ -190,6 +217,24 @@ onUnmounted(() => {
     font-weight: 400;
     opacity: 0.9;
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.slide-hint {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    opacity: 0.8;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.slide.clickable:hover .slide-hint {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(5px);
 }
 
 /* Navigation Buttons */
@@ -310,7 +355,7 @@ onUnmounted(() => {
 
     to {
         opacity: 1;
-        transform:translateY(0);
+        transform: translateY(0);
     }
 }
 </style>

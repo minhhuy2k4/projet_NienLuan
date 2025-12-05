@@ -76,17 +76,20 @@ exports.getById = async (req, res, next) => {
 // Tạo banner mới
 exports.create = async (req, res, next) => {
   try {
-    const { title, subtitle, image, order, isActive } = req.body;
+    const { title, subtitle, image, categoryId, order, isActive } = req.body;
 
     if (!title || !subtitle || !image) {
       return next(new ApiError(400, "Thiếu thông tin bắt buộc"));
     }
+
+    console.log("Creating banner with categoryId:", categoryId);
 
     const bannerService = new BannerService(await MongoDB.client);
     const banner = await bannerService.create({
       title,
       subtitle,
       image,
+      categoryId,
       order: order || 0,
       isActive: isActive !== undefined ? isActive : true,
     });
@@ -102,13 +105,16 @@ exports.create = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, subtitle, image, order, isActive } = req.body;
+    const { title, subtitle, image, categoryId, order, isActive } = req.body;
+
+    console.log("Updating banner with categoryId:", categoryId);
 
     const bannerService = new BannerService(await MongoDB.client);
     const banner = await bannerService.update(id, {
       title,
       subtitle,
       image,
+      categoryId,
       order,
       isActive,
     });

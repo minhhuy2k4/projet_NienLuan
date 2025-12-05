@@ -213,6 +213,36 @@ async function createIndexes() {
       .createIndex({ createdAt: -1 }, { name: "rating_created_index" });
     console.log("✅ Index: createdAt (descending)");
 
+    // ==================== COMMENTS COLLECTION ====================
+    console.log("\n💬 Tạo indexes cho collection 'comments'...");
+
+    // Index cho storyId + chapterId (query comments theo truyện/chương)
+    await db
+      .collection("comments")
+      .createIndex(
+        { storyId: 1, chapterId: 1, createdAt: -1 },
+        { name: "comment_story_chapter_index" }
+      );
+    console.log("✅ Index compound: storyId + chapterId + createdAt");
+
+    // Index cho userId (query comments của user)
+    await db
+      .collection("comments")
+      .createIndex(
+        { userId: 1, createdAt: -1 },
+        { name: "comment_user_index" }
+      );
+    console.log("✅ Index compound: userId + createdAt");
+
+    // Index cho parentId (query replies)
+    await db
+      .collection("comments")
+      .createIndex(
+        { parentId: 1 },
+        { name: "comment_parent_index", sparse: true }
+      );
+    console.log("✅ Index: parentId (sparse)");
+
     // ==================== COMMENT_LIKES COLLECTION ====================
     console.log("\n👍 Tạo indexes cho collection 'comment_likes'...");
 
@@ -312,6 +342,87 @@ async function createIndexes() {
       .createIndex({ favorites: 1 }, { name: "user_favorites_index" });
     console.log("✅ Index: favorites (array)");
 
+    // ==================== BANNERS COLLECTION ====================
+    console.log("\n🎨 Tạo indexes cho collection 'banners'...");
+
+    // Index cho isActive + order (query banners đang hiển thị)
+    await db
+      .collection("banners")
+      .createIndex(
+        { isActive: 1, order: 1 },
+        { name: "banner_active_order_index" }
+      );
+    console.log("✅ Index compound: isActive + order");
+
+    // Index cho categoryId (query banners theo category)
+    await db
+      .collection("banners")
+      .createIndex(
+        { categoryId: 1 },
+        { name: "banner_category_index", sparse: true }
+      );
+    console.log("✅ Index: categoryId (sparse)");
+
+    // Index cho createdAt (sort theo thời gian)
+    await db
+      .collection("banners")
+      .createIndex({ createdAt: -1 }, { name: "banner_created_index" });
+    console.log("✅ Index: createdAt (descending)");
+
+    // Index text search cho title và subtitle
+    await db
+      .collection("banners")
+      .createIndex(
+        { title: "text", subtitle: "text" },
+        { name: "banner_text_search" }
+      );
+    console.log("✅ Index text search: title, subtitle");
+
+    // ==================== ADS COLLECTION ====================
+    console.log("\n📢 Tạo indexes cho collection 'ads'...");
+
+    // Index cho isActive + position (query ads theo vị trí)
+    await db
+      .collection("ads")
+      .createIndex(
+        { isActive: 1, position: 1 },
+        { name: "ad_active_position_index" }
+      );
+    console.log("✅ Index compound: isActive + position");
+
+    // Index cho startDate và endDate (query ads theo thời gian)
+    await db
+      .collection("ads")
+      .createIndex(
+        { startDate: 1, endDate: 1 },
+        { name: "ad_date_range_index" }
+      );
+    console.log("✅ Index compound: startDate + endDate");
+
+    // Index cho createdAt
+    await db
+      .collection("ads")
+      .createIndex({ createdAt: -1 }, { name: "ad_created_index" });
+    console.log("✅ Index: createdAt (descending)");
+
+    // ==================== WEBSITEINFO COLLECTION ====================
+    console.log("\n🌐 Tạo indexes cho collection 'websiteinfo'...");
+
+    // Index cho key (unique) - nếu dùng key-value pattern
+    await db
+      .collection("websiteinfo")
+      .createIndex(
+        { key: 1 },
+        { name: "websiteinfo_key_unique", unique: true, sparse: true }
+      );
+    console.log("✅ Index unique: key (sparse)");
+
+    // Index cho updatedAt
+    await db
+      .collection("websiteinfo")
+      .createIndex({ updatedAt: -1 }, { name: "websiteinfo_updated_index" });
+    console.log("✅ Index: updatedAt (descending)");
+
     console.log("\n✨ Hoàn thành tạo tất cả indexes!");
     console.log("\n📊 Thống kê indexes:");
 
@@ -324,9 +435,13 @@ async function createIndexes() {
       "authors",
       "contacts",
       "ratings",
+      "comments",
       "comment_likes",
       "comment_reports",
       "histories",
+      "banners",
+      "ads",
+      "websiteinfo",
     ];
 
     for (const collectionName of collections) {
@@ -357,7 +472,13 @@ async function dropAllIndexes() {
       "authors",
       "contacts",
       "ratings",
+      "comments",
+      "comment_likes",
+      "comment_reports",
       "histories",
+      "banners",
+      "ads",
+      "websiteinfo",
     ];
 
     for (const collectionName of collections) {

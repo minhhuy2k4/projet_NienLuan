@@ -37,9 +37,20 @@
                         <input v-model="formData.subtitle" type="text" required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             placeholder="VD: Phụ đề banner">
-                        <small class="text-gray-500">Upload ảnh từ máy tính hoặc nhập URL bên dưới</small>
                     </div>
 
+                    <!-- Category -->
+                    <div>
+                        <label class="block text-sm font-semibold mb-2">Thể loại liên kết</label>
+                        <select v-model="formData.categoryId"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="">-- Không liên kết thể loại --</option>
+                            <option v-for="category in categories" :key="category._id" :value="category._id">
+                                {{ category.name }}
+                            </option>
+                        </select>
+                        <small class="text-gray-500">Chọn thể loại để banner dẫn đến trang thể loại khi nhấp vào</small>
+                    </div>
 
                     <!-- Image URL & Upload File -->
                     <div>
@@ -153,6 +164,14 @@
                             <span>Thứ tự: {{ banner.order }}</span>
                             <span class="mx-2">•</span>
                             <span>Tạo: {{ formatDate(banner.createdAt) }}</span>
+                            <span v-if="banner.categoryName" class="mx-2">•</span>
+                            <span v-if="banner.categoryName" class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                                </svg>
+                                Thể loại: {{ banner.categoryName }}
+                            </span>
                         </div>
 
                         <!-- Action Buttons -->
@@ -215,11 +234,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import BannerService from '@/services/banner.service';
+import CategoryService from '@/services/category.service';
 import { getBannerUrl } from '@/utils/media';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import Toast from '@/components/Toast.vue';
 
 const banners = ref([]);
+const categories = ref([]);
 const showAddForm = ref(false);
 const editingBanner = ref(null);
 const uploading = ref(false);
@@ -236,6 +257,7 @@ const formData = ref({
     title: '',
     subtitle: '',
     image: '',
+    categoryId: '',
     order: 0,
     isActive: true
 });
@@ -310,6 +332,18 @@ const formatDate = (dateString) => {
     });
 };
 
+// Load categories from API
+const loadCategories = async () => {
+    try {
+        const response = await CategoryService.getAll();
+        // API trả về trực tiếp mảng categories
+        categories.value = Array.isArray(response) ? response : [];
+        console.log('Categories loaded:', categories.value);
+    } catch (error) {
+        console.error('Load categories error:', error);
+    }
+};
+
 // Load banners from API
 const loadBanners = async () => {
     try {
@@ -335,6 +369,7 @@ const handleSearch = () => {
 // Save banner
 const saveBanner = async () => {
     try {
+        console.log('Saving banner with data:', formData.value);
         if (editingBanner.value) {
             // Update existing
             await BannerService.update(editingBanner.value._id, formData.value);
@@ -373,6 +408,7 @@ const editBanner = (banner) => {
         title: banner.title,
         subtitle: banner.subtitle,
         image: banner.image,
+        categoryId: banner.categoryId || '',
         order: banner.order,
         isActive: banner.isActive
     };
@@ -391,6 +427,7 @@ const cancelForm = () => {
         title: '',
         subtitle: '',
         image: '',
+        categoryId: '',
         order: 0,
         isActive: true
     };
@@ -458,6 +495,7 @@ const nextPage = () => {
 };
 
 onMounted(() => {
+    loadCategories();
     loadBanners();
 });
 </script>
