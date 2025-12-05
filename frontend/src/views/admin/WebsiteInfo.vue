@@ -83,7 +83,7 @@
                     <!-- Submit button -->
                     <div class="button-group flex gap-4">
                         <button type="submit"
-                            class="submit-button bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                             :disabled="loading">
                             <span v-if="loading" class="flex items-center gap-2">
                                 <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"

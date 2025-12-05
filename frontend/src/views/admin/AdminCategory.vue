@@ -17,12 +17,14 @@
                     </div>
                     <p v-if="error" class="error-message">{{ error }}</p>
                     <div class="button-group">
-                        <button type="submit" class="submit-button transform hover:scale-105 transition"
+                        <button type="submit"
+                            class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
                             :disabled="loading">
                             {{ loading ? 'Đang lưu...' : (editingCategory ? 'Cập nhật' : 'Lưu') }}
                         </button>
                         <button v-if="editingCategory" type="button"
-                            class="cancel-button transform hover:scale-105 transition" @click="cancelEdit">
+                            class="px-6 py-3 !bg-gray-600 hover:!bg-gray-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
+                            @click="cancelEdit">
                             Hủy
                         </button>
                     </div>
@@ -33,9 +35,15 @@
 
                 <!-- Search Box -->
                 <div class="search-filter-section">
-                    <div class="search-box">
+                    <div class="flex-1 relative">
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
                         <input v-model="searchQuery" @input="handleSearch" type="text"
-                            placeholder="🔍 Tìm kiếm thể loại..." class="search-input" />
+                            placeholder="Tìm kiếm thể loại..."
+                            class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                     </div>
                     <div class="filter-info">
                         Tổng: <strong>{{ filteredCategories.length }}</strong> thể loại
@@ -51,12 +59,22 @@
                             <p v-if="cat.description" class="category-description">{{ cat.description }}</p>
                         </div>
                         <div class="item-actions">
-                            <button @click="editCategory(cat)" class="edit-btn transform hover:scale-105 transition"
+                            <button @click="editCategory(cat)"
+                                class="px-4 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2"
                                 title="Sửa">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
                                 Sửa
                             </button>
                             <button @click="deleteCategory(cat._id)"
-                                class="delete-btn transform hover:scale-105 transition" title="Xóa">
+                                class="px-4 py-2 !bg-red-600 hover:!bg-red-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2"
+                                title="Xóa">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                                 Xóa
                             </button>
                         </div>
@@ -68,14 +86,14 @@
                 <!-- Pagination -->
                 <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
                     <button @click="currentPage--" :disabled="currentPage === 1"
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                        class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         ← Trước
                     </button>
                     <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
                         Trang {{ currentPage }} / {{ totalPages }}
                     </div>
                     <button @click="currentPage++" :disabled="currentPage === totalPages"
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                        class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         Sau →
                     </button>
                 </div>

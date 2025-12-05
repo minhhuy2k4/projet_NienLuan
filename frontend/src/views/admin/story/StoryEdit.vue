@@ -2,7 +2,8 @@
     <main class="main-content">
         <header class="content-header">
             <h2>Chỉnh sửa truyện</h2>
-            <router-link :to="{ name: 'admin.story.list' }" class="nav-back-button">
+            <router-link :to="{ name: 'admin.story.list' }"
+                class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">
                 ← Quay lại danh sách
             </router-link>
         </header>
@@ -31,10 +32,13 @@
                     <div class="cover-actions">
                         <input type="file" id="coverInput" @change="handleCoverSelect" accept="image/*"
                             class="file-input" />
-                        <label for="coverInput" class="btn-upload">
+                        <label for="coverInput"
+                            class="px-4 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md cursor-pointer inline-flex items-center gap-2">
                             📷 Chọn ảnh bìa mới
                         </label>
-                        <button v-if="coverFile" @click="uploadCover" class="btn-save-cover" :disabled="uploading">
+                        <button v-if="coverFile" @click="uploadCover"
+                            class="px-4 py-2 !bg-green-600 hover:!bg-green-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md disabled:opacity-50"
+                            :disabled="uploading">
                             {{ uploading ? 'Đang upload...' : '✓ Lưu ảnh bìa' }}
                         </button>
                     </div>
@@ -56,7 +60,7 @@
                 </div>
 
                 <router-link :to="{ name: 'admin.chapter.manage', params: { storyId: story._id } }"
-                    class="btn-manage-chapters">
+                    class="px-6 py-3 !bg-purple-600 hover:!bg-purple-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md inline-flex items-center justify-center gap-2">
                     📚 Quản lý chương
                 </router-link>
             </div>
@@ -111,7 +115,9 @@
 
                     <div class="form-actions">
                         <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-                        <button type="submit" class="btn-submit" :disabled="loadingSubmit">
+                        <button type="submit"
+                            class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md disabled:opacity-50"
+                            :disabled="loadingSubmit">
                             {{ loadingSubmit ? 'Đang lưu...' : '✓ Lưu thay đổi' }}
                         </button>
                     </div>

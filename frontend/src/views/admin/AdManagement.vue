@@ -4,14 +4,22 @@
 
         <!-- Search and Add Button -->
         <div class="mb-6 animate-slide-up flex gap-4 items-center" style="animation-delay: 0.1s">
-            <div class="flex-1">
+            <div class="flex-1 relative">
                 <input v-model="searchQuery" @input="handleSearch" type="text"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="🔍 Tìm kiếm quảng cáo theo tiêu đề hoặc mô tả...">
+                    class="w-full pl-10 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    placeholder="Tìm kiếm quảng cáo theo tiêu đề hoặc mô tả...">
+                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
             </div>
             <button @click="showAddForm = true"
-                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition flex items-center gap-2">
-                <span class="text-xl">➕</span>
+                class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-md">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
                 <span>Thêm quảng cáo mới</span>
             </button>
         </div>
@@ -116,11 +124,11 @@
                     <!-- Buttons -->
                     <div class="flex gap-3 pt-4">
                         <button type="submit"
-                            class="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
+                            class="flex-1 px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-semibold rounded-lg transition">
                             {{ editingAd ? 'Cập nhật' : 'Thêm quảng cáo' }}
                         </button>
                         <button type="button" @click="cancelForm"
-                            class="flex-1 px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg transition">
+                            class="flex-1 px-6 py-3 !bg-gray-600 hover:!bg-gray-700 !text-white font-semibold rounded-lg transition">
                             Hủy
                         </button>
                     </div>
@@ -166,25 +174,57 @@
                             <span class="mx-2">•</span>
                             <span>Thứ tự: {{ ad.order }}</span>
                             <span class="mx-2">•</span>
-                            <span>👁️ {{ ad.viewCount || 0 }} lượt xem</span>
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                    <path fill-rule="evenodd"
+                                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                {{ ad.viewCount || 0 }} lượt xem
+                            </span>
                             <span class="mx-2">•</span>
-                            <span>🖱️ {{ ad.clickCount || 0 }} clicks</span>
+                            <span class="inline-flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 001.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                {{ ad.clickCount || 0 }} clicks
+                            </span>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="flex gap-3">
                             <button @click="toggleActive(ad)"
                                 :class="ad.isActive ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700'"
-                                class="px-4 py-2 text-white font-semibold rounded-lg transition">
-                                {{ ad.isActive ? '👁️ Ẩn' : '👁️‍🗨️ Hiện' }}
+                                class="px-4 py-2 text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path v-if="ad.isActive" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                {{ ad.isActive ? 'Ẩn' : 'Hiện' }}
                             </button>
                             <button @click="editAd(ad)"
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition">
-                                ✏️ Sửa
+                                class="px-4 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Sửa
                             </button>
                             <button @click="deleteAd(ad._id)"
-                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition">
-                                🗑️ Xóa
+                                class="px-4 py-2 !bg-red-600 hover:!bg-red-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Xóa
                             </button>
                         </div>
                     </div>
@@ -195,14 +235,14 @@
         <!-- Pagination -->
         <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
             <button @click="prevPage" :disabled="currentPage === 1"
-                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                 ← Trước
             </button>
             <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
                 Trang {{ currentPage }} / {{ totalPages }}
             </div>
             <button @click="nextPage" :disabled="currentPage === totalPages"
-                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                 Sau →
             </button>
         </div>

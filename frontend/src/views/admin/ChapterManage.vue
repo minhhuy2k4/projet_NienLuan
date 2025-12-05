@@ -2,7 +2,8 @@
     <div class="main-content">
         <div class="content-header animate-fade-in">
             <h2>Quản lý Chương</h2>
-            <router-link :to="{ name: 'admin.story.list' }" class="btn-back transform hover:scale-105 transition">Quay
+            <router-link :to="{ name: 'admin.story.list' }"
+                class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">Quay
                 lại</router-link>
         </div>
 
@@ -48,11 +49,13 @@
                         formatFileSize(selectedAudio.size) }})</p>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn-submit transform hover:scale-105 transition" :disabled="loading">
+                    <button type="submit"
+                        class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
+                        :disabled="loading">
                         {{ loading ? 'Đang lưu...' : (editingChapter ? 'Cập nhật' : 'Tạo chương') }}
                     </button>
                     <button v-if="editingChapter" type="button" @click="cancelEdit"
-                        class="btn-cancel transform hover:scale-105 transition">Hủy</button>
+                        class="px-6 py-3 !bg-gray-600 hover:!bg-gray-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md">Hủy</button>
                 </div>
             </form>
         </div>
@@ -92,23 +95,26 @@
                     </div>
                     <div class="chapter-actions">
                         <button @click="editChapter(chapter)"
-                            class="btn-edit transform hover:scale-105 transition">Sửa</button>
+                            class="px-4 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">Sửa</button>
                         <button v-if="!chapter.audioUrl" @click="uploadAudioForChapter(chapter)"
-                            class="btn-upload transform hover:scale-105 transition">Upload Audio</button>
+                            class="px-4 py-2 !bg-green-600 hover:!bg-green-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">Upload
+                            Audio</button>
                         <button @click="deleteChapter(chapter)"
-                            class="btn-delete transform hover:scale-105 transition">Xóa</button>
+                            class="px-4 py-2 !bg-red-600 hover:!bg-red-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">Xóa</button>
                     </div>
                 </div>
 
                 <!-- Pagination -->
                 <div v-if="totalPages > 1" class="pagination">
-                    <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                    <button @click="currentPage--" :disabled="currentPage === 1"
+                        class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
                         ← Trước
                     </button>
                     <span class="page-info">
                         Trang {{ currentPage }} / {{ totalPages }}
                     </span>
-                    <button @click="currentPage++" :disabled="currentPage === totalPages" class="page-btn">
+                    <button @click="currentPage++" :disabled="currentPage === totalPages"
+                        class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
                         Sau →
                     </button>
                 </div>

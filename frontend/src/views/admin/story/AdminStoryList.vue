@@ -2,8 +2,13 @@
     <div class="main-content">
         <div class="content-header animate-fade-in">
             <h2>Quản lý Truyện</h2>
-            <router-link :to="{ name: 'admin.story.add' }" class="submit-button transform hover:scale-105 transition">
-                + Thêm truyện mới
+            <router-link :to="{ name: 'admin.story.add' }"
+                class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-md">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Thêm truyện mới
             </router-link>
         </div>
 
@@ -12,9 +17,15 @@
 
             <!-- Search and Filter -->
             <div class="search-filter-section">
-                <div class="search-box">
+                <div class="flex-1 relative">
+                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
                     <input v-model="searchQuery" @input="handleSearch" type="text"
-                        placeholder="🔍 Tìm kiếm theo tên truyện..." class="search-input" />
+                        placeholder="Tìm kiếm theo tên truyện..."
+                        class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div class="filter-info">
                     Tổng: <strong>{{ filteredStories.length }}</strong> truyện
@@ -67,8 +78,22 @@
                             </p>
 
                             <div class="story-stats">
-                                <span class="stat-item">📚 {{ story.chapterCount || 0 }} chương</span>
-                                <span class="stat-item">👁️ {{ story.totalViews || 0 }} lượt xem</span>
+                                <span class="stat-item inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                    </svg>
+                                    {{ story.chapterCount || 0 }} chương
+                                </span>
+                                <span class="stat-item inline-flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                        <path fill-rule="evenodd"
+                                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    {{ story.totalViews || 0 }} lượt xem
+                                </span>
                             </div>
                             <div class="story-dates">
                                 <small v-if="story.createdAt" class="date-info">
@@ -81,17 +106,30 @@
                         </div>
                         <div class="story-actions">
                             <router-link :to="{ name: 'admin.story.edit', params: { id: story._id } }"
-                                class="btn-edit transform hover:scale-105 transition">
+                                class="px-4 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
                                 Sửa
                             </router-link>
                             <router-link :to="{
                                 name: 'admin.chapter.manage',
                                 params: { storyId: story._id },
-                            }" class="btn-chapters transform hover:scale-105 transition">
+                            }"
+                                class="px-4 py-2 !bg-purple-600 hover:!bg-purple-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                                </svg>
                                 Chương
                             </router-link>
                             <button @click="deleteStory(story._id)"
-                                class="btn-delete transform hover:scale-105 transition">
+                                class="px-4 py-2 !bg-red-600 hover:!bg-red-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                                 Xóa
                             </button>
                         </div>
@@ -101,14 +139,14 @@
                 <!-- Pagination -->
                 <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
                     <button @click="currentPage--" :disabled="currentPage === 1"
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                        class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         ← Trước
                     </button>
                     <div class="px-6 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
                         Trang {{ currentPage }} / {{ totalPages }}
                     </div>
                     <button @click="currentPage++" :disabled="currentPage === totalPages"
-                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
+                        class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transform hover:-translate-y-0.5">
                         Sau →
                     </button>
                 </div>

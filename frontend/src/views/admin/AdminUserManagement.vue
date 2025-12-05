@@ -2,8 +2,13 @@
     <div class="main-content">
         <div class="content-header animate-fade-in">
             <h2>Quản lý Người dùng</h2>
-            <button @click="openAddUserModal()" class="submit-button transform hover:scale-105 transition">
-                + Thêm người dùng
+            <button @click="openAddUserModal()"
+                class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-md">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Thêm người dùng
             </button>
         </div>
 
@@ -42,10 +47,14 @@
                     </div>
                     <p v-if="error" class="text-red-500 text-center my-3">{{ error }}</p>
                     <div class="flex justify-center gap-4 mt-6">
-                        <button type="submit" class="btn btn-primary" :disabled="loading">
+                        <button type="submit"
+                            class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
+                            :disabled="loading">
                             {{ loading ? 'Đang lưu...' : (editingUser ? 'Cập nhật' : 'Tạo mới') }}
                         </button>
-                        <button type="button" class="btn btn-secondary" @click="closeUserModal">
+                        <button type="button"
+                            class="px-6 py-3 !bg-gray-600 hover:!bg-gray-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
+                            @click="closeUserModal">
                             Hủy
                         </button>
                     </div>
@@ -67,10 +76,14 @@
                     </div>
                     <p v-if="resetError" class="text-red-500 text-center my-3">{{ resetError }}</p>
                     <div class="flex justify-center gap-4 mt-6">
-                        <button type="submit" class="btn btn-primary" :disabled="resetLoading">
+                        <button type="submit"
+                            class="px-6 py-3 !bg-blue-600 hover:!bg-blue-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
+                            :disabled="resetLoading">
                             {{ resetLoading ? 'Đang reset...' : 'Reset mật khẩu' }}
                         </button>
-                        <button type="button" class="btn btn-secondary" @click="closeResetModal">
+                        <button type="button"
+                            class="px-6 py-3 !bg-gray-600 hover:!bg-gray-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
+                            @click="closeResetModal">
                             Hủy
                         </button>
                     </div>
@@ -178,14 +191,15 @@
 
             <!-- Pagination -->
             <div v-if="totalPages > 1" class="mt-8 flex justify-center items-center gap-4">
-                <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1" class="btn btn-secondary">
+                <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
                     ← Trước
                 </button>
                 <div class="px-4 py-2 bg-gray-100 rounded-lg font-semibold text-gray-700">
                     Trang {{ currentPage }} / {{ totalPages }}
                 </div>
                 <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
-                    class="btn btn-secondary">
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
                     Sau →
                 </button>
             </div>

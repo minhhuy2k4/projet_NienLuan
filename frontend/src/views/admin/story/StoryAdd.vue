@@ -3,7 +3,7 @@
         <header class="content-header animate-fade-in">
             <h2>Thêm Truyện Mới</h2>
             <router-link :to="{ name: 'admin.story.list' }"
-                class="nav-back-button transform hover:scale-105 transition">
+                class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">
                 ← Quay lại danh sách
             </router-link>
         </header>
@@ -84,10 +84,13 @@
                     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
                     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
                     <div class="button-group">
-                        <button type="button" @click="$router.back()" class="btn-cancel">
+                        <button type="button" @click="$router.back()"
+                            class="px-6 py-3 !bg-gray-600 hover:!bg-gray-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md">
                             Hủy
                         </button>
-                        <button type="submit" class="btn-submit" :disabled="loading">
+                        <button type="submit"
+                            class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 shadow-md"
+                            :disabled="loading">
                             {{ loading ? 'Đang lưu...' : 'Tạo truyện' }}
                         </button>
                     </div>
