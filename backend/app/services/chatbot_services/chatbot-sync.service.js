@@ -69,21 +69,43 @@ class ChatbotSyncService {
       content += `📖 ${story.name}\n`;
       content += `   ID: ${story._id}\n`;
 
-      if (story.authorId?.name) {
-        content += `   Tác giả: ${story.authorId.name}\n`;
+      // Hiển thị tác giả (có thể có nhiều tác giả)
+      if (story.authorDetails && story.authorDetails.length > 0) {
+        const authorNames = story.authorDetails
+          .map((author) => author.name || author.fullName)
+          .join(", ");
+        content += `   Tác giả: ${authorNames}\n`;
       }
 
-      if (story.categoryId?.name) {
-        content += `   Thể loại: ${story.categoryId.name}\n`;
+      // Hiển thị thể loại (có thể có nhiều thể loại)
+      if (story.categoryDetails && story.categoryDetails.length > 0) {
+        const categoryNames = story.categoryDetails
+          .map((cat) => cat.name)
+          .join(", ");
+        content += `   Thể loại: ${categoryNames}\n`;
       }
 
       if (story.description) {
         content += `   Mô tả: ${story.description.substring(0, 200)}${story.description.length > 200 ? "..." : ""}\n`;
       }
 
-      content += `   Số chương: ${story.totalChapters || 0}\n`;
+      // Hiển thị số chương chính xác từ chapterCount
+      content += `   Số chương: ${story.chapterCount || 0}\n`;
       content += `   Lượt xem: ${story.views || 0}\n`;
       content += `   Trạng thái: ${story.status || "Đang tiến hành"}\n`;
+
+      // Hiển thị ngày đăng truyện
+      if (story.createdAt) {
+        const createdDate = new Date(story.createdAt);
+        content += `   Ngày đăng: ${createdDate.toLocaleString("vi-VN")}\n`;
+      }
+
+      // Hiển thị ngày cập nhật
+      if (story.updatedAt) {
+        const updatedDate = new Date(story.updatedAt);
+        content += `   Cập nhật lần cuối: ${updatedDate.toLocaleString("vi-VN")}\n`;
+      }
+
       content += "\n";
     }
 

@@ -1,4 +1,5 @@
 const ChapterService = require("../services/chapter.service");
+const StoryService = require("../services/story.service");
 const chatbotSync = require("../services/chatbot_services/chatbot-sync.service");
 const MongoDB = require("../utils/mongodb.util");
 const ApiError = require("../api-error");
@@ -22,6 +23,12 @@ exports.create = async (req, res, next) => {
     }
 
     const chapter = await chapterService.create(req.body);
+
+    // Sync stories để cập nhật số chương
+    const storyService = new StoryService(MongoDB.client);
+    const allStories = await storyService.find({});
+    await chatbotSync.syncStories(allStories);
+
     res.status(201).send(chapter);
   } catch (error) {
     console.error("Create chapter error:", error);
@@ -119,6 +126,11 @@ exports.delete = async (req, res, next) => {
 
     // Xóa record trong database
     await chapterService.delete(req.params.id);
+
+    // Sync stories để cập nhật số chương
+    const storyService = new StoryService(MongoDB.client);
+    const allStories = await storyService.find({});
+    await chatbotSync.syncStories(allStories);
 
     res.send({ message: "Xóa chương thành công" });
   } catch (error) {

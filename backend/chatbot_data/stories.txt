@@ -2,102 +2,158 @@
 
 📖 Dan ngo
    ID: 68fc7f90323da1434a1b92ad
+   Tác giả: hoang
+   Thể loại: hanh dong, hai huoc v
    Mô tả: ewee
-   Số chương: 0
-   Lượt xem: 247
+   Số chương: 10
+   Lượt xem: 266
    Trạng thái: hoàn thành
+   Ngày đăng: 14:43:12 25/10/2025
+   Cập nhật lần cuối: 13:49:54 5/12/2025
 
 📖 w
    ID: 6901b5ff91cf0a3a7b66cd0c
+   Tác giả: dan
+   Thể loại: hanh dong
    Mô tả: fwe
-   Số chương: 0
+   Số chương: 1
    Lượt xem: 96
    Trạng thái: đang tiến hành
+   Ngày đăng: 13:36:47 29/10/2025
+   Cập nhật lần cuối: 19:01:34 4/12/2025
 
 📖 weewwe
    ID: 6901b9bb06a06d27c5e5beee
+   Tác giả: huy minh
+   Thể loại: hanh dong
    Mô tả: ewwe
-   Số chương: 0
-   Lượt xem: 246
+   Số chương: 6
+   Lượt xem: 248
    Trạng thái: đang tiến hành
+   Ngày đăng: 13:52:43 29/10/2025
+   Cập nhật lần cuối: 20:00:49 19/11/2025
 
 📖 reer
    ID: 690454aec33848e72ca4db57
+   Tác giả: hoang
+   Thể loại: hanh dong
    Mô tả: vre
    Số chương: 0
    Lượt xem: 39
    Trạng thái: đang tiến hành
+   Ngày đăng: 13:18:22 31/10/2025
+   Cập nhật lần cuối: 20:00:56 19/11/2025
 
 📖 reervf
    ID: 690459b83ad319df90842759
+   Tác giả: hoang
+   Thể loại: hanh dong
    Mô tả: ff
    Số chương: 0
-   Lượt xem: 32
+   Lượt xem: 33
    Trạng thái: đang tiến hành
+   Ngày đăng: 13:39:52 31/10/2025
+   Cập nhật lần cuối: 20:00:42 19/11/2025
 
 📖 huyminhr
    ID: 6905a92c356a9ff2850e1ec8
+   Tác giả: hoang
+   Thể loại: hanh dong, hai huoc v, hgg
    Mô tả: ss
-   Số chương: 0
-   Lượt xem: 240
+   Số chương: 1
+   Lượt xem: 241
    Trạng thái: Đang tiến hành
+   Ngày đăng: 13:31:08 1/11/2025
+   Cập nhật lần cuối: 17:02:59 4/12/2025
 
 📖 Truyên hài
    ID: 6905e1fe25c4a9013abbd0ac
+   Tác giả: huy minh
+   Thể loại: hanh dong
    Mô tả: ff
    Số chương: 0
    Lượt xem: 41
    Trạng thái: Đang tiến hành
+   Ngày đăng: 17:33:34 1/11/2025
+   Cập nhật lần cuối: 17:33:34 1/11/2025
 
 📖 c
    ID: 6912a313d745e5100e298055
+   Tác giả: minh
+   Thể loại: hanh dong
    Mô tả: cc
    Số chương: 0
-   Lượt xem: 8
+   Lượt xem: 9
    Trạng thái: Đang tiến hành
+   Ngày đăng: 09:44:35 11/11/2025
+   Cập nhật lần cuối: 09:44:36 11/11/2025
 
 📖 fff
    ID: 6913ea8c27bc5ba483df0343
+   Tác giả: huy minh
+   Thể loại: hanh dong
    Mô tả: fff
-   Số chương: 0
-   Lượt xem: 33
+   Số chương: 2
+   Lượt xem: 43
    Trạng thái: Đang tiến hành
+   Ngày đăng: 09:01:48 12/11/2025
+   Cập nhật lần cuối: 09:01:48 12/11/2025
 
 📖 huyminh
    ID: 693122f5058bb876dd1f4c57
+   Tác giả: huy minh
+   Thể loại: hanh dong
    Mô tả: d
    Số chương: 0
    Lượt xem: 22
    Trạng thái: đang tiến hành
+   Ngày đăng: 12:58:13 4/12/2025
+   Cập nhật lần cuối: 12:58:13 4/12/2025
 
 📖 Dan ngod
    ID: 69312301058bb876dd1f4c58
+   Tác giả: hoang
+   Thể loại: kinh dị
    Mô tả: d
    Số chương: 0
    Lượt xem: 13
    Trạng thái: đang tiến hành
+   Ngày đăng: 12:58:25 4/12/2025
+   Cập nhật lần cuối: 12:58:25 4/12/2025
 
 📖 dd
    ID: 69312367058bb876dd1f4c59
+   Tác giả: minh
+   Thể loại: kinh dị
    Mô tả: đ
    Số chương: 0
    Lượt xem: 13
    Trạng thái: đang tiến hành
+   Ngày đăng: 13:00:07 4/12/2025
+   Cập nhật lần cuối: 13:00:07 4/12/2025
 
 📖 sss
    ID: 69312372058bb876dd1f4c5a
+   Tác giả: ko3
+   Thể loại: hanh dong
    Mô tả: s
    Số chương: 0
    Lượt xem: 38
    Trạng thái: đang tiến hành
+   Ngày đăng: 13:00:18 4/12/2025
+   Cập nhật lần cuối: 13:00:18 4/12/2025
 
 📖 đ
    ID: 69312391058bb876dd1f4c5b
+   Tác giả: ko3
+   Thể loại: kinh dị
    Mô tả: d
    Số chương: 0
-   Lượt xem: 56
+   Lượt xem: 58
    Trạng thái: đang tiến hành
+   Ngày đăng: 13:00:49 4/12/2025
+   Cập nhật lần cuối: 13:00:49 4/12/2025
 
 
 Tổng số truyện: 14
-Cập nhật lần cuối: 12:16:56 5/12/2025
+Cập nhật lần cuối: 13:49:54 5/12/2025
