@@ -1,7 +1,7 @@
 <template>
     <div class="main-content">
         <div class="content-header animate-fade-in">
-            <h2>Quản lý Truyện</h2>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Quản lý Truyện</h1>
             <router-link :to="{ name: 'admin.story.add' }"
                 class="px-6 py-3 !bg-green-600 hover:!bg-green-700 !text-white font-bold rounded-lg transition transform hover:scale-105 flex items-center gap-2 shadow-md">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

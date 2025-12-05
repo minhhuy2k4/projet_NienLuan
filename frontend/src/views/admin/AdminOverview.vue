@@ -1,7 +1,7 @@
 <template>
     <main class="main-content animate-fade-in">
         <header class="content-header animate-slide-up">
-            <h2>Tổng quan Dashboard</h2>
+            <h1>Tổng quan Dashboard</h1>
             <span>Chào mừng Admin!</span>
         </header>
         <section class="stats-grid">
@@ -40,8 +40,8 @@
                     <li v-for="(story, index) in topStories" :key="story._id" class="top-story-item">
                         <div class="story-rank">{{ index + 1 }}</div>
                         <div class="story-info">
-                            <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }" 
-                                         class="story-name" target="_blank">
+                            <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }" class="story-name"
+                                target="_blank">
                                 {{ story.name }}
                             </router-link>
                             <div class="story-meta">
@@ -114,7 +114,7 @@ const loadStats = async () => {
     try {
         // Lấy thống kê tổng quan từ API
         const overviewStats = await statisticsService.getOverviewStats();
-        
+
         stats.value = {
             totalStories: overviewStats.totalStories || 0,
             totalListens: overviewStats.totalListens || 0,

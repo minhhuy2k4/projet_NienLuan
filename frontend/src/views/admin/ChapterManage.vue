@@ -1,7 +1,7 @@
 ﻿<template>
     <div class="main-content">
         <div class="content-header animate-fade-in">
-            <h2>Quản lý Chương</h2>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Quản lý Chương</h1>
             <router-link :to="{ name: 'admin.story.list' }"
                 class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">Quay
                 lại</router-link>

@@ -1,7 +1,7 @@
 <template>
     <main class="main-content">
         <header class="content-header animate-fade-in">
-            <h2>Quản lý Thông tin Website cho Chatbot</h2>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Quản lý Thông tin Website cho Chatbot</h1>
             <p class="text-gray-600 mt-2">Cung cấp thông tin cho chatbot để trả lời câu hỏi về trang web</p>
         </header>
 

@@ -1,7 +1,7 @@
 <template>
     <main class="main-content">
         <header class="content-header">
-            <h2>Chỉnh sửa truyện</h2>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Chỉnh sửa truyện</h1>
             <router-link :to="{ name: 'admin.story.list' }"
                 class="px-6 py-2 !bg-blue-600 hover:!bg-blue-700 !text-white font-semibold rounded-lg transition transform hover:scale-105 shadow-md">
                 ← Quay lại danh sách

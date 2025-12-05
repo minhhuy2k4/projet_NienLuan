@@ -1,7 +1,7 @@
 <template>
     <main class="main-content">
         <header class="content-header animate-fade-in">
-            <h2>Quản lý Thể loại</h2>
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Quản lý Thể loại</h1>
         </header>
         <div class="main-data-grid">
             <div class="data-card animate-slide-up">
