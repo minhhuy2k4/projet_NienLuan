@@ -281,22 +281,21 @@ const deleteStory = async (id) => {
                 await storyService.delete(id);
                 await fetchStories(); // Refresh list
 
-                dialogConfig.value = {
-                    title: 'Thành công',
+                // show a toast instead of a second dialog
+                toastConfig.value = {
                     message: 'Xóa truyện thành công!',
-                    type: 'success',
-                    onConfirm: () => { showDialog.value = false; }
+                    type: 'success'
                 };
-                showDialog.value = true;
+                showToast.value = true;
+                showDialog.value = false;
             } catch (err) {
                 console.error("Error deleting story:", err);
-                dialogConfig.value = {
-                    title: 'Lỗi',
+                toastConfig.value = {
                     message: 'Lỗi khi xóa truyện',
-                    type: 'danger',
-                    onConfirm: () => { showDialog.value = false; }
+                    type: 'error'
                 };
-                showDialog.value = true;
+                showToast.value = true;
+                showDialog.value = false;
             }
         }
     };

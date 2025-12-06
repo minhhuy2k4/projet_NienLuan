@@ -4,11 +4,13 @@ const { auth, isAdmin } = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
+// Public routes (không cần auth - mọi người có thể xem)
+router.get("/story/:storyId", ratings.getRatingsByStory);
+router.get("/stats/:storyId", ratings.getRatingStats);
+
 // User routes (cần auth)
 router.post("/", auth, ratings.addOrUpdateRating);
 router.get("/user/:storyId", auth, ratings.getUserRating);
-router.get("/story/:storyId", auth, ratings.getRatingsByStory);
-router.get("/stats/:storyId", auth, ratings.getRatingStats);
 router.delete("/:storyId", auth, ratings.deleteRating);
 
 // Admin routes

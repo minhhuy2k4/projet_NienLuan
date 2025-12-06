@@ -365,22 +365,21 @@ const deleteChapter = async (chapter) => {
                 chapters.value = chapters.value.filter(c => c._id !== chapter._id);
                 if (editingChapter.value && editingChapter.value._id === chapter._id) cancelEdit();
 
-                dialogConfig.value = {
-                    title: 'Thành công',
+                // Use toast for confirmation feedback
+                toastConfig.value = {
                     message: 'Xóa chương thành công!',
-                    type: 'success',
-                    onConfirm: () => { showDialog.value = false; }
+                    type: 'success'
                 };
-                showDialog.value = true;
+                showToast.value = true;
+                showDialog.value = false;
             } catch (error) {
                 console.error('Error:', error);
-                dialogConfig.value = {
-                    title: 'Lỗi',
+                toastConfig.value = {
                     message: 'Lỗi khi xóa chương',
-                    type: 'danger',
-                    onConfirm: () => { showDialog.value = false; }
+                    type: 'error'
                 };
-                showDialog.value = true;
+                showToast.value = true;
+                showDialog.value = false;
             }
         }
     };

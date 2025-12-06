@@ -59,19 +59,48 @@
                     </div>
                     <div class="mobile-user-links">
                         <router-link v-if="authStore.isAdmin" to="/admin" @click="closeMobileMenu">
-                            📊 Trang Quản Lý
+                            <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Trang Quản Lý
                         </router-link>
                         <router-link to="/profile" @click="closeMobileMenu">
-                            👤 Trang cá nhân
+                            <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            Trang cá nhân
                         </router-link>
                         <router-link to="/favorites" @click="closeMobileMenu">
-                            ❤️ Truyện yêu thích
+                            <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                </path>
+                            </svg>
+                            Truyện yêu thích
                         </router-link>
                         <router-link to="/history" @click="closeMobileMenu">
-                            📚 Lịch sử đọc
+                            <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            Lịch sử đọc
                         </router-link>
                         <a @click="handleLogout" class="mobile-logout">
-                            🚪 Đăng xuất
+                            <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                <polyline points="16 17 21 12 16 7"></polyline>
+                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                            </svg>
+                            Đăng xuất
                         </a>
                     </div>
                 </div>
@@ -129,23 +158,52 @@
                             <!-- Chỉ admin mới thấy link này -->
                             <router-link v-if="authStore.isAdmin" to="/admin" class="dropdown-item"
                                 @click="closeDropdownAndMenu">
-                                📊 Trang Quản Lý
+                                <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                Trang Quản Lý
                             </router-link>
                             <hr v-if="authStore.isAdmin" class="dropdown-divider">
 
                             <!-- Tất cả user đều thấy -->
                             <router-link to="/profile" class="dropdown-item" @click="closeDropdownAndMenu">
-                                👤 Trang cá nhân
+                                <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Trang cá nhân
                             </router-link>
                             <router-link to="/favorites" class="dropdown-item" @click="closeDropdownAndMenu">
-                                ❤️ Truyện yêu thích
+                                <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                    </path>
+                                </svg>
+                                Truyện yêu thích
                             </router-link>
                             <router-link to="/history" class="dropdown-item" @click="closeDropdownAndMenu">
-                                📚 Lịch sử đọc
+                                <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                                Lịch sử đọc
                             </router-link>
                             <hr class="dropdown-divider">
                             <a @click="handleLogout" class="dropdown-item logout-item">
-                                🚪 Đăng xuất
+                                <svg class="menu-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                Đăng xuất
                             </a>
                         </div>
                     </div>
@@ -540,10 +598,16 @@ onBeforeUnmount(() => {
     color: var(--text-primary);
     padding: 10px 14px;
     text-decoration: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 0.9rem;
     cursor: pointer;
     transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+.dropdown-item .menu-icon {
+    flex-shrink: 0;
 }
 
 .dropdown-item:hover {
@@ -767,6 +831,13 @@ onBeforeUnmount(() => {
         background: var(--bg-card);
         border-radius: var(--radius-md);
         transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile-user-links a .menu-icon {
+        flex-shrink: 0;
     }
 
     .mobile-user-links a:hover {

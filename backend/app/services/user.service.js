@@ -1,8 +1,11 @@
 const { ObjectId } = require("mongodb");
 const bcrypt = require("bcryptjs");
+const fs = require("fs");
+const path = require("path");
 
 class UserService {
   constructor(client) {
+    this.client = client;
     this.User = client.db().collection("users");
   }
 
@@ -207,6 +210,38 @@ class UserService {
   }
 
   async deleteUser(userId) {
+    // Lấy thông tin user trước khi xóa để lấy avatar path
+    const user = await this.findById(userId);
+
+    // Xóa avatar file nếu là local file (không phải URL từ Google)
+    if (user && user.avatar && !user.avatar.startsWith("http")) {
+      const avatarPath = path.join(__dirname, "../../public", user.avatar);
+      if (fs.existsSync(avatarPath)) {
+        try {
+          fs.unlinkSync(avatarPath);
+          console.log("Deleted avatar file:", avatarPath);
+        } catch (error) {
+          console.error("Error deleting avatar file:", error);
+        }
+      }
+    }
+
+    // Xóa tất cả lịch sử đọc của user
+    const HistoryService = require("./history.service");
+    const historyService = new HistoryService(this.client);
+    await historyService.deleteByUserId(userId);
+
+    // Xóa tất cả comments của user
+    const CommentService = require("./comment.service");
+    const commentService = new CommentService(this.client);
+    const Comment = this.client.db().collection("comments");
+    await Comment.deleteMany({ userId: new ObjectId(userId) });
+
+    // Xóa tất cả ratings của user
+    const Rating = this.client.db().collection("ratings");
+    await Rating.deleteMany({ userId: new ObjectId(userId) });
+
+    // Favorites tự động bị xóa khi xóa user (vì nằm trong user document)
     const result = await this.User.deleteOne({ _id: new ObjectId(userId) });
     return result.deletedCount > 0;
   }

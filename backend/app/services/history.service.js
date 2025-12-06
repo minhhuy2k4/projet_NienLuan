@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 
 class HistoryService {
   constructor(client) {
+    this.client = client;
     this.History = client.db().collection("histories");
   }
 
@@ -177,6 +178,26 @@ class HistoryService {
     });
 
     return !!history;
+  }
+
+  /**
+   * Xóa tất cả lịch sử liên quan đến một story
+   */
+  async deleteByStoryId(storyId) {
+    const result = await this.History.deleteMany({
+      storyId: new ObjectId(storyId),
+    });
+    return result;
+  }
+
+  /**
+   * Xóa tất cả lịch sử của một user
+   */
+  async deleteByUserId(userId) {
+    const result = await this.History.deleteMany({
+      userId: new ObjectId(userId),
+    });
+    return result;
   }
 }
 

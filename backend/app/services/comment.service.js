@@ -599,6 +599,31 @@ class CommentService {
       },
     };
   }
+
+  /**
+   * Xóa tất cả comments của một chapter
+   */
+  async deleteByChapterId(chapterId) {
+    const result = await this.Comment.deleteMany({
+      chapterId: new ObjectId(chapterId),
+    });
+    return result;
+  }
+
+  /**
+   * Xóa tất cả comments của tất cả chapters thuộc một story
+   * Yêu cầu truyền vào danh sách chapterIds
+   */
+  async deleteByChapterIds(chapterIds) {
+    if (!chapterIds || chapterIds.length === 0) {
+      return { deletedCount: 0 };
+    }
+    const objectIds = chapterIds.map((id) => new ObjectId(id));
+    const result = await this.Comment.deleteMany({
+      chapterId: { $in: objectIds },
+    });
+    return result;
+  }
 }
 
 module.exports = CommentService;

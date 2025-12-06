@@ -115,41 +115,6 @@ class ChatbotSyncService {
     await fs.writeFile(filePath, content, "utf8");
     console.log("✅ Đã sync stories vào chatbot_data/stories.txt");
   }
-
-  // async syncChapters(storyId, storyName, chapters) {
-  //   await this.ensureDataDir();
-  //   const filePath = path.join(this.dataDir, `chapters_${storyId}.txt`);
-
-  //   let content = `=== DANH SÁCH CHƯƠNG: ${storyName} ===\n\n`;
-
-  //   chapters.forEach((chapter) => {
-  //     content += `Chương ${chapter.chapterNumber}: ${chapter.title}\n`;
-  //     if (chapter.content) {
-  //       content += `   Nội dung: ${chapter.content.substring(0, 150)}${chapter.content.length > 150 ? "..." : ""}\n`;
-  //     }
-  //     content += `   Lượt xem: ${chapter.views || 0}\n`;
-  //     if (chapter.audioUrl) {
-  //       content += `   Có audio: Có\n`;
-  //     }
-  //     content += "\n";
-  //   });
-
-  //   content += `\nTổng số chương: ${chapters.length}\n`;
-  //   content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
-
-  //   await fs.writeFile(filePath, content, "utf8");
-  //   console.log(`✅ Đã sync chapters cho truyện ${storyName}`);
-  // }
-
-  // async deleteChaptersFile(storyId) {
-  //   const filePath = path.join(this.dataDir, `chapters_${storyId}.txt`);
-  //   try {
-  //     await fs.unlink(filePath);
-  //     console.log(`✅ Đã xóa file chapters_${storyId}.txt`);
-  //   } catch (error) {
-  //     // File không tồn tại, bỏ qua
-  //   }
-  // }
 }
 
 module.exports = new ChatbotSyncService();

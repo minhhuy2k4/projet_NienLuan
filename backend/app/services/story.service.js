@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 
 class StoryService {
   constructor(client) {
+    this.client = client;
     this.Story = client.db().collection("stories");
   }
 
@@ -302,6 +303,35 @@ class StoryService {
       "Existing story before delete:",
       existingStory ? "found" : "not found"
     );
+
+    // Lấy danh sách chapters của story để xóa comments liên quan
+    const ChapterService = require("./chapter.service");
+    const chapterService = new ChapterService(this.client);
+    const chapters = await chapterService.findByStoryId(id);
+    const chapterIds = chapters.map((ch) => ch._id.toString());
+
+    // Xóa tất cả comments của các chapters thuộc story này
+    const CommentService = require("./comment.service");
+    const commentService = new CommentService(this.client);
+    await commentService.deleteByChapterIds(chapterIds);
+
+    // Xóa tất cả ratings của story
+    const RatingService = require("./rating.service");
+    const ratingService = new RatingService(this.client);
+    await ratingService.deleteByStoryId(id);
+
+    // Xóa tất cả lịch sử đọc liên quan đến story
+    const HistoryService = require("./history.service");
+    const historyService = new HistoryService(this.client);
+    await historyService.deleteByStoryId(id);
+
+    // Xóa story khỏi danh sách yêu thích của tất cả users
+    const FavoriteService = require("./favorite.service");
+    const favoriteService = new FavoriteService(this.client);
+    await favoriteService.deleteByStoryId(id);
+
+    // Xóa tất cả chapters của story
+    await chapterService.deleteByStoryId(id);
 
     const result = await this.Story.findOneAndDelete({
       _id: objectId,

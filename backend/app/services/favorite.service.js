@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 
 class FavoriteService {
   constructor(client) {
+    this.client = client;
     this.User = client.db().collection("users");
     this.Story = client.db().collection("stories");
   }
@@ -179,6 +180,20 @@ class FavoriteService {
     return await this.User.countDocuments({
       favorites: new ObjectId(storyId),
     });
+  }
+
+  /**
+   * Xóa story khỏi danh sách yêu thích của tất cả users
+   */
+  async deleteByStoryId(storyId) {
+    const result = await this.User.updateMany(
+      { favorites: new ObjectId(storyId) },
+      {
+        $pull: { favorites: new ObjectId(storyId) },
+        $set: { updatedAt: new Date() },
+      }
+    );
+    return result;
   }
 }
 

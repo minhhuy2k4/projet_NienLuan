@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 
 class ChapterService {
   constructor(client) {
+    this.client = client;
     this.Chapter = client.db().collection("chapters");
   }
 
@@ -84,6 +85,11 @@ class ChapterService {
   }
 
   async delete(id) {
+    // Xóa tất cả comments của chapter này
+    const CommentService = require("./comment.service");
+    const commentService = new CommentService(this.client);
+    await commentService.deleteByChapterId(id);
+
     const result = await this.Chapter.findOneAndDelete({
       _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
     });

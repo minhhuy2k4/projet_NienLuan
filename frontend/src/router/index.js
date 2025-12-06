@@ -11,11 +11,27 @@ const routes = [
     path: "/login",
     name: "login",
     component: () => import("@/views/auth/Login.vue"),
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isLoggedIn) {
+        next({ name: "home" });
+      } else {
+        next();
+      }
+    },
   },
   {
     path: "/register",
     name: "register",
     component: () => import("@/views/auth/Register.vue"),
+    beforeEnter: (to, from, next) => {
+      const authStore = useAuthStore();
+      if (authStore.isLoggedIn) {
+        next({ name: "home" });
+      } else {
+        next();
+      }
+    },
   },
   {
     path: "/story/:slug",
@@ -84,6 +100,16 @@ const routes = [
     path: "/contact",
     name: "contact",
     component: () => import("@/views/pages/Contact.vue"),
+  },
+  {
+    path: "/terms",
+    name: "terms",
+    component: () => import("@/views/pages/Terms.vue"),
+  },
+  {
+    path: "/privacy",
+    name: "privacy",
+    component: () => import("@/views/pages/Privacy.vue"),
   },
   // Google OAuth callback route
   {

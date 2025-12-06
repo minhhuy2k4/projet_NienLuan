@@ -122,6 +122,7 @@ class RatingService {
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
+          "user.avatar": 1,
         },
       },
       {
@@ -199,6 +200,7 @@ class RatingService {
           "user._id": 1,
           "user.name": 1,
           "user.email": 1,
+          "user.avatar": 1,
           "story._id": 1,
           "story.name": 1,
           "story.image": 1,
@@ -296,6 +298,16 @@ class RatingService {
       result[stat._id] = stat.count;
     });
 
+    return result;
+  }
+
+  /**
+   * Xóa tất cả ratings của một story
+   */
+  async deleteByStoryId(storyId) {
+    const result = await this.Rating.deleteMany({
+      storyId: new ObjectId(storyId),
+    });
     return result;
   }
 }

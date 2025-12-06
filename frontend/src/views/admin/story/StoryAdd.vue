@@ -98,6 +98,8 @@
             </form>
         </div>
     </main>
+    <!-- Toast Notification -->
+    <Toast v-model="showToast" :message="toastConfig.message" :type="toastConfig.type" />
 </template>
 
 <script setup>
@@ -107,6 +109,7 @@ import storyService from '@/services/story.service';
 import authorService from '@/services/author.service';
 import categoryService from '@/services/category.service';
 import { getStoryImageUrl } from '@/utils/media';
+import Toast from '@/components/Toast.vue';
 
 const router = useRouter();
 const story = ref({
@@ -124,6 +127,9 @@ const coverPreview = ref(null);
 const loading = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+// Toast state
+const showToast = ref(false);
+const toastConfig = ref({ message: '', type: 'success' });
 
 onMounted(async () => {
     try {
@@ -199,6 +205,8 @@ const handleSubmit = async () => {
         }
 
         successMessage.value = 'Thêm truyện thành công!';
+        toastConfig.value = { message: 'Thêm truyện thành công!', type: 'success' };
+        showToast.value = true;
 
         // Redirect sau 1.5s
         setTimeout(() => {
@@ -207,6 +215,8 @@ const handleSubmit = async () => {
     } catch (error) {
         console.error('Create story error:', error);
         errorMessage.value = error.response?.data?.message || 'Đã xảy ra lỗi khi thêm truyện.';
+        toastConfig.value = { message: errorMessage.value, type: 'error' };
+        showToast.value = true;
     } finally {
         loading.value = false;
     }

@@ -60,8 +60,8 @@
                 <ul class="footer-links">
                     <li><router-link to="/faq">Câu hỏi thường gặp</router-link></li>
                     <li><router-link to="/contact">Liên hệ</router-link></li>
-                    <li><a href="#terms">Điều khoản sử dụng</a></li>
-                    <li><a href="#privacy">Chính sách bảo mật</a></li>
+                    <li><router-link to="/terms">Điều khoản sử dụng</router-link></li>
+                    <li><router-link to="/privacy">Chính sách bảo mật</router-link></li>
                 </ul>
             </div>
 
@@ -97,7 +97,7 @@
                                     d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6a2.5 2.5 0 010 5.5z" />
                             </svg>
                         </span>
-                        <span>123 Đường ABC, Quận 1, TP.HCM</span>
+                        <span>123 Đường 3/2, Ninh Kiều, TP.Cần Thơ</span>
                     </li>
                 </ul>
             </div>

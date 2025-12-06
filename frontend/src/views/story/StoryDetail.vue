@@ -406,6 +406,10 @@
             </div>
         </transition>
     </div>
+    <!-- Login dialog for favorite action -->
+    <ConfirmDialog v-model="showLoginDialog" title="Bạn chưa đăng nhập"
+        message="Vui lòng đăng nhập để thêm truyện vào yêu thích. Bạn muốn sang trang đăng nhập ngay bây giờ?"
+        type="info" confirmText="Đến đăng nhập" cancelText="Hủy" @confirm="goToLogin" />
 </template>
 
 <script setup>
@@ -417,6 +421,7 @@ import FavoriteService from '@/services/favorite.service';
 import HistoryService from '@/services/history.service';
 import RatingSection from '@/components/RatingSection.vue';
 import AdDisplay from '@/components/AdDisplay.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import { useAuthStore } from '@/stores/auth.store';
 import { getStoryImageUrl, getAudioUrl } from '@/utils/media';
 
@@ -436,6 +441,7 @@ const audioPlayer = ref(null);
 const playProgress = ref(0);
 const isFavorite = ref(false);
 const isDescriptionExpanded = ref(false);
+const showLoginDialog = ref(false);
 
 // Phân trang cho chương
 const chapterPage = ref(1);
@@ -550,8 +556,8 @@ const onAudioEnded = () => {
 
 const toggleFavorite = async () => {
     if (!authStore.isLoggedIn) {
-        alert('⚠️ Vui lòng đăng nhập để thêm vào yêu thích');
-        router.push('/login');
+        // Show login dialog prompting user to go to login page
+        showLoginDialog.value = true;
         return;
     }
 
@@ -562,6 +568,11 @@ const toggleFavorite = async () => {
         console.error('Toggle favorite error:', err);
         alert('❌ Có lỗi xảy ra. Vui lòng thử lại!');
     }
+};
+
+const goToLogin = () => {
+    showLoginDialog.value = false;
+    router.push('/login');
 };
 
 const closeStickyPlayer = () => {
