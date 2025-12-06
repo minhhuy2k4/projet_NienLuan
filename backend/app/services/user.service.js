@@ -17,6 +17,7 @@ class UserService {
       googleId: payload.googleId,
       avatar: payload.avatar,
       provider: payload.provider || "local", // "local" hoặc "google"
+      createdAt: payload.createdAt || new Date(),
     };
     Object.keys(user).forEach(
       (key) => user[key] === undefined && delete user[key]
@@ -140,6 +141,7 @@ class UserService {
         provider: "google",
         role: "user",
         favorites: [],
+        createdAt: new Date(),
       };
 
       const result = await this.User.insertOne(userData);
