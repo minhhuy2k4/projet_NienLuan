@@ -181,9 +181,7 @@ const handleSearch = () => {
 
 async function fetchAuthors() {
     try {
-        console.log('Fetching authors...');
         authorList.value = await authorService.getAll();
-        console.log('Authors loaded:', authorList.value);
     }
     catch (err) {
         console.error('Error fetching authors:', err);
@@ -207,9 +205,7 @@ const handleSubmit = async () => {
     try {
         if (editingAuthor.value) {
             // Cập nhật tác giả
-            console.log('Updating author:', formData.value);
             const updated = await authorService.update(editingAuthor.value, formData.value);
-            console.log('Author updated:', updated);
 
             const index = authorList.value.findIndex(a => a._id === editingAuthor.value);
             if (index !== -1) {
@@ -224,9 +220,7 @@ const handleSubmit = async () => {
             showToast.value = true;
         } else {
             // Tạo tác giả mới
-            console.log('Creating author:', formData.value);
             const created = await authorService.create(formData.value);
-            console.log('Author created:', created);
             authorList.value.push(created);
 
             toastConfig.value = {
@@ -238,7 +232,6 @@ const handleSubmit = async () => {
 
         formData.value = { fullName: '', email: '', bio: '' };
         // Thành công - không set error
-        console.log('Author saved successfully!');
     } catch (err) {
         console.error('Error saving author:', err);
         // Hiển thị thông tin lỗi chi tiết

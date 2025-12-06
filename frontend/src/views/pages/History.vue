@@ -371,7 +371,6 @@ const fetchHistory = async (page = 1) => {
         total.value = result.total || 0;
         currentPage.value = result.page || 1;
         totalPages.value = result.totalPages || 1;
-        console.log('History loaded:', result);
     } catch (err) {
         console.error('Fetch history error:', err);
         error.value = 'Không thể tải lịch sử đọc';

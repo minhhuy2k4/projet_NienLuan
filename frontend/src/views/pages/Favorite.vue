@@ -225,7 +225,6 @@ const fetchFavorites = async (page = 1) => {
         total.value = result.total || 0;
         currentPage.value = result.page || 1;
         totalPages.value = result.totalPages || 1;
-        console.log('Favorites loaded:', result);
     } catch (err) {
         console.error('Fetch favorites error:', err);
         error.value = 'Không thể tải danh sách yêu thích';

@@ -300,12 +300,9 @@ const formatDate = (dateString) => {
 const loadReports = async () => {
     try {
         loading.value = true;
-        console.log('Loading reports - page:', currentPage.value);
         const response = await CommentService.getReportedComments(currentPage.value, itemsPerPage);
-        console.log('Reports response:', response);
         reports.value = response.data?.reports || [];
         totalPages.value = response.data?.pagination?.totalPages || 1;
-        console.log('Reports loaded:', reports.value.length, 'items');
     } catch (error) {
         console.error('Load reports error:', error);
         reports.value = [];

@@ -181,11 +181,6 @@ const handleSubmit = async () => {
     errorMessage.value = '';
 
     try {
-        // Debug: Log data trước khi gửi
-        console.log('Story data to submit:', story.value);
-        console.log('Authors:', story.value.authors);
-        console.log('Categories:', story.value.categories);
-
         // 1. Tạo truyện trước
         const newStory = await storyService.create(story.value);
 

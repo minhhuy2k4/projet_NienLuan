@@ -162,7 +162,6 @@ const loadTopStories = async () => {
     loadingChart.value = true;
     try {
         const stories = await statisticsService.getTopStories(10);
-        console.log('Top stories received:', stories);
         topStories.value = stories || [];
     } catch (error) {
         console.error('Error loading top stories:', error);

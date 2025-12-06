@@ -28,7 +28,7 @@
                 </router-link>
                 <span class="mx-2" style="color: var(--text-secondary);">/</span>
                 <span class="font-semibold" style="color: var(--text-primary);">Chương {{ chapter.chapterNumber
-                    }}</span>
+                }}</span>
             </nav>
 
             <!-- Quảng cáo chi tiết chương -->
@@ -367,7 +367,6 @@ const saveHistory = async () => {
     if (authStore.isLoggedIn && authStore.user && authStore.token && story.value && chapter.value) {
         try {
             await HistoryService.addHistory(story.value._id, chapter.value._id);
-            console.log('History saved');
         } catch (err) {
             // Bỏ qua lỗi 401 (không login) - không cần log
             if (err.response?.status !== 401) {

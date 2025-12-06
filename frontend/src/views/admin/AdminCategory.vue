@@ -177,9 +177,7 @@ const handleSearch = () => {
 
 async function fetchCategories() {
     try {
-        console.log('Fetching categories...');
         categoryList.value = await categoryService.getAll();
-        console.log('Categories loaded:', categoryList.value);
     }
     catch (err) {
         console.error('Error fetching categories:', err);
@@ -196,9 +194,7 @@ const handleSubmit = async () => {
     try {
         if (editingCategory.value) {
             // Cập nhật thể loại
-            console.log('Updating category:', formData.value);
             const updated = await categoryService.update(editingCategory.value, formData.value);
-            console.log('Category updated:', updated);
 
             const index = categoryList.value.findIndex(c => c._id === editingCategory.value);
             if (index !== -1) {
@@ -214,9 +210,7 @@ const handleSubmit = async () => {
             showToast.value = true;
         } else {
             // Tạo thể loại mới
-            console.log('Creating category:', formData.value);
             const created = await categoryService.create(formData.value);
-            console.log('Category created:', created);
             categoryList.value.push(created);
 
             // Hiển thị toast thành công

@@ -55,7 +55,6 @@ export const useAuthStore = defineStore("auth", {
     async register(name, email, password) {
       try {
         const response = await authService.register({ name, email, password }); // Sửa AuthService thành authService
-        console.log("Register response:", response); // Debug log
 
         // Backend trả về message "Đăng ký thành công" khi thành công
         if (response.message === "Đăng ký thành công") {

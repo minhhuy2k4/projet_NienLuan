@@ -113,11 +113,7 @@ const handleRegister = async () => {
         return;
     }
 
-    console.log('Attempting to register:', { name: name.value, email: email.value });
-
     const result = await authStore.register(name.value, email.value, password.value);
-
-    console.log('Register result:', result);
 
     loading.value = false;
 

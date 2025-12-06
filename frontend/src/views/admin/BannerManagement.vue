@@ -363,7 +363,6 @@ const loadCategories = async () => {
         const response = await CategoryService.getAll();
         // API trả về trực tiếp mảng categories
         categories.value = Array.isArray(response) ? response : [];
-        console.log('Categories loaded:', categories.value);
     } catch (error) {
         console.error('Load categories error:', error);
     }
@@ -394,7 +393,6 @@ const handleSearch = () => {
 // Save banner
 const saveBanner = async () => {
     try {
-        console.log('Saving banner with data:', formData.value);
         if (editingBanner.value) {
             // Update existing
             await BannerService.update(editingBanner.value._id, formData.value);
