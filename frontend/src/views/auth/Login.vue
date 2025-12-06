@@ -5,15 +5,15 @@
 
             <div class="form-group animate-slide-up animation-delay-100">
                 <label for="email">Email</label>
-                <input type="email" id="email" v-model="email" required
+                <input type="email" id="email" v-model="email" placeholder="Nhập email của bạn" required
                     class="focus:ring-2 focus:ring-blue-500 transition">
             </div>
 
             <div class="form-group animate-slide-up animation-delay-200">
                 <label for="password">Mật khẩu</label>
                 <div class="password-input-wrapper">
-                    <input :type="showPassword ? 'text' : 'password'" id="password" v-model="password" required
-                        class="focus:ring-2 focus:ring-blue-500 transition">
+                    <input :type="showPassword ? 'text' : 'password'" id="password" v-model="password"
+                        placeholder="Nhập mật khẩu" required class="focus:ring-2 focus:ring-blue-500 transition">
                     <button v-if="password" type="button" @click="showPassword = !showPassword"
                         class="password-toggle-btn">
                         <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

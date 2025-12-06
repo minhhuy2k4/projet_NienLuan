@@ -5,21 +5,21 @@
             <form @submit.prevent="handleRegister">
                 <div class="form-group animate-slide-up animation-delay-100">
                     <label>Tên:</label>
-                    <input type="text" v-model="name" required :disabled="loading"
+                    <input type="text" v-model="name" placeholder="Nhập tên của bạn" required :disabled="loading"
                         class="focus:ring-2 focus:ring-blue-500 transition">
                 </div>
 
                 <div class="form-group animate-slide-up animation-delay-200">
                     <label>Email:</label>
-                    <input type="email" v-model="email" required :disabled="loading"
+                    <input type="email" v-model="email" placeholder="Nhập email của bạn" required :disabled="loading"
                         class="focus:ring-2 focus:ring-blue-500 transition">
                 </div>
 
                 <div class="form-group animate-slide-up animation-delay-300">
                     <label>Mật khẩu:</label>
                     <div class="password-input-wrapper">
-                        <input :type="showPassword ? 'text' : 'password'" v-model="password" required
-                            :disabled="loading" class="focus:ring-2 focus:ring-blue-500 transition">
+                        <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="Nhập mật khẩu"
+                            required :disabled="loading" class="focus:ring-2 focus:ring-blue-500 transition">
                         <button v-if="password" type="button" @click="showPassword = !showPassword"
                             class="password-toggle-btn">
                             <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor"
@@ -40,8 +40,9 @@
                 <div class="form-group animate-slide-up animation-delay-400">
                     <label>Nhập lại mật khẩu:</label>
                     <div class="password-input-wrapper">
-                        <input :type="showConfirmPassword ? 'text' : 'password'" v-model="confirmPassword" required
-                            :disabled="loading" class="focus:ring-2 focus:ring-blue-500 transition">
+                        <input :type="showConfirmPassword ? 'text' : 'password'" v-model="confirmPassword"
+                            placeholder="Nhập lại mật khẩu" required :disabled="loading"
+                            class="focus:ring-2 focus:ring-blue-500 transition">
                         <button v-if="confirmPassword" type="button" @click="showConfirmPassword = !showConfirmPassword"
                             class="password-toggle-btn">
                             <svg v-if="!showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor"
