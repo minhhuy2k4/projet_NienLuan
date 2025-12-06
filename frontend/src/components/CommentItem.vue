@@ -13,13 +13,23 @@
                     </div>
                     <div class="flex gap-2">
                         <button v-if="authStore.user?._id === comment.user?._id" @click="$emit('edit', comment)"
-                            class="transition text-sm" style="color: var(--color-primary);">
-                            ✏️
+                            class="transition text-sm p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                            style="color: var(--color-primary);">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                </path>
+                            </svg>
                         </button>
                         <button v-if="authStore.user?._id === comment.user?._id || authStore.isAdmin"
-                            @click="$emit('delete', comment._id)" class="transition text-sm"
+                            @click="$emit('delete', comment._id)"
+                            class="transition text-sm p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                             style="color: var(--color-danger);">
-                            🗑️
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -49,19 +59,39 @@
                 <!-- Actions -->
                 <div class="flex items-center gap-3 mt-2 text-xs">
                     <button @click="$emit('toggle-like', comment)" :disabled="!authStore.isLoggedIn"
-                        class="flex items-center gap-1 transition"
+                        class="flex items-center gap-1 transition p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                         :style="{ color: comment.isLiked ? 'var(--color-danger)' : 'var(--text-secondary)' }">
-                        <span>{{ comment.isLiked ? '❤️' : '🤍' }}</span>
+                        <svg v-if="comment.isLiked" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                        <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                            </path>
+                        </svg>
                         <span>{{ comment.likeCount || 0 }}</span>
                     </button>
-                    <button @click="$emit('toggle-reply', comment)" v-if="authStore.isLoggedIn" class="transition"
+                    <button @click="$emit('toggle-reply', comment)" v-if="authStore.isLoggedIn"
+                        class="flex items-center gap-1 transition p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                         style="color: var(--text-secondary);">
-                        💬 Trả lời
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                        </svg>
+                        <span>Trả lời</span>
                     </button>
                     <button @click="$emit('report', comment._id)"
-                        v-if="authStore.isLoggedIn && authStore.user?._id !== comment.user?._id" class="transition"
+                        v-if="authStore.isLoggedIn && authStore.user?._id !== comment.user?._id"
+                        class="flex items-center gap-1 transition p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                         style="color: var(--text-secondary);">
-                        🚩 Báo cáo
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z">
+                            </path>
+                        </svg>
+                        <span>Báo cáo</span>
                     </button>
                 </div>
 
@@ -85,10 +115,15 @@
         <div v-if="comment.replies && comment.replies.length > 0">
             <!-- Nút xem/ẩn replies -->
             <button @click="toggleShowReplies"
-                class="font-semibold text-sm mt-2 ml-2 transition flex items-center gap-1"
+                class="font-semibold text-sm mt-2 ml-2 transition flex items-center gap-1 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
                 style="color: var(--color-primary);">
-                <span v-if="showReplies">▲ Ẩn {{ comment.replies.length }} trả lời</span>
-                <span v-else>▼ Xem {{ comment.replies.length }} trả lời</span>
+                <svg v-if="showReplies" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                </svg>
+                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+                <span>{{ showReplies ? 'Ẩn' : 'Xem' }} {{ comment.replies.length }} trả lời</span>
             </button>
 
             <!-- Danh sách replies (chỉ hiện khi showReplies = true) -->
@@ -103,8 +138,11 @@
                 <!-- Nút xem thêm (nếu có nhiều hơn REPLY_LIMIT) -->
                 <button v-if="showReplies && comment.replies.length > REPLY_LIMIT && !showAllReplies"
                     @click="showAllReplies = true"
-                    class="text-blue-600 hover:text-blue-700 font-semibold text-sm mt-2 ml-2 transition">
-                    ▼ Xem thêm {{ comment.replies.length - REPLY_LIMIT }} trả lời
+                    class="text-blue-600 hover:text-blue-700 font-semibold text-sm mt-2 ml-2 transition flex items-center gap-1 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                    <span>Xem thêm {{ comment.replies.length - REPLY_LIMIT }} trả lời</span>
                 </button>
             </div>
         </div>

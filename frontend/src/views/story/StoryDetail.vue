@@ -87,8 +87,8 @@
                             </div>
                             <div class="rounded-lg p-3 text-center" style="background-color: rgba(71, 85, 105, 0.35);">
                                 <div class="text-2xl font-bold" style="color: var(--hero-text-color);">{{
-                                    formatViews(story.totalViews) }}</div>
-                                <div class="text-xs mt-1" style="color: var(--hero-text-secondary);">Lượt xem</div>
+                                    formatListens(story.totalViews) }}</div>
+                                <div class="text-xs mt-1" style="color: var(--hero-text-secondary);">Lượt nghe</div>
                             </div>
                             <div class="rounded-lg p-3 text-center" style="background-color: rgba(71, 85, 105, 0.35);">
                                 <div class="text-2xl font-bold" style="color: var(--hero-text-color);">{{
@@ -219,9 +219,8 @@
                                                 style="color: var(--text-secondary);">
                                                 <span class="flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                                                         <path fill-rule="evenodd"
-                                                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
                                                             clip-rule="evenodd" />
                                                     </svg>
                                                     {{ chapter.views || 0 }}
@@ -475,11 +474,11 @@ const formatDate = (dateString) => {
     });
 };
 
-const formatViews = (views) => {
-    if (!views) return '0';
-    if (views >= 1000000) return (views / 1000000).toFixed(1) + 'M';
-    if (views >= 1000) return (views / 1000).toFixed(1) + 'K';
-    return views.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const formatListens = (listens) => {
+    if (!listens) return '0';
+    if (listens >= 1000000) return (listens / 1000000).toFixed(1) + 'M';
+    if (listens >= 1000) return (listens / 1000).toFixed(1) + 'K';
+    return listens.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
 const getAuthors = () => {

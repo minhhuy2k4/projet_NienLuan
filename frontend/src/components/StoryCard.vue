@@ -12,9 +12,8 @@
                 </span>
                 <span class="stat-item views">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                         <path fill-rule="evenodd"
-                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
                             clip-rule="evenodd" />
                     </svg>
                     {{ formatNumber(story.totalViews || 0) }}
@@ -46,7 +45,7 @@ defineProps({
     }
 });
 
-// Format số lượt xem
+// Format số lượt nghe
 const formatNumber = (num) => {
     if (num >= 1000000) {
         return (num / 1000000).toFixed(1) + 'M';

@@ -19,7 +19,7 @@ class StatisticsService {
   }
 
   /**
-   * Lấy top stories theo lượt xem
+   * Lấy top stories theo lượt nghe
    */
   async getTopStories(limit = 10) {
     try {

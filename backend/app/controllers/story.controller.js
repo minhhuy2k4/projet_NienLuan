@@ -100,9 +100,6 @@ exports.findOne = async (req, res, next) => {
     if (!story)
       return res.status(404).send({ message: "Không tìm thấy truyện" });
 
-    // Tăng view count
-    await storyService.incrementViews(req.params.id);
-
     res.send(story);
   } catch (error) {
     return res
@@ -117,9 +114,6 @@ exports.findBySlug = async (req, res, next) => {
     const story = await storyService.findBySlug(req.params.slug);
     if (!story)
       return res.status(404).send({ message: "Không tìm thấy truyện" });
-
-    // Tăng view count
-    await storyService.incrementViews(story._id.toString());
 
     res.send(story);
   } catch (error) {

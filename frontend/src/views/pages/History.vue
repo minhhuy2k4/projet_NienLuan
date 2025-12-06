@@ -109,7 +109,7 @@
                                             d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
                                             clip-rule="evenodd" />
                                     </svg>
-                                    {{ formatViews(item.totalViews) }}
+                                    {{ formatListens(item.totalViews) }}
                                 </span>
                                 <span class="flex items-center gap-1">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -304,12 +304,12 @@ const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
 
-// Format views
-const formatViews = (views) => {
-    if (!views) return '0';
-    if (views >= 1000000) return (views / 1000000).toFixed(1) + 'M';
-    if (views >= 1000) return (views / 1000).toFixed(1) + 'K';
-    return views.toString();
+// Format listens
+const formatListens = (listens) => {
+    if (!listens) return '0';
+    if (listens >= 1000000) return (listens / 1000000).toFixed(1) + 'M';
+    if (listens >= 1000) return (listens / 1000).toFixed(1) + 'K';
+    return listens.toString();
 };
 
 // Format date

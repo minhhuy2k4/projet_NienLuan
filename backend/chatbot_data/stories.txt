@@ -1,16 +1,16 @@
 === DANH SÁCH TRUYỆN ===
 
-📖 huyminhxx
-   ID: 6933d2fc7e5c7b8135485f1f
+📖 ff
+   ID: 6933db80824b206ba3ace516
    Tác giả: hoang
    Thể loại: huyminh
-   Mô tả: xx
-   Số chương: 2
-   Lượt xem: 15
+   Mô tả: ff
+   Số chương: 1
+   Lượt xem: 0
    Trạng thái: đang tiến hành
-   Ngày đăng: 13:53:48 6/12/2025
-   Cập nhật lần cuối: 13:53:55 6/12/2025
+   Ngày đăng: 14:30:08 6/12/2025
+   Cập nhật lần cuối: 14:30:08 6/12/2025
 
 
 Tổng số truyện: 1
-Cập nhật lần cuối: 13:57:48 6/12/2025
+Cập nhật lần cuối: 14:32:45 6/12/2025

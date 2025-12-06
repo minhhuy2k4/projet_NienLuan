@@ -88,8 +88,12 @@ exports.findOne = async (req, res, next) => {
       return next(new ApiError(404, "Không tìm thấy chương"));
     }
 
-    // Tăng view count
+    // Tăng view count của chương
     await chapterService.incrementViews(req.params.id);
+
+    // Cập nhật tổng lượt nghe của truyện
+    const storyService = new StoryService(MongoDB.client);
+    await storyService.updateTotalListens(chapter.storyId.toString());
 
     res.send(chapter);
   } catch (error) {
@@ -127,8 +131,11 @@ exports.delete = async (req, res, next) => {
     // Xóa record trong database
     await chapterService.delete(req.params.id);
 
-    // Sync stories để cập nhật số chương
+    // Cập nhật tổng lượt nghe của truyện sau khi xóa chương
     const storyService = new StoryService(MongoDB.client);
+    await storyService.updateTotalListens(chapter.storyId.toString());
+
+    // Sync stories để cập nhật số chương
     const allStories = await storyService.find({});
     await chatbotSync.syncStories(allStories);
 

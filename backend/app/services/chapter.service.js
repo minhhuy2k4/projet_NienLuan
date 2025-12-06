@@ -34,7 +34,7 @@ class ChapterService {
     const chapterData = this.extractChapterData(payload);
     chapterData.createdAt = new Date();
     chapterData.updatedAt = new Date();
-    chapterData.views = 0; // Số lượt xem
+    chapterData.views = 0; // Số lượt nghe
 
     const result = await this.Chapter.insertOne(chapterData);
     return await this.Chapter.findOne({ _id: result.insertedId });

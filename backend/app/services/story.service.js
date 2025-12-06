@@ -4,6 +4,7 @@ class StoryService {
   constructor(client) {
     this.client = client;
     this.Story = client.db().collection("stories");
+    this.Chapter = client.db().collection("chapters");
   }
 
   /**
@@ -340,6 +341,47 @@ class StoryService {
       { _id: new ObjectId(id) },
       { $inc: { views: 1 } }
     );
+  }
+
+  /**
+   * Cập nhật tổng lượt nghe của truyện = tổng lượt nghe của các chương
+   */
+  async updateTotalListens(id) {
+    // Tính tổng lượt nghe từ các chương
+    const chapters = await this.Chapter.find({
+      storyId: new ObjectId(id),
+    }).toArray();
+    const totalListens = chapters.reduce(
+      (sum, chapter) => sum + (chapter.views || 0),
+      0
+    );
+
+    // Cập nhật trường views của truyện
+    await this.Story.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { views: totalListens } }
+    );
+
+    return totalListens;
+  }
+
+  /**
+   * Cập nhật tổng lượt nghe cho tất cả truyện
+   */
+  async updateAllStoriesTotalListens() {
+    const stories = await this.Story.find({}).toArray();
+    const results = [];
+
+    for (const story of stories) {
+      const totalListens = await this.updateTotalListens(story._id.toString());
+      results.push({
+        storyId: story._id,
+        storyName: story.name,
+        totalListens,
+      });
+    }
+
+    return results;
   }
 
   /**

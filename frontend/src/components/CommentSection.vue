@@ -1,9 +1,14 @@
 <template>
     <div class="rounded-xl shadow-lg p-6 border"
         style="background-color: var(--bg-card); border-color: var(--border-color);">
-        <h2 class="text-2xl font-bold mb-6 border-b pb-3"
+        <h2 class="text-2xl font-bold mb-6 border-b pb-3 flex items-center gap-2"
             style="color: var(--text-primary); border-color: var(--border-color);">
-            💬 Bình luận ({{ totalCount }})
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                </path>
+            </svg>
+            Bình luận ({{ totalCount }})
         </h2>
 
         <!-- Comment Form -->
@@ -43,7 +48,11 @@
         </div>
 
         <div v-else-if="comments.length === 0" class="text-center py-8 text-gray-500">
-            <span class="text-4xl mb-2 block">💭</span>
+            <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                </path>
+            </svg>
             Chưa có bình luận nào. Hãy là người đầu tiên!
         </div>
 
@@ -56,17 +65,30 @@
 
         <!-- Pagination -->
         <div v-if="totalPages > 1" class="mt-6 flex justify-center items-center gap-4">
-            <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn">
-                ← Trước
+            <button @click="prevPage" :disabled="currentPage === 1" class="pagination-btn flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Trước
             </button>
             <span class="font-medium" style="color: var(--text-primary);">
                 Trang {{ currentPage }} / {{ totalPages }}
             </span>
-            <button @click="nextPage" :disabled="currentPage === totalPages" class="pagination-btn">
-                Sau →
+            <button @click="nextPage" :disabled="currentPage === totalPages"
+                class="pagination-btn flex items-center gap-2">
+                Sau
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
             </button>
         </div>
     </div>
+
+    <!-- Report Dialog -->
+    <ReportDialog v-model="showReportDialog" @confirm="handleReportConfirm" />
+
+    <!-- Toast Notification -->
+    <Toast v-model="showToast" :message="toastMessage" :type="toastType" :duration="3000" />
 </template>
 
 <script setup>
@@ -74,6 +96,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useAuthStore } from '@/stores/auth.store';
 import CommentService from '@/services/comment.service';
 import CommentItem from './CommentItem.vue';
+import ReportDialog from './ReportDialog.vue';
+import Toast from './Toast.vue';
 import { getAvatarUrl } from '@/utils/media';
 
 const props = defineProps({
@@ -89,6 +113,15 @@ const submitting = ref(false);
 const totalCount = ref(0);
 const currentPage = ref(1);
 const itemsPerPage = 5;
+
+// Report dialog
+const showReportDialog = ref(false);
+const commentIdToReport = ref(null);
+
+// Toast
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success');
 
 const totalPages = computed(() => Math.ceil(totalCount.value / itemsPerPage));
 
@@ -138,7 +171,7 @@ const submitComment = async () => {
 
     // Kiểm tra login
     if (!authStore.isLoggedIn || !authStore.user || !authStore.token) {
-        alert('⚠️ Vui lòng đăng nhập để bình luận!');
+        showToastMessage('Vui lòng đăng nhập để bình luận!', 'warning');
         return;
     }
 
@@ -151,9 +184,9 @@ const submitComment = async () => {
     } catch (error) {
         console.error('Submit comment error:', error);
         if (error.response?.status === 401) {
-            alert('⚠️ Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!');
+            showToastMessage('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!', 'error');
         } else {
-            alert('❌ Có lỗi xảy ra khi gửi bình luận!');
+            showToastMessage('Có lỗi xảy ra khi gửi bình luận!', 'error');
         }
     } finally {
         submitting.value = false;
@@ -163,7 +196,7 @@ const submitComment = async () => {
 // Toggle like
 const toggleLike = async (comment) => {
     if (!authStore.isLoggedIn) {
-        alert('⚠️ Vui lòng đăng nhập để thích bình luận');
+        showToastMessage('Vui lòng đăng nhập để thích bình luận!', 'warning');
         return;
     }
 
@@ -223,7 +256,7 @@ const handleSubmitReply = async (comment) => {
         await loadComments();
     } catch (error) {
         console.error('Submit reply error:', error);
-        alert('❌ Có lỗi xảy ra khi gửi câu trả lời!');
+        showToastMessage('Có lỗi xảy ra khi gửi câu trả lời!', 'error');
     }
 };
 
@@ -245,7 +278,7 @@ const submitReply = async (parentId, commentOrReply) => {
         await loadComments();
     } catch (error) {
         console.error('Submit reply error:', error);
-        alert('❌ Có lỗi xảy ra khi gửi câu trả lời!');
+        showToastMessage('Có lỗi xảy ra khi gửi câu trả lời!', 'error');
     }
 };
 
@@ -270,7 +303,7 @@ const saveEdit = async (comment) => {
         comment.editContent = '';
     } catch (error) {
         console.error('Update comment error:', error);
-        alert('❌ Có lỗi xảy ra!');
+        showToastMessage('Có lỗi xảy ra!', 'error');
     }
 };
 
@@ -283,22 +316,36 @@ const deleteComment = async (commentId) => {
         await loadComments();
     } catch (error) {
         console.error('Delete comment error:', error);
-        alert('❌ Có lỗi xảy ra!');
+        showToastMessage('Có lỗi xảy ra!', 'error');
     }
 };
 
 // Report comment
-const reportComment = async (commentId) => {
-    const reason = prompt('Lý do báo cáo:');
-    if (!reason) return;
+const reportComment = (commentId) => {
+    commentIdToReport.value = commentId;
+    showReportDialog.value = true;
+};
+
+// Handle report confirm
+const handleReportConfirm = async (reason) => {
+    if (!commentIdToReport.value || !reason.trim()) return;
 
     try {
-        await CommentService.report(commentId, reason);
-        alert('✅ Đã gửi báo cáo. Cảm ơn bạn!');
+        await CommentService.report(commentIdToReport.value, reason.trim());
+        showToastMessage('Đã gửi báo cáo. Cảm ơn bạn!', 'success');
     } catch (error) {
         console.error('Report comment error:', error);
-        alert('❌ Có lỗi xảy ra!');
+        showToastMessage('Có lỗi xảy ra!', 'error');
+    } finally {
+        commentIdToReport.value = null;
     }
+};
+
+// Toast helper
+const showToastMessage = (message, type = 'success') => {
+    toastMessage.value = message;
+    toastType.value = type;
+    showToast.value = true;
 };
 
 // Pagination
