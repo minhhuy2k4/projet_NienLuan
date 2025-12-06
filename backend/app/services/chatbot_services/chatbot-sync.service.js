@@ -32,7 +32,6 @@ class ChatbotSyncService {
     content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
 
     await fs.writeFile(filePath, content, "utf8");
-    console.log("✅ Đã sync categories vào chatbot_data/categories.txt");
   }
 
   async syncAuthors(authors) {
@@ -56,7 +55,6 @@ class ChatbotSyncService {
     content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
 
     await fs.writeFile(filePath, content, "utf8");
-    console.log("✅ Đã sync authors vào chatbot_data/authors.txt");
   }
 
   async syncStories(stories) {
@@ -113,7 +111,6 @@ class ChatbotSyncService {
     content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
 
     await fs.writeFile(filePath, content, "utf8");
-    console.log("✅ Đã sync stories vào chatbot_data/stories.txt");
   }
 }
 

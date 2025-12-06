@@ -99,7 +99,6 @@ class StatisticsService {
         },
       ]).toArray();
 
-      console.log("Top stories result:", stories);
       return stories;
     } catch (error) {
       console.error("Get top stories error:", error);

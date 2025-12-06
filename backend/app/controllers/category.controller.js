@@ -8,7 +8,6 @@ exports.create = async (req, res, next) => {
     return next(new ApiError(400, "Tên thể loại là bắt buộc"));
   }
   try {
-    console.log("Create category request:", req.body);
     const categoryService = new CategoryService(MongoDB.client);
     const category = await categoryService.create(req.body);
 
@@ -18,20 +17,16 @@ exports.create = async (req, res, next) => {
 
     res.status(201).send(category);
   } catch (error) {
-    console.error("Create category error:", error);
     next(new ApiError(500, "Lỗi khi tạo thể loại: " + error.message));
   }
 };
 
 exports.findAll = async (req, res, next) => {
   try {
-    console.log("Get all categories request");
     const categoryService = new CategoryService(MongoDB.client);
     const categories = await categoryService.find();
-    console.log("Categories found:", categories.length);
     res.send(categories);
   } catch (error) {
-    console.error("Find categories error:", error);
     next(new ApiError(500, "Lỗi khi tải danh sách thể loại: " + error.message));
   }
 };

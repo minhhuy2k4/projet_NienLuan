@@ -7,7 +7,6 @@ exports.getOverviewStats = async (req, res, next) => {
   try {
     const statsService = new StatisticsService(MongoDB.client);
     const stats = await statsService.getOverviewStats();
-    console.log("Overview stats:", stats);
     res.json(stats);
   } catch (error) {
     console.error("Get overview stats error:", error);

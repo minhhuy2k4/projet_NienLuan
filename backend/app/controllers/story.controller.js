@@ -13,15 +13,8 @@ const {
 exports.create = async (req, res, next) => {
   if (!req.body?.name) return next(new ApiError(400, "Tên truyện là bắt buộc"));
   try {
-    console.log("=== CREATE STORY ===");
-    console.log("Request body:", req.body);
-    console.log("Authors:", req.body.authors);
-    console.log("Categories:", req.body.categories);
-
     const storyService = new StoryService(MongoDB.client);
     const story = await storyService.create(req.body);
-
-    console.log("Created story:", story);
 
     // Sync tất cả stories (populate author và category)
     const allStories = await storyService.find({});
@@ -157,9 +150,6 @@ exports.update = async (req, res, next) => {
 };
 
 exports.delete = async (req, res, next) => {
-  console.log("=== DELETE STORY START ===");
-  console.log("Story ID:", req.params.id);
-
   try {
     const storyId = req.params.id; // Thêm dòng này
     const storyService = new StoryService(MongoDB.client);
@@ -169,28 +159,19 @@ exports.delete = async (req, res, next) => {
     const existingStory = await storyService.findById(storyId);
 
     if (!existingStory) {
-      console.log("Story not found in database");
       return res.status(404).send({ message: "Không tìm thấy truyện" });
     }
 
-    console.log("Story found, proceeding to delete...");
-
     // Xóa story từ database
     await storyService.delete(storyId);
-    console.log("Story deleted from database");
 
     // Xóa tất cả chapters của truyện
-    console.log("Deleting chapters...");
     const chaptersResult = await chapterService.deleteByStoryId(storyId);
-    console.log("Chapters deleted count:", chaptersResult.deletedCount);
 
     // Xóa toàn bộ thư mục files của truyện
-    console.log("Deleting story files...");
     try {
       deleteStoryFiles(storyId);
-      console.log("Story files deleted successfully");
     } catch (fileError) {
-      console.error("Error deleting story files:", fileError);
       // Không throw lỗi, vì đã xóa database thành công
     }
 
@@ -198,12 +179,8 @@ exports.delete = async (req, res, next) => {
     const allStories = await storyService.find({});
     await chatbotSync.syncStories(allStories);
 
-    console.log("=== DELETE STORY SUCCESS ===");
     res.status(200).send({ message: "Xóa truyện thành công" });
   } catch (error) {
-    console.error("=== DELETE STORY ERROR ===");
-    console.error("Error details:", error);
-    console.error("Error stack:", error.stack);
     return res
       .status(500)
       .send({ message: "Lỗi khi xóa truyện", error: error.message });

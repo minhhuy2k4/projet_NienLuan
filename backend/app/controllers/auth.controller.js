@@ -12,16 +12,8 @@ exports.register = async (req, res, next) => {
     return next(new ApiError(400, "Tên, email, và mật khẩu là bắt buộc"));
   }
   try {
-    console.log("Register request body:", req.body);
-    console.log(
-      "MongoDB client:",
-      MongoDB.client ? "Connected" : "Not connected"
-    );
-
     const userService = new UserService(MongoDB.client);
     const user = await userService.register(req.body);
-
-    console.log("User registration result:", user);
 
     if (!user) {
       return next(new ApiError(409, "Email đã tồn tại"));
@@ -70,10 +62,8 @@ exports.googleLogin = async (req, res, next) => {
       `access_type=offline&` +
       `prompt=consent`;
 
-    console.log("Redirecting to Google:", googleAuthUrl);
     res.redirect(googleAuthUrl);
   } catch (error) {
-    console.error("Google login error:", error);
     next(new ApiError(500, "Lỗi khi chuyển đến Google"));
   }
 };
@@ -111,8 +101,6 @@ exports.googleCallback = async (req, res, next) => {
       `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${access_token}`
     );
     const googleProfile = profileResponse.data;
-
-    console.log("Google profile received:", googleProfile);
 
     if (!googleProfile) {
       return next(new ApiError(400, "Failed to get Google profile"));

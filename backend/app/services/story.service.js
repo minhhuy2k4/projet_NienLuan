@@ -292,17 +292,10 @@ class StoryService {
    * Xóa 1 truyện
    */
   async delete(id) {
-    console.log("StoryService.delete - Input ID:", id);
-    console.log("ObjectId.isValid:", ObjectId.isValid(id));
     const objectId = ObjectId.isValid(id) ? new ObjectId(id) : null;
-    console.log("Converted ObjectId:", objectId);
 
     // Kiểm tra xem story có tồn tại không
     const existingStory = await this.Story.findOne({ _id: objectId });
-    console.log(
-      "Existing story before delete:",
-      existingStory ? "found" : "not found"
-    );
 
     // Lấy danh sách chapters của story để xóa comments liên quan
     const ChapterService = require("./chapter.service");
@@ -336,7 +329,6 @@ class StoryService {
     const result = await this.Story.findOneAndDelete({
       _id: objectId,
     });
-    console.log("Delete result:", result);
     return result.value;
   }
 

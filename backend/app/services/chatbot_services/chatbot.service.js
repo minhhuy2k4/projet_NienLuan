@@ -23,9 +23,7 @@ class ChatbotService {
       for (const file of files) {
         context += fs.readFileSync(path.join(dataDir, file), "utf-8") + "\n\n";
       }
-      console.log("Chatbot context loaded successfully from files.");
     } catch (error) {
-      console.error("Error loading chatbot context from files:", error);
       context = `Bạn là một trợ lý ảo thân thiện tên là "AudioBot".`; // Fallback context
     }
     return context;

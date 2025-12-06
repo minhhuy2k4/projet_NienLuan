@@ -172,12 +172,8 @@ exports.getReportedCommentsWithFilters = async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
-    console.log("Get reported comments - page:", page, "limit:", limit);
-
     const commentService = new CommentService(await MongoDB.client);
     const result = await commentService.getReportedComments(page, limit);
-
-    console.log("Result:", JSON.stringify(result, null, 2));
 
     res.json(result);
   } catch (error) {

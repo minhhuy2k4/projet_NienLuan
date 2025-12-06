@@ -82,8 +82,6 @@ exports.create = async (req, res, next) => {
       return next(new ApiError(400, "Thiếu thông tin bắt buộc"));
     }
 
-    console.log("Creating banner with categoryId:", categoryId);
-
     const bannerService = new BannerService(await MongoDB.client);
     const banner = await bannerService.create({
       title,
@@ -106,8 +104,6 @@ exports.update = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { title, subtitle, image, categoryId, order, isActive } = req.body;
-
-    console.log("Updating banner with categoryId:", categoryId);
 
     const bannerService = new BannerService(await MongoDB.client);
     const banner = await bannerService.update(id, {

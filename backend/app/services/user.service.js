@@ -219,9 +219,7 @@ class UserService {
       if (fs.existsSync(avatarPath)) {
         try {
           fs.unlinkSync(avatarPath);
-          console.log("Deleted avatar file:", avatarPath);
         } catch (error) {
-          console.error("Error deleting avatar file:", error);
         }
       }
     }

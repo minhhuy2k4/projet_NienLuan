@@ -187,12 +187,8 @@ const deleteStoryFiles = (storyId) => {
     const storyPath = path.join(__dirname, "../../public/audio", storyId);
     if (fs.existsSync(storyPath)) {
       fs.rmSync(storyPath, { recursive: true, force: true });
-      console.log(`Deleted story files for: ${storyId}`);
-    } else {
-      console.log(`No files found for story: ${storyId}`);
     }
   } catch (error) {
-    console.error(`Error deleting story files for ${storyId}:`, error);
     throw error;
   }
 };
@@ -209,9 +205,6 @@ const deleteChapterAudio = (storyId, chapterNumber) => {
     );
     if (fs.existsSync(audioPath)) {
       fs.unlinkSync(audioPath);
-      console.log(
-        `Deleted chapter audio: ${storyId}/chapters/${chapterNumber}.mp3`
-      );
     }
   } catch (error) {
     console.error(
@@ -228,12 +221,10 @@ const deleteBannerImage = (filename) => {
     const bannerPath = path.join(__dirname, "../../public/banners", filename);
     if (fs.existsSync(bannerPath)) {
       fs.unlinkSync(bannerPath);
-      console.log(`Deleted banner image: ${filename}`);
       return true;
     }
     return false;
   } catch (error) {
-    console.error(`Error deleting banner image ${filename}:`, error);
     throw error;
   }
 };
@@ -244,12 +235,10 @@ const deleteAdImage = (filename) => {
     const adPath = path.join(__dirname, "../../public/ads", filename);
     if (fs.existsSync(adPath)) {
       fs.unlinkSync(adPath);
-      console.log(`Deleted ad image: ${filename}`);
       return true;
     }
     return false;
   } catch (error) {
-    console.error(`Error deleting ad image ${filename}:`, error);
     throw error;
   }
 };

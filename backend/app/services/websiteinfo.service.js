@@ -95,7 +95,6 @@ class WebsiteInfoService {
     content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
 
     await fs.writeFile(this.filePath, content, "utf8");
-    console.log("✅ Đã cập nhật thông tin website cho chatbot");
 
     return data;
   }

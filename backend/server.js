@@ -13,14 +13,13 @@ async function startServer() {
     console.log("Connected to the database!");
 
     // Tạo indexes (chỉ tạo nếu chưa có)
-    console.log("\n🔍 Checking and creating indexes...");
+    console.log("\nChecking and creating indexes...");
     await createIndexes();
-    console.log("✅ Indexes ready!\n");
+    console.log("Indexes ready!\n");
 
     const PORT = config.app.port;
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
     });
   } catch (error) {
     console.log("Cannot connect to the database!", error);
