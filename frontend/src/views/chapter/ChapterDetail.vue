@@ -28,7 +28,7 @@
                 </router-link>
                 <span class="mx-2" style="color: var(--text-secondary);">/</span>
                 <span class="font-semibold" style="color: var(--text-primary);">Chương {{ chapter.chapterNumber
-                }}</span>
+                    }}</span>
             </nav>
 
             <!-- Quảng cáo chi tiết chương -->
@@ -85,7 +85,12 @@
                             </div>
                             <div v-if="chapter.updatedAt && chapter.updatedAt !== chapter.createdAt"
                                 class="flex items-center gap-2">
-                                <span>🔄</span>
+                                <svg class="w-4 h-4" style="color: var(--text-secondary);" fill="currentColor"
+                                    viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                        clip-rule="evenodd" />
+                                </svg>
                                 <span>Cập nhật: {{ formatDate(chapter.updatedAt) }}</span>
                             </div>
                         </div>
@@ -118,7 +123,12 @@
                 <!-- No Audio Message -->
                 <div v-else class="rounded-xl p-6 text-center border"
                     style="background-color: var(--bg-secondary); border-color: var(--color-warning);">
-                    <span class="text-4xl mb-2 block">🔇</span>
+                    <svg class="w-12 h-12 mx-auto mb-2 block" style="color: var(--color-warning);" fill="currentColor"
+                        viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.414 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.414l3.969-3.816a1 1 0 011.616 0zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
                     <p class="font-medium" style="color: var(--text-primary);">Chương này chưa có audio</p>
                 </div>
             </div>
@@ -130,9 +140,8 @@
                     style="color: var(--text-primary); border-bottom: 1px solid var(--border-color);">
                     <svg class="w-6 h-6 inline-block mr-2" style="color: var(--color-primary);" fill="currentColor"
                         viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                            clip-rule="evenodd" />
+                        <path
+                            d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
                     </svg>
                     Nội dung chương
                 </h2>
@@ -165,7 +174,12 @@
                         @click="goToChapter(previousChapter.chapterNumber || (allChapters.indexOf(previousChapter) + 1))"
                         class="flex items-center gap-3 p-4 rounded-lg transition-all transform hover:scale-105 group"
                         style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover)); border: 1px solid var(--border-color);">
-                        <span class="text-2xl group-hover:scale-110 transition-transform">⬅️</span>
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform"
+                            style="color: var(--color-primary);" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
                         <div class="text-left flex-1 min-w-0">
                             <div class="text-xs mb-1" style="color: var(--text-secondary);">Chương trước</div>
                             <div class="font-semibold truncate" style="color: var(--text-primary);">
@@ -176,7 +190,12 @@
                     </button>
                     <div v-else class="p-4 rounded-lg text-center"
                         style="background-color: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color);">
-                        <span>⬅️</span>
+                        <svg class="w-6 h-6 mx-auto" style="color: var(--text-secondary);" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
                         <div class="text-sm mt-1">Không có chương trước</div>
                     </div>
 
@@ -184,7 +203,11 @@
                     <router-link :to="{ name: 'story.detail', params: { slug: story.slug } }"
                         class="flex flex-col items-center justify-center gap-2 p-4 rounded-lg transition-all transform hover:scale-105 group"
                         style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-hover)); border: 1px solid var(--border-color);">
-                        <span class="text-2xl group-hover:scale-110 transition-transform">📑</span>
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform"
+                            style="color: var(--color-primary);" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                                d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
+                        </svg>
                         <div class="font-semibold text-center" style="color: var(--text-primary);">Danh sách chương
                         </div>
                     </router-link>
@@ -201,11 +224,21 @@
                                     nextChapter.title }}
                             </div>
                         </div>
-                        <span class="text-2xl group-hover:scale-110 transition-transform">➡️</span>
+                        <svg class="w-6 h-6 group-hover:scale-110 transition-transform"
+                            style="color: var(--color-primary);" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
                     </button>
                     <div v-else class="p-4 rounded-lg text-center"
                         style="background-color: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color);">
-                        <span>➡️</span>
+                        <svg class="w-6 h-6 mx-auto" style="color: var(--text-secondary);" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
                         <div class="text-sm mt-1">Không có chương tiếp theo</div>
                     </div>
                 </div>
@@ -216,7 +249,13 @@
                     <label class="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" v-model="autoPlayNext"
                             class="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500" />
-                        <span class="font-medium" style="color: var(--text-secondary);">🔄 Tự động chuyển chương khi hết
+                        <svg class="w-5 h-5" style="color: var(--color-primary);" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="font-medium" style="color: var(--text-secondary);">Tự động chuyển chương khi hết
                             audio</span>
                     </label>
                 </div>
