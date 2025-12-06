@@ -219,8 +219,7 @@ class UserService {
       if (fs.existsSync(avatarPath)) {
         try {
           fs.unlinkSync(avatarPath);
-        } catch (error) {
-        }
+        } catch (error) {}
       }
     }
 

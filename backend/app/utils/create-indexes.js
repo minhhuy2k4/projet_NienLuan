@@ -5,7 +5,6 @@ const MongoDB = require("./mongodb.util");
  */
 async function createIndexes() {
   try {
-
     const db = MongoDB.client.db();
 
     // ==================== STORIES COLLECTION ====================
@@ -358,7 +357,6 @@ async function createIndexes() {
     await db
       .collection("websiteinfo")
       .createIndex({ updatedAt: -1 }, { name: "websiteinfo_updated_index" });
-
   } catch (error) {
     console.error("❌ Lỗi khi tạo indexes:", error);
     throw error;
@@ -391,10 +389,8 @@ async function dropAllIndexes() {
     for (const collectionName of collections) {
       try {
         await db.collection(collectionName).dropIndexes();
-      } catch (error) {
-      }
+      } catch (error) {}
     }
-
   } catch (error) {
     throw error;
   }
