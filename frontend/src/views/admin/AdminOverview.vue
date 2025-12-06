@@ -50,7 +50,7 @@
                         </div>
                         <div class="story-views">
                             <span class="views-count">{{ story.totalViews.toLocaleString() }}</span>
-                            <span class="views-label">lượt xem</span>
+                            <span class="views-label">lượt nghe</span>
                         </div>
                     </li>
                 </ul>
