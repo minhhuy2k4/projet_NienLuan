@@ -110,6 +110,25 @@ exports.update = async (req, res, next) => {
       req.body;
 
     const adService = new AdService(await MongoDB.client);
+
+    // Nếu có ảnh mới, xóa ảnh cũ
+    if (image) {
+      const oldAd = await adService.getById(id);
+      if (
+        oldAd &&
+        oldAd.image &&
+        oldAd.image !== image &&
+        oldAd.image.startsWith("/ads/")
+      ) {
+        const oldFilename = oldAd.image.split("/").pop();
+        try {
+          deleteAdImage(oldFilename);
+        } catch (error) {
+          console.error("Error deleting old ad:", error);
+        }
+      }
+    }
+
     const ad = await adService.update(id, {
       title,
       description,

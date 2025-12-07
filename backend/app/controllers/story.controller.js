@@ -40,7 +40,7 @@ exports.uploadCover = async (req, res, next) => {
       return res.status(404).send({ message: "Không tìm thấy truyện" });
     }
 
-    // Tạo URL cho ảnh bìa
+    // Tạo URL cho ảnh bìa (file cũ đã được xóa trong multer storage)
     const coverUrl = getFileUrl(req, storyId, req.file.filename);
 
     // Cập nhật chỉ URL ảnh bìa vào database (không spread toàn bộ story)

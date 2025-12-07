@@ -340,8 +340,8 @@ const uploadAvatarFile = async () => {
         user.value = result.user;
         avatarUrl.value = result.user.avatar;
 
-        // Update auth store
-        authStore.user.avatar = result.user.avatar;
+        // Update auth store và localStorage
+        authStore.updateUser({ avatar: result.user.avatar });
 
         // Clear file input and preview
         avatarFile.value = null;
@@ -371,8 +371,8 @@ const updateAvatarUrl = async () => {
         avatarPreview.value = newAvatarUrl.value;
         avatarUrl.value = result.user.avatar;
 
-        // Update auth store
-        authStore.user.avatar = newAvatarUrl.value;
+        // Update auth store và localStorage
+        authStore.updateUser({ avatar: result.user.avatar });
 
         // Clear input
         newAvatarUrl.value = '';

@@ -13,8 +13,27 @@ const ensureDirectoryExists = (dirPath) => {
 const coverImageStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const storyId = req.params.storyId || req.body.storyId;
+
+    // Kiểm tra nếu không có storyId thì trả về lỗi
+    if (!storyId) {
+      return cb(new Error("Story ID không tồn tại"));
+    }
+
     const uploadPath = path.join(__dirname, "../../public/audio", storyId);
     ensureDirectoryExists(uploadPath);
+
+    // Xóa file cover cũ trước khi lưu file mới
+    try {
+      const files = fs.readdirSync(uploadPath);
+      files.forEach((f) => {
+        if (f.startsWith("cover.")) {
+          fs.unlinkSync(path.join(uploadPath, f));
+        }
+      });
+    } catch (error) {
+      console.error("Error deleting old cover:", error);
+    }
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -49,6 +68,21 @@ const avatarStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, "../../public/avatars");
     ensureDirectoryExists(uploadPath);
+
+    // Xóa avatar cũ của user trước khi lưu avatar mới
+    try {
+      const userId = req.user.id;
+      const files = fs.readdirSync(uploadPath);
+      files.forEach((f) => {
+        // Xóa tất cả file avatar của user này (format: userId_timestamp.ext)
+        if (f.startsWith(`${userId}_`)) {
+          fs.unlinkSync(path.join(uploadPath, f));
+        }
+      });
+    } catch (error) {
+      console.error("Error deleting old avatar:", error);
+    }
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -181,6 +215,24 @@ const getAdImageUrl = (req, filename) => {
   return `/ads/${filename}`;
 };
 
+// Hàm xóa ảnh bìa cũ của truyện
+const deleteStoryCover = (storyId) => {
+  try {
+    const storyPath = path.join(__dirname, "../../public/audio", storyId);
+    if (fs.existsSync(storyPath)) {
+      const files = fs.readdirSync(storyPath);
+      // Xóa các file ảnh bìa (cover.*)
+      files.forEach((file) => {
+        if (file.startsWith("cover.")) {
+          fs.unlinkSync(path.join(storyPath, file));
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error deleting story cover:", error);
+  }
+};
+
 // Hàm xóa thư mục story và tất cả files
 const deleteStoryFiles = (storyId) => {
   try {
@@ -243,6 +295,21 @@ const deleteAdImage = (filename) => {
   }
 };
 
+// Hàm xóa avatar cũ của user
+const deleteAvatar = (filename) => {
+  try {
+    const avatarPath = path.join(__dirname, "../../public/avatars", filename);
+    if (fs.existsSync(avatarPath)) {
+      fs.unlinkSync(avatarPath);
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Error deleting avatar:", error);
+    return false;
+  }
+};
+
 // Hàm tạo URL cho avatar
 const getAvatarUrl = (req, filename) => {
   return `/avatars/${filename}`;
@@ -260,8 +327,10 @@ module.exports = {
   getAdImageUrl,
   getAvatarUrl,
   deleteStoryFiles,
+  deleteStoryCover,
   deleteChapterAudio,
   deleteBannerImage,
   deleteAdImage,
+  deleteAvatar,
   ensureDirectoryExists,
 };

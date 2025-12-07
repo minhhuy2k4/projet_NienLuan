@@ -3,7 +3,7 @@
         <nav class="navbar">
             <div class="nav-left">
                 <router-link to="/" class="logo">
-                    <span><img src="/favicon.ico" alt="AudioTruyen" class="logo-icon" /> AudioTruyen</span>
+                    <span><img src="/favicon.ico" alt="AudioMH" class="logo-icon" /> AudioMH</span>
                 </router-link>
                 <div class="search-bar" :class="{ 'mobile-search-open': mobileSearchOpen }">
                     <input type="text" placeholder="Tìm truyện..." v-model="searchQuery" @keyup.enter="handleSearch">

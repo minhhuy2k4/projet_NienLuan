@@ -80,5 +80,18 @@ export const useAuthStore = defineStore("auth", {
       this.user = null;
       this.token = null;
     },
+
+    updateUser(userData) {
+      // Cập nhật thông tin user và lưu vào localStorage
+      this.user = { ...this.user, ...userData };
+      const currentStorage = JSON.parse(localStorage.getItem("user")) || {};
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          ...currentStorage,
+          user: this.user,
+        })
+      );
+    },
   },
 });

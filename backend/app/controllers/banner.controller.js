@@ -106,6 +106,25 @@ exports.update = async (req, res, next) => {
     const { title, subtitle, image, categoryId, order, isActive } = req.body;
 
     const bannerService = new BannerService(await MongoDB.client);
+
+    // Nếu có ảnh mới, xóa ảnh cũ
+    if (image) {
+      const oldBanner = await bannerService.getById(id);
+      if (
+        oldBanner &&
+        oldBanner.image &&
+        oldBanner.image !== image &&
+        oldBanner.image.startsWith("/banners/")
+      ) {
+        const oldFilename = oldBanner.image.split("/").pop();
+        try {
+          deleteBannerImage(oldFilename);
+        } catch (error) {
+          console.error("Error deleting old banner:", error);
+        }
+      }
+    }
+
     const banner = await bannerService.update(id, {
       title,
       subtitle,

@@ -193,22 +193,25 @@ const handleSubmit = async () => {
                 const uploadResult = await storyService.uploadCover(newStory._id, formData);
                 newStory.image = uploadResult.imageUrl;
             } catch (uploadError) {
-                console.error('Upload cover error:', uploadError);
+                const uploadErrorMsg = uploadError.response?.data?.message || uploadError.message;
                 // Không fail toàn bộ, chỉ thông báo
-                errorMessage.value = 'Truyện đã tạo nhưng upload ảnh bìa thất bại. Bạn có thể upload lại sau.';
+                errorMessage.value = `Truyện đã tạo nhưng upload ảnh bìa thất bại: ${uploadErrorMsg}. Bạn có thể upload lại sau.`;
+                toastConfig.value = { message: errorMessage.value, type: 'warning' };
+                showToast.value = true;
             }
         }
 
         successMessage.value = 'Thêm truyện thành công!';
-        toastConfig.value = { message: 'Thêm truyện thành công!', type: 'success' };
-        showToast.value = true;
+        if (!errorMessage.value) {
+            toastConfig.value = { message: 'Thêm truyện thành công!', type: 'success' };
+            showToast.value = true;
+        }
 
         // Redirect sau 1.5s
         setTimeout(() => {
             router.push({ name: 'admin.story.edit', params: { id: newStory._id } });
         }, 1500);
     } catch (error) {
-        console.error('Create story error:', error);
         errorMessage.value = error.response?.data?.message || 'Đã xảy ra lỗi khi thêm truyện.';
         toastConfig.value = { message: errorMessage.value, type: 'error' };
         showToast.value = true;

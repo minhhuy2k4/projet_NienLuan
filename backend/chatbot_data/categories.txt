@@ -1,8 +1,19 @@
 === DANH SÁCH THỂ LOẠI TRUYỆN ===
 
-1. huyminh
-   Mô tả: dd
+1. Cổ Trang
+
+2. Hành Động
+
+3. Ngôn Tình
+
+4. Phép Thuật
+
+5. Vui Nhộn
+
+6. Xuyên Không
+
+7. Đời Thường
 
 
-Tổng số thể loại: 1
-Cập nhật lần cuối: 13:42:24 6/12/2025
+Tổng số thể loại: 7
+Cập nhật lần cuối: 23:24:45 6/12/2025

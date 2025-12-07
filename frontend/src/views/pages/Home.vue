@@ -119,10 +119,10 @@ const errorFull = ref(null);
 
 // Hàm được gọi khi component được tải
 onMounted(async () => {
-    // Load truyện mới cập nhật (5 truyện)
+    // Load truyện mới cập nhật (6 truyện)
     try {
         loadingNew.value = true;
-        const result = await StoryService.getNewStories(1, 5);
+        const result = await StoryService.getNewStories(1, 6);
         newStories.value = result.stories || [];
     } catch (err) {
         errorNew.value = 'Không thể tải truyện mới.';
@@ -131,10 +131,10 @@ onMounted(async () => {
         loadingNew.value = false;
     }
 
-    // Load truyện hot (5 truyện)
+    // Load truyện hot (6 truyện)
     try {
         loadingHot.value = true;
-        const result = await StoryService.getHotStories(1, 5);
+        const result = await StoryService.getHotStories(1, 6);
         hotStories.value = result.stories || [];
     } catch (err) {
         errorHot.value = 'Không thể tải truyện hot.';
@@ -143,10 +143,10 @@ onMounted(async () => {
         loadingHot.value = false;
     }
 
-    // Load truyện đã hoàn thành (5 truyện)
+    // Load truyện đã hoàn thành (6 truyện)
     try {
         loadingFull.value = true;
-        const result = await StoryService.getFullStories(1, 5);
+        const result = await StoryService.getFullStories(1, 6);
         fullStories.value = result.stories || [];
     } catch (err) {
         errorFull.value = 'Không thể tải truyện hoàn thành.';

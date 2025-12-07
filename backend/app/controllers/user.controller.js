@@ -57,7 +57,7 @@ exports.updateAvatar = async (req, res, next) => {
 
     let avatarUrl;
 
-    // Nếu upload file
+    // Nếu upload file (avatar cũ đã được xóa trong multer storage)
     if (req.file) {
       avatarUrl = getAvatarUrl(req, req.file.filename);
     }
