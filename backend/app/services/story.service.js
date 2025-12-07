@@ -72,7 +72,6 @@ class StoryService {
       status: payload.status || "đang tiến hành",
       // Khởi tạo các giá trị mặc định (bỏ chapters vì đã có collection riêng)
       views: 0,
-      favoritesCount: 0,
       averageRating: 0,
       totalRatings: 0,
     };
