@@ -44,8 +44,11 @@ exports.syncData = async (req, res, next) => {
     const allAuthors = await authorService.find({});
     await chatbotSync.syncAuthors(allAuthors);
 
+    // Reload chatbot context sau khi sync xong
+    ChatbotService.reloadContext();
+
     res.status(200).json({
-      message: "Đã sync tất cả dữ liệu thành công",
+      message: "Đã sync tất cả dữ liệu thành công và reload chatbot context",
       counts: {
         stories: allStories.length,
         categories: allCategories.length,

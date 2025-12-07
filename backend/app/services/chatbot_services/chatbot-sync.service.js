@@ -6,6 +6,18 @@ class ChatbotSyncService {
     this.dataDir = path.join(__dirname, "..", "..", "..", "chatbot_data");
   }
 
+  /**
+   * Reload chatbot context sau khi sync data
+   */
+  reloadChatbotContext() {
+    try {
+      const chatbotService = require("./chatbot.service");
+      chatbotService.reloadContext();
+    } catch (error) {
+      console.error("Error reloading chatbot context:", error);
+    }
+  }
+
   async ensureDataDir() {
     try {
       await fs.access(this.dataDir);
@@ -32,6 +44,9 @@ class ChatbotSyncService {
     content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
 
     await fs.writeFile(filePath, content, "utf8");
+
+    // Reload chatbot context sau khi sync
+    this.reloadChatbotContext();
   }
 
   async syncAuthors(authors) {
@@ -55,6 +70,9 @@ class ChatbotSyncService {
     content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
 
     await fs.writeFile(filePath, content, "utf8");
+
+    // Reload chatbot context sau khi sync
+    this.reloadChatbotContext();
   }
 
   async syncStories(stories) {
@@ -111,6 +129,9 @@ class ChatbotSyncService {
     content += `Cập nhật lần cuối: ${new Date().toLocaleString("vi-VN")}\n`;
 
     await fs.writeFile(filePath, content, "utf8");
+
+    // Reload chatbot context sau khi sync
+    this.reloadChatbotContext();
   }
 }
 

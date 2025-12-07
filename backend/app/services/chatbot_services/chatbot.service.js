@@ -30,6 +30,14 @@ class ChatbotService {
   }
 
   /**
+   * Reload context từ các file txt mà không cần restart server
+   */
+  reloadContext() {
+    this.baseContext = this.loadContextFromFiles();
+    return this.baseContext;
+  }
+
+  /**
    * Tạo prompt định hướng cho AI, giúp nó hiểu bối cảnh và vai trò.
    * @param {string} userQuestion - Câu hỏi của người dùng.
    * @returns {string} - Prompt hoàn chỉnh để gửi đến AI.

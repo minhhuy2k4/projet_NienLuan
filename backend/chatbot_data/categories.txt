@@ -4,16 +4,18 @@
 
 2. Hành Động
 
-3. Ngôn Tình
+3. Học Đường
 
-4. Phép Thuật
+4. Ngôn Tình
 
-5. Vui Nhộn
+5. Phép Thuật
 
-6. Xuyên Không
+6. Vui Nhộn
 
-7. Đời Thường
+7. Xuyên Không
+
+8. Đời Thường
 
 
-Tổng số thể loại: 7
-Cập nhật lần cuối: 23:24:45 6/12/2025
+Tổng số thể loại: 8
+Cập nhật lần cuối: 20:14:43 7/12/2025
