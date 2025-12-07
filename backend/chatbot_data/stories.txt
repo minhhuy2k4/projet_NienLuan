@@ -15,10 +15,10 @@ Cô là một con người nghệ thuật , các tác phẩm nghệ thuật củ
 📖 Bị Phán Vô Dụng, Tôi Sang Đế Quốc Lập Nghiệp
    ID: 693428863b1640e02ebec78a
    Tác giả: Jin Aino
-   Thể loại: Vui Nhộn, Phép Thuật
+   Thể loại: Phép Thuật, Vui Nhộn
    Mô tả: Ở vương quốc mà Lutz đã sống đến nay, thường dân không thể leo lên nấc thang xã hội; mọi nỗ lực của họ đều bị phủ nhận và công việc phụ thêm đều bị coi thường. Cuối cùng, Lutz đã chán ngán và quyết đị...
    Số chương: 2
-   Lượt xem: 11
+   Lượt xem: 23
    Trạng thái: hoàn thành
    Ngày đăng: 19:58:46 6/12/2025
    Cập nhật lần cuối: 20:10:45 6/12/2025
@@ -48,7 +48,7 @@ Cô là một con người nghệ thuật , các tác phẩm nghệ thuật củ
 📖 Tuyệt Thế Hồi Quy
    ID: 69342bff3b1640e02ebec799
    Tác giả: Baotangtruyen
-   Thể loại: Xuyên Không, Hành Động
+   Thể loại: Hành Động, Xuyên Không
    Mô tả: Tuyệt Thế Hồi Quy
    Số chương: 3
    Lượt xem: 1
@@ -59,7 +59,7 @@ Cô là một con người nghệ thuật , các tác phẩm nghệ thuật củ
 📖 Dược Sư Tự Sự
    ID: 69342cbc3b1640e02ebec7a0
    Tác giả: Natsu Hyuuga
-   Thể loại: Cổ Trang, Vui Nhộn, Đời Thường
+   Thể loại: Đời Thường, Vui Nhộn, Cổ Trang
    Mô tả: Ở trong triều đình, một cô gái trẻ bị trở thành nô tì, Maomao. Câu chuyện mở đầu khi Maomao (bác sĩ từ phố đèn đỏ) nghe về chuyện con của hoàng đế bị chết non. Bản tính hiếu kì và khát vọng tri thức đ...
    Số chương: 2
    Lượt xem: 0
@@ -70,7 +70,7 @@ Cô là một con người nghệ thuật , các tác phẩm nghệ thuật củ
 📖 Truyên test
    ID: 693454454daf9992eeebd965
    Tác giả: Jin Aino
-   Thể loại: Phép Thuật, Hành Động
+   Thể loại: Hành Động, Phép Thuật
    Mô tả: Nội dung
    Số chương: 0
    Lượt xem: 0
@@ -80,4 +80,4 @@ Cô là một con người nghệ thuật , các tác phẩm nghệ thuật củ
 
 
 Tổng số truyện: 7
-Cập nhật lần cuối: 23:12:46 6/12/2025
+Cập nhật lần cuối: 21:47:50 7/12/2025
