@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 🎧 AudioTruyen — Frontend Client
+=======
+# Frontend
+>>>>>>> 15b8a8698f2cc558a7857320d42655e20c030b96
 
 This is the Single Page Application (SPA) frontend for the **AudioTruyen** web novel and audiobook streaming platform, built with **Vue 3**, **Vite**, and **Tailwind CSS**.
 
